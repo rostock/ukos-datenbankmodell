@@ -1,0 +1,6 @@
+# kompilierte Dateien und Cache
+__pycache__/
+*.py[cod]
+
+# private Konfiguration
+alembic.ini
