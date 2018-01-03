@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Startzeit erfassen
+STARTZEIT=$(date +%s)
+
+# Pfad des vorliegenden Skriptes identifizieren
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+
+# Kreise aus WFS in temporäre Datenbanktabelle einlesen
+ogr2ogr -f PostgreSQL PG:"host=host dbname=database user=user password=password" -a_srs EPSG:25833 -nlt CONVERT_TO_LINEAR -skipfailures -nln temp_kreis -lco SCHEMA=kataster WFS:https://geo.sv.rostock.de/geodienste/kreise/wfs hro.kreise.kreise 2> /dev/null
+
+# Gemeindeverbände aus WFS in temporäre Datenbanktabelle einlesen
+ogr2ogr -f PostgreSQL PG:"host=host dbname=database user=user password=password" -a_srs EPSG:25833 -nlt CONVERT_TO_LINEAR -skipfailures -nln temp_gemeindeverband -lco SCHEMA=kataster WFS:https://geo.sv.rostock.de/geodienste/gemeindeverbaende/wfs hro.gemeindeverbaende.gemeindeverbaende 2> /dev/null
+
+# Gemeinden aus WFS in temporäre Datenbanktabelle einlesen
+ogr2ogr -f PostgreSQL PG:"host=host dbname=database user=user password=password" -a_srs EPSG:25833 -nlt CONVERT_TO_LINEAR -skipfailures -nln temp_gemeinde -lco SCHEMA=kataster WFS:https://geo.sv.rostock.de/geodienste/gemeinden/wfs hro.gemeinden.gemeinden 2> /dev/null
+
+# Gemeindeteile aus WFS in temporäre Datenbanktabelle einlesen
+ogr2ogr -f PostgreSQL PG:"host=host dbname=database user=user password=password" -a_srs EPSG:25833 -nlt CONVERT_TO_LINEAR -skipfailures -nln temp_gemeindeteil -lco SCHEMA=kataster WFS:https://geo.sv.rostock.de/geodienste/gemeindeteile/wfs hro.gemeindeteile.gemeindeteile 2> /dev/null
+
+# Inhalte aus temporären in permanente Datenbanktabellen überführen
+export PGPASSWORD="password"
+psql -U user -d database -f $SCRIPT_DIR/katasterdaten_aktualisierung.sql
+unset PGPASSWORD
+
+# Endzeit erfassen
+ENDZEIT=$(date +%s)
+
+# Dauer ermitteln und Skript beenden
+DAUER="$(expr $ENDZEIT - $STARTZEIT)"
+echo -e "\n"
+echo | awk -v D=$DAUER '{printf "Dauer: %02d:%02d:%02d\n",D/(60*60),D%(60*60)/60,D%60}'
+exit 0

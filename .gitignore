@@ -4,3 +4,6 @@ __pycache__/
 
 # private Konfiguration
 alembic.ini
+
+# produktive Skripte
+*.sh
