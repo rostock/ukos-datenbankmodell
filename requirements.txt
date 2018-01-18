@@ -1,3 +1,2 @@
 alembic
 psycopg2
-Sphinx

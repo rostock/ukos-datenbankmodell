@@ -1,5 +1,4 @@
 # kompilierte Dateien und Cache
-dokumentation/build
 __pycache__/
 *.py[cod]
 
