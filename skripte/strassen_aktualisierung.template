@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Startzeit erfassen
+STARTZEIT=$(date +%s)
+
+# Pfad des vorliegenden Skriptes identifizieren
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+
+# Straßen aus CSV in temporäre Datenbanktabelle einlesen
+ogr2ogr -f PostgreSQL PG:"host=host dbname=database user=user password=password" -skipfailures -nln temp_strasse -lco SCHEMA=strassennetz https://geo.sv.rostock.de/download/listen/strassen_mv.csv 2> /dev/null
+
+# Inhalte aus temporären in permanente Datenbanktabellen überführen
+export PGPASSWORD="password"
+psql -U user -d database -f $SCRIPT_DIR/strassen_aktualisierung.sql
+unset PGPASSWORD
+
+# Endzeit erfassen
+ENDZEIT=$(date +%s)
+
+# Dauer ermitteln und Skript beenden
+DAUER="$(expr $ENDZEIT - $STARTZEIT)"
+echo -e "\n"
+echo | awk -v D=$DAUER '{printf "Dauer: %02d:%02d:%02d\n",D/(60*60),D%(60*60)/60,D%60}'
+exit 0
