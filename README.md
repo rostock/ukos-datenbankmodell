@@ -6,8 +6,7 @@ Datenbankmodell für *UkoS*, das *Umsetzungsprojekt kommunale Straßendaten Meck
 
 *   [*Python*](https://www.python.org)
 *   [*Virtualenv*](https://virtualenv.pypa.io)
-*   [*PostgreSQL*](https://www.postgresql.org)
-*   [*PostGIS*](http://postgis.net)
+*   [*PostgreSQL*](https://www.postgresql.org) mit den Erweiterungen [*PostGIS*](http://postgis.net) (inklusive Topolgie) und [*uuid-ossp*](https://www.postgresql.org/docs/current/static/uuid-ossp.html)
 
 ## Installation
 
