@@ -67,6 +67,53 @@ CREATE TABLE base.werteliste (
 COMMENT ON TABLE base.werteliste
 	IS 'This abstract table is the base for most codelists. A few codelists related to okstra bewuchs and baum do not follow the kennung/langtext columns of werteliste and therefore do not inherit from it';
 
+CREATE TABLE base.idents (
+	ident character(6) NOT NULL,
+	name_schema character varying NOT NULL,
+	name_tabelle character varying NOT NULL,
+	CONSTRAINT pk_idents PRIMARY KEY (ident)
+);
+COMMENT ON TABLE base.idents
+	IS 'In this table all idents and their origin (schema and table) are stored.';
+
+CREATE OR REPLACE FUNCTION base.idents_add_ident()
+  RETURNS trigger AS
+  $BODY$
+    DECLARE
+      chars char[];
+    BEGIN
+        IF (NEW.ident IS NULL OR NEW.ident = '') THEN
+            chars := ARRAY['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+            LOOP
+                NEW.ident = (SELECT array_to_string(ARRAY(SELECT chars[(1 + round(random() * 62))::integer] FROM generate_series(1, 6)), ''));
+                EXIT WHEN NEW.ident NOT IN (SELECT ident FROM base.idents);
+            END LOOP;
+            INSERT INTO base.idents (ident, name_schema, name_tabelle) VALUES (NEW.ident, TG_TABLE_SCHEMA, TG_TABLE_NAME);
+            RETURN NEW;
+        ELSIF (NEW.ident NOT IN (SELECT ident FROM base.idents)) THEN
+            INSERT INTO base.idents (ident, name_schema, name_tabelle) VALUES (NEW.ident, TG_TABLE_SCHEMA, TG_TABLE_NAME);
+            RETURN NEW;
+        ELSIF (NEW.gueltig_bis != '2100-01-01 02:00:00+01'::timestamp with time zone) THEN
+            RAISE EXCEPTION 'Es wird versucht ein lebendes Objekt mit bereits vorhandenem Attribut ident zu erzeugen.';
+        END IF;
+    END
+  $BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION base.idents_remove_ident()
+  RETURNS trigger AS
+  $BODY$
+    BEGIN
+        IF (OLD.ident IN (SELECT ident FROM base.idents)) THEN
+            DELETE FROM base.idents WHERE ident = OLD.ident;
+        END IF;
+        RETURN NEW;
+    END
+  $BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
 ---------------------------------------------------------------
 -- CODELISTEN OKSTRA
 ---------------------------------------------------------------
@@ -1879,8 +1926,7 @@ INHERITS (base.basiscodeliste);
 ---------------------------------------------------------------
 CREATE TABLE kataster.kreis (
 	id character varying NOT NULL DEFAULT uuid_generate_v4(),
-	ident_hist character varying NOT NULL DEFAULT 'unbekannt'::character varying,
-    bezeichnung character varying NOT NULL DEFAULT 'nicht zugewiesen'::character varying,
+	bezeichnung character varying NOT NULL DEFAULT 'nicht zugewiesen'::character varying,
     schluessel character(5) NOT NULL DEFAULT '00000'::character varying,
 	bemerkung character varying NOT NULL DEFAULT 'noch keine Bemerkung'::character varying,
 	gueltig_von timestamp with time zone NOT NULL DEFAULT timezone('utc-1'::text, now()),
@@ -1900,8 +1946,7 @@ INSERT INTO kataster.kreis (id) VALUES ('00000000-0000-0000-0000-000000000000');
 CREATE TABLE kataster.gemeindeverband (
 	id character varying NOT NULL DEFAULT uuid_generate_v4(),
 	id_kreis character varying NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000'::character varying,
-	ident_hist character varying NOT NULL DEFAULT 'unbekannt'::character varying,
-    bezeichnung character varying NOT NULL DEFAULT 'nicht zugewiesen'::character varying,
+	bezeichnung character varying NOT NULL DEFAULT 'nicht zugewiesen'::character varying,
     schluessel character(4) NOT NULL DEFAULT '0000'::character varying,
 	bemerkung character varying NOT NULL DEFAULT 'noch keine Bemerkung'::character varying,
 	gueltig_von timestamp with time zone NOT NULL DEFAULT timezone('utc-1'::text, now()),
@@ -1924,8 +1969,7 @@ INSERT INTO kataster.gemeindeverband (id) VALUES ('00000000-0000-0000-0000-00000
 CREATE TABLE kataster.gemeinde (
 	id character varying NOT NULL DEFAULT uuid_generate_v4(),
 	id_gemeindeverband character varying NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000'::character varying,
-	ident_hist character varying NOT NULL DEFAULT 'unbekannt'::character varying,
-    bezeichnung character varying NOT NULL DEFAULT 'nicht zugewiesen'::character varying,
+	bezeichnung character varying NOT NULL DEFAULT 'nicht zugewiesen'::character varying,
     schluessel character(3) NOT NULL DEFAULT '000'::character varying,
 	bemerkung character varying NOT NULL DEFAULT 'noch keine Bemerkung'::character varying,
 	gueltig_von timestamp with time zone NOT NULL DEFAULT timezone('utc-1'::text, now()),
@@ -1948,8 +1992,7 @@ INSERT INTO kataster.gemeinde (id) VALUES ('00000000-0000-0000-0000-000000000000
 CREATE TABLE kataster.gemeindeteil (
 	id character varying NOT NULL DEFAULT uuid_generate_v4(),
 	id_gemeinde character varying NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000'::character varying,
-	ident_hist character varying NOT NULL DEFAULT 'unbekannt'::character varying,
-    bezeichnung character varying NOT NULL DEFAULT 'nicht zugewiesen'::character varying,
+	bezeichnung character varying NOT NULL DEFAULT 'nicht zugewiesen'::character varying,
     schluessel character(4) NOT NULL DEFAULT '0000'::character varying,
 	bemerkung character varying NOT NULL DEFAULT 'noch keine Bemerkung'::character varying,
 	gueltig_von timestamp with time zone NOT NULL DEFAULT timezone('utc-1'::text, now()),
@@ -2121,9 +2164,8 @@ INSERT INTO strassennetz.strasse (id) VALUES ('00000000-0000-0000-0000-000000000
 CREATE TABLE strassennetz.verbindungspunkt (
 	id character varying NOT NULL DEFAULT uuid_generate_v4(),
 	id_strasse character varying NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000'::character varying,
+	ident character(6) NOT NULL,
 	ident_hist character varying NOT NULL DEFAULT 'unbekannt'::character varying,
-	netzknotennummer character varying NOT NULL DEFAULT 'unbekannt'::character varying,
-	netzknotenklasse integer NOT NULL DEFAULT 0,
 	bemerkung character varying NOT NULL DEFAULT 'noch keine Bemerkung'::character varying,
 	gueltig_von timestamp with time zone NOT NULL DEFAULT timezone('utc-1'::text, now()),
 	gueltig_bis timestamp with time zone NOT NULL DEFAULT '2100-01-01 02:00:00+01'::timestamp with time zone,
@@ -2140,6 +2182,21 @@ CREATE TABLE strassennetz.verbindungspunkt (
 WITH (
 	OIDS=TRUE
 );
+
+-- Trigger: tr_idents_add_ident on strassennetz.verbindungspunkt
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON strassennetz.verbindungspunkt
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on strassennetz.verbindungspunkt
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON strassennetz.verbindungspunkt
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 INSERT INTO strassennetz.verbindungspunkt (bemerkung) VALUES ('default Netzknoten oben');
 INSERT INTO strassennetz.verbindungspunkt (bemerkung) VALUES ('default Netzknoten unten');
 
@@ -2220,6 +2277,7 @@ CREATE TABLE strassennetz.strassenelement (
 	id_strasse character varying NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000'::character varying,
 	id_verbindungspunkt_oben character varying NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000'::character varying,
 	id_verbindungspunkt_unten character varying NOT NULL DEFAULT '00000000-0000-0000-0000-000000000001'::character varying,
+	ident character(6) NOT NULL,
 	ident_hist character varying NOT NULL DEFAULT 'unbekannt'::character varying,
 	id_nutzung character varying NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000'::character varying,
 	id_klassifizierung character varying NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000'::character varying,
@@ -2267,6 +2325,20 @@ CREATE TRIGGER tr_ai_strassenelement
 	ON strassennetz.strassenelement
 	FOR EACH ROW
 	EXECUTE PROCEDURE strassennetz.tf_ai_strassenelement();
+
+-- Trigger: tr_idents_add_ident on strassennetz.strassenelement
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON strassennetz.strassenelement
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on strassennetz.strassenelement
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON strassennetz.strassenelement
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 
 ---------------------------------------------------------------
