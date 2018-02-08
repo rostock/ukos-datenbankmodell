@@ -4495,9 +4495,24 @@ CREATE TABLE doppik.lampe
 	anzahl_leuchtmittel integer,
 	stromkreis integer,
 	dimmungssystem character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_lampe_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
+
+-- Trigger: tr_idents_add_ident on doppik.lampe
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.lampe
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.lampe
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.lampe
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.baum
 (
@@ -4519,9 +4534,24 @@ CREATE TABLE doppik.baum
 	--zustandsbeurteilung character varying, -- already available in okstra.baum, will be inherited
 	--lagebeschreibung character varying,
 	--detaillierungsgrad character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_baum_id PRIMARY KEY (id)
 )
 INHERITS(okstra.baum);
+
+-- Trigger: tr_idents_add_ident on doppik.baum
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.baum
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.baum
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.baum
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.bewuchs
 (
@@ -4532,66 +4562,200 @@ CREATE TABLE doppik.bewuchs
 	-- zustaendigkeit character varying,
 	-- verkehrsraumeinschraenkung character varying,
 	--erfassungsqualitaet character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_bewuchs_id PRIMARY KEY (id)
 )
 INHERITS(okstra.bewuchs);
 
+-- Trigger: tr_idents_add_ident on doppik.bewuchs
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.bewuchs
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.bewuchs
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.bewuchs
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.blumenkuebel
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_blumenkuebel_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.blumenkuebel
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.blumenkuebel
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.blumenkuebel
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.blumenkuebel
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.stationaere_geschwindigkeitsueberwachung
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_stationaere_geschwindigkeitsueberwachung_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.stationaere_geschwindigkeitsueberwachung
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.stationaere_geschwindigkeitsueberwachung
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.stationaere_geschwindigkeitsueberwachung
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.stationaere_geschwindigkeitsueberwachung
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.verkehrsspiegel
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_verkehrsspiegel_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.verkehrsspiegel
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.verkehrsspiegel
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.verkehrsspiegel
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.verkehrsspiegel
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.leitpfosten
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_leitpfosten_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.leitpfosten
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.leitpfosten
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.leitpfosten
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.leitpfosten
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.kilometerstein
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_kilometerstein_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.kilometerstein
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.kilometerstein
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.kilometerstein
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.kilometerstein
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.anleger
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_anleger_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.anleger
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.anleger
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.anleger
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.anleger
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.anschlagsaeule
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_anschlagsaeule_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.anschlagsaeule
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.anschlagsaeule
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.anschlagsaeule
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.anschlagsaeule
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.bank
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_bank_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
+
+-- Trigger: tr_idents_add_ident on doppik.bank
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.bank
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.bank
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.bank
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.bruecke
 (
@@ -4599,81 +4763,246 @@ CREATE TABLE doppik.bruecke
 	laenge numeric,
 	breite numeric,
 	hoehe numeric,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_bruecke_id PRIMARY KEY (id)
 )
 INHERITS(okstra.bruecke);
 
+-- Trigger: tr_idents_add_ident on doppik.bruecke
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.bruecke
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.bruecke
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.bruecke
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.dalben
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_dalben_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.dalben
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.dalben
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.dalben
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.dalben
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.denkmal
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_denkmale_id PRIMARY KEY (id)
 )
 INHERITS(okstra.teilbauwerk);
 
+-- Trigger: tr_idents_add_ident on doppik.denkmal
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.denkmal
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.denkmal
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.denkmal
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.fahne
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_fahne_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.fahne
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.fahne
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.fahne
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.fahne
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.infoterminal
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_infoterminal_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.infoterminal
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.infoterminal
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.infoterminal
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.infoterminal
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.kunstwerk
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_kunstwerk_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
+
+-- Trigger: tr_idents_add_ident on doppik.kunstwerk
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.kunstwerk
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.kunstwerk
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.kunstwerk
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.schaukasten
 (
 	material character varying,
 	standort character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_schaukasten_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
+
+-- Trigger: tr_idents_add_ident on doppik.schaukasten
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.schaukasten
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.schaukasten
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.schaukasten
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.spielgeraet
 (
 	material character varying,
 	standort character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_spielgeraet_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.spielgeraet
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.spielgeraet
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.spielgeraet
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.spielgeraet
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.tunnel
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_tunnel_id PRIMARY KEY (id)
 )
 INHERITS(okstra.tunnel_trogbauwerk);
 
+-- Trigger: tr_idents_add_ident on doppik.tunnel
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.tunnel
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.tunnel
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.tunnel
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.uhr
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_uhr_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.uhr
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.uhr
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.uhr
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.uhr
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.ampel
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_ampel_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
+
+-- Trigger: tr_idents_add_ident on doppik.ampel
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.ampel
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.ampel
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.ampel
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.fahrradstaender
 (
@@ -4683,25 +5012,70 @@ CREATE TABLE doppik.fahrradstaender
 	laenge_der_anlage numeric,
 	breite_der_anlage numeric,
 	analge_ueberdacht boolean,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_fahrradstaender_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
+
+-- Trigger: tr_idents_add_ident on doppik.fahrradstaender
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.fahrradstaender
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.fahrradstaender
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.fahrradstaender
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.hinweistafel
 (
 	material character varying,
 	standort character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_hinweistafel_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
+
+-- Trigger: tr_idents_add_ident on doppik.hinweistafel
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.hinweistafel
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.hinweistafel
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.hinweistafel
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.parkscheinautomat
 (
 	material character varying,
 	standort character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_parkscheinautomat_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
+
+-- Trigger: tr_idents_add_ident on doppik.parkscheinautomat
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.parkscheinautomat
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.parkscheinautomat
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.parkscheinautomat
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.poller
 (
@@ -4710,18 +5084,48 @@ CREATE TABLE doppik.poller
 	klappbare_art boolean,
 	elektrische_funktion character varying,
 	herausnehmbare_installation boolean,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_poller_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
+
+-- Trigger: tr_idents_add_ident on doppik.poller
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.poller
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.poller
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.poller
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.schranke
 (
 	material character varying,
 	standort character varying,
 	funktion character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_schranke_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
+
+-- Trigger: tr_idents_add_ident on doppik.schranke
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.schranke
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.schranke
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.schranke
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.aufstellvorrichtung_schild
 (
@@ -4736,65 +5140,184 @@ CREATE TABLE doppik.aufstellvorrichtung_schild
 	--durchmesser numeric,
 	--hoehe numeric,
 	--detaillierungsgrad character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_aufstellvorrichtung_schild_id PRIMARY KEY (id)
 )
 INHERITS(okstra.aufstellvorrichtung_schild);
+
+-- Trigger: tr_idents_add_ident on doppik.aufstellvorrichtung_schild
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.aufstellvorrichtung_schild
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.aufstellvorrichtung_schild
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.aufstellvorrichtung_schild
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.schild
 (
 	material character varying,
 	stvo_znr character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_schild_id PRIMARY KEY (id)
 )
 INHERITS(okstra.schild);
+
+-- Trigger: tr_idents_add_ident on doppik.schild
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.schild
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.schild
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.schild
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.wartestelle
 (
 	material character varying,
 	fahrtrichtung character varying,
 	art_der_haltestelle character varying,
-	
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_wartestelle_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.wartestelle
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.wartestelle
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.wartestelle
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.wartestelle
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.brunnen
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_brunnen_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
+
+-- Trigger: tr_idents_add_ident on doppik.brunnen
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.brunnen
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.brunnen
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.brunnen
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.strassenablauf
 (
 	material character varying,
 	art_des_ablaufes character varying,
 	abmasse_abdeckung character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_strassenablauf_id PRIMARY KEY (id)
 )
 INHERITS(okstra.strassenablauf);
+
+-- Trigger: tr_idents_add_ident on doppik.strassenablauf
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.strassenablauf
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.strassenablauf
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.strassenablauf
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.kabelkasten
 (
 	material character varying,
 	zugehoeriges_kabelnetz character varying,
 	standort character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_kabelkasten_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.kabelkasten
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.kabelkasten
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.kabelkasten
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.kabelkasten
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.kabelschacht
 (
- material character varying,
+    material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_kabelschacht_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.kabelschacht
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.kabelschacht
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.kabelschacht
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.kabelschacht
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.abfallbehaelter
 (
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_abfallbehaelter_id PRIMARY KEY (id)
 )
 INHERITS(okstra.abfallentsorgung);
+
+-- Trigger: tr_idents_add_ident on doppik.abfallbehaelter
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.abfallbehaelter
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.abfallbehaelter
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.abfallbehaelter
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.schacht
 (
@@ -4803,32 +5326,92 @@ CREATE TABLE doppik.schacht
 	bauform character varying,
 	abmasse character varying,
 	sonstige_unterhaltungspflichtige character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_schacht_id PRIMARY KEY (id)
 )
 INHERITS(okstra.schacht);
+
+-- Trigger: tr_idents_add_ident on doppik.schacht
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.schacht
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.schacht
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.schacht
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.sonstiges_punktobjekt
 (
 	material character varying,
 	kurzbeschreibung_punktobjekt character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_sonstiges_punktobjekt_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
+
+-- Trigger: tr_idents_add_ident on doppik.sonstiges_punktobjekt
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.sonstiges_punktobjekt
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.sonstiges_punktobjekt
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.sonstiges_punktobjekt
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.durchlass
 (
 	material character varying,
 	pflasterflaeche numeric,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_durchlass_id PRIMARY KEY (id)
 )
 INHERITS(okstra.durchlass);
 
+-- Trigger: tr_idents_add_ident on doppik.durchlass
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.durchlass
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.durchlass
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.durchlass
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.bord_strecke
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_bord_strecke_id PRIMARY KEY (id)
 )
 INHERITS(okstra.strassenausstattung_strecke);
+
+-- Trigger: tr_idents_add_ident on doppik.bord_strecke
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.bord_strecke
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.bord_strecke
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.bord_strecke
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.gelaender
 (
@@ -4836,9 +5419,24 @@ CREATE TABLE doppik.gelaender
 	breite numeric,
 	hoehe numeric,
 	bauart character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_gelaender_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_strecke);
+
+-- Trigger: tr_idents_add_ident on doppik.gelaender
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.gelaender
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.gelaender
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.gelaender
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.schutzplanke
 (
@@ -4846,16 +5444,46 @@ CREATE TABLE doppik.schutzplanke
 	laenge numeric,
 	breite numeric,
 	hoehe numeric,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_schutzplanke_id PRIMARY KEY (id)
 )
 INHERITS(okstra.schutzeinrichtung_aus_stahl);
 
+-- Trigger: tr_idents_add_ident on doppik.schutzplanke
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.schutzplanke
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.schutzplanke
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.schutzplanke
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.leitung
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_leitung_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_strecke);
+
+-- Trigger: tr_idents_add_ident on doppik.leitung
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.leitung
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.leitung
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.leitung
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.mauer
 (
@@ -4863,18 +5491,48 @@ CREATE TABLE doppik.mauer
 	laenge numeric,
 	breite numeric,
 	hoehe numeric,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_mauer_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_strecke);
+
+-- Trigger: tr_idents_add_ident on doppik.mauer
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.mauer
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.mauer
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.mauer
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.rinne
 (
 	material character varying,
 	laenge numeric,
 	breite numeric,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_rinne_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_strecke);
+
+-- Trigger: tr_idents_add_ident on doppik.rinne
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.rinne
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.rinne
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.rinne
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.zaun
 (
@@ -4882,52 +5540,127 @@ CREATE TABLE doppik.zaun
 	breite numeric,
 	hoehe numeric,
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_zaun_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_strecke);
+
+-- Trigger: tr_idents_add_ident on doppik.zaun
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.zaun
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.zaun
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.zaun
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.sonstige_linie
 (
 	material character varying,
 	laenge numeric,
 	breite numeric,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_sonstige_linie_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_strecke);
 
+-- Trigger: tr_idents_add_ident on doppik.sonstige_linie
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.sonstige_linie
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.sonstige_linie
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.sonstige_linie
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.bankett
 (
-	-- streifenart okstra.wlo_streifenart NOT NULL default '301', --aready an attribute in querschnittstreifen, therefore setting the constraint with an alter table
+	-- streifenart okstra.wlo_streifenart NOT NULL default '301', --aready an attribute in querschnittstreifen, therefore setting the CONSTRAINT with an alter table
 	flaeche numeric,
 	deckschicht character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_bankett_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
 ALTER TABLE doppik.bankett ALTER COLUMN streifenart SET NOT NULL;
 ALTER TABLE doppik.bankett ALTER COLUMN streifenart SET DEFAULT '301';
 
+-- Trigger: tr_idents_add_ident on doppik.bankett
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.bankett
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.bankett
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.bankett
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.baumscheibe
 (
-	-- streifenart okstra.wlo_streifenart NOT NULL default '751', --aready an attribute in querschnittstreifen, therefore setting the constraint with an alter table
+	-- streifenart okstra.wlo_streifenart NOT NULL default '751', --aready an attribute in querschnittstreifen, therefore setting the CONSTRAINT with an alter table
 	flaeche numeric,
 	deckschicht character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_baumscheibe_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
 ALTER TABLE doppik.baumscheibe ALTER COLUMN streifenart SET NOT NULL;
 ALTER TABLE doppik.baumscheibe ALTER COLUMN streifenart SET DEFAULT '751';
 
+-- Trigger: tr_idents_add_ident on doppik.baumscheibe
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.baumscheibe
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.baumscheibe
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.baumscheibe
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.gehweg
 (
-	-- streifenart okstra.wlo_streifenart NOT NULL default '210', --aready an attribute in querschnittstreifen, therefore setting the constraint with an alter table
+	-- streifenart okstra.wlo_streifenart NOT NULL default '210', --aready an attribute in querschnittstreifen, therefore setting the CONSTRAINT with an alter table
 	flaeche numeric,
 	deckschicht character varying,
 	bauklasse character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_gehweg_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
 ALTER TABLE doppik.gehweg ALTER COLUMN streifenart SET NOT NULL;
 ALTER TABLE doppik.gehweg ALTER COLUMN streifenart SET DEFAULT '210';
+
+-- Trigger: tr_idents_add_ident on doppik.gehweg
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.gehweg
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.gehweg
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.gehweg
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.gruenflaeche
 (
@@ -4935,9 +5668,24 @@ CREATE TABLE doppik.gruenflaeche
 	deckschicht character varying,
 	ausbauzustand character varying,
 	bauklasse character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_gruenflaeche_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
+
+-- Trigger: tr_idents_add_ident on doppik.gruenflaeche
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.gruenflaeche
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.gruenflaeche
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.gruenflaeche
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.hecke
 (
@@ -4945,9 +5693,24 @@ CREATE TABLE doppik.hecke
 	laenge numeric,
 	breite numeric,
 	hoehe numeric,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_hecke_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
+
+-- Trigger: tr_idents_add_ident on doppik.hecke
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.hecke
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.hecke
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.hecke
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.platz
 (
@@ -4955,9 +5718,24 @@ CREATE TABLE doppik.platz
 	deckschicht character varying,
 	ausbauzustand character varying,
 	bauklasse character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_platz_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
+
+-- Trigger: tr_idents_add_ident on doppik.platz
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.platz
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.platz
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.platz
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.parkplatz
 (
@@ -4965,9 +5743,24 @@ CREATE TABLE doppik.parkplatz
 	deckschicht character varying,
 	ausbauzustand character varying,
 	bauklasse character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_parkplatz_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
+
+-- Trigger: tr_idents_add_ident on doppik.parkplatz
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.parkplatz
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.parkplatz
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.parkplatz
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.parkstreifen
 (
@@ -4975,39 +5768,84 @@ CREATE TABLE doppik.parkstreifen
 	deckschicht character varying,
 	ausbauzustand character varying,
 	bauklasse character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_parkstreifen_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
 
+-- Trigger: tr_idents_add_ident on doppik.parkstreifen
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.parkstreifen
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.parkstreifen
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.parkstreifen
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.rad_und_gehweg
 (
-	-- streifenart okstra.wlo_streifenart NOT NULL default '210', --aready an attribute in querschnittstreifen, therefore setting the constraint with an alter table
+	-- streifenart okstra.wlo_streifenart NOT NULL default '210', --aready an attribute in querschnittstreifen, therefore setting the CONSTRAINT with an alter table
 	flaeche numeric,
 	deckschicht character varying,
 	ausbauzustand character varying,
 	bauklasse character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_rad_und_gehweg_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
 ALTER TABLE doppik.rad_und_gehweg ALTER COLUMN streifenart SET NOT NULL;
 ALTER TABLE doppik.rad_und_gehweg ALTER COLUMN streifenart SET DEFAULT '210';
 
+-- Trigger: tr_idents_add_ident on doppik.rad_und_gehweg
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.rad_und_gehweg
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.rad_und_gehweg
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.rad_und_gehweg
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.radweg
 (
-	-- streifenart okstra.wlo_streifenart NOT NULL default '240',---aready an attribute in querschnittstreifen, therefore setting the constraint with an alter table
+	-- streifenart okstra.wlo_streifenart NOT NULL default '240',---aready an attribute in querschnittstreifen, therefore setting the CONSTRAINT with an alter table
 	flaeche numeric,
 	deckschicht character varying,
 	ausbauzustand character varying,
 	bauklasse character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_radweg_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
 ALTER TABLE doppik.radweg ALTER COLUMN streifenart SET NOT NULL;
 ALTER TABLE doppik.radweg ALTER COLUMN streifenart SET DEFAULT '240';
 
+-- Trigger: tr_idents_add_ident on doppik.radweg
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.radweg
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.radweg
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.radweg
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.fahrbahn
 (
-	-- streifenart okstra.wlo_streifenart NOT NULL default '100',--aready an attribute in querschnittstreifen, therefore setting the constraint with an alter table
+	-- streifenart okstra.wlo_streifenart NOT NULL default '100',--aready an attribute in querschnittstreifen, therefore setting the CONSTRAINT with an alter table
 	flaeche numeric,
 	deckschicht character varying,
 	ausbauzustand character varying,
@@ -5016,24 +5854,54 @@ CREATE TABLE doppik.fahrbahn
 	nach_netzknoten character varying,
 	anzahl_fahrspuren_in_fahrtrichtung integer,
 	anzahl_fahrspuren_in_gegenrichtung integer,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_fahrbahn_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
 ALTER TABLE doppik.fahrbahn ALTER COLUMN streifenart SET NOT NULL;
 ALTER TABLE doppik.fahrbahn ALTER COLUMN streifenart SET DEFAULT '100';
 
+-- Trigger: tr_idents_add_ident on doppik.fahrbahn
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.fahrbahn
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.fahrbahn
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.fahrbahn
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.strassengraben
 (
-	-- streifenart okstra.wlo_streifenart NOT NULL default '520',---aready an attribute in querschnittstreifen, therefore setting the constraint with an alter table
+	-- streifenart okstra.wlo_streifenart NOT NULL default '520',---aready an attribute in querschnittstreifen, therefore setting the CONSTRAINT with an alter table
 	flaeche numeric,
 	deckschicht character varying,
 	ausbauzustand character varying,
 	bauklasse character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_strassengraben_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
 ALTER TABLE doppik.strassengraben ALTER COLUMN streifenart SET NOT NULL;
 ALTER TABLE doppik.strassengraben ALTER COLUMN streifenart SET DEFAULT '520';
+
+-- Trigger: tr_idents_add_ident on doppik.strassengraben
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.strassengraben
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.strassengraben
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.strassengraben
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.ueberfahrt
 (
@@ -5041,26 +5909,56 @@ CREATE TABLE doppik.ueberfahrt
 	deckschicht character varying,
 	ausbauzustand character varying,
 	bauklasse character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_ueberfahrt_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
 
+-- Trigger: tr_idents_add_ident on doppik.ueberfahrt
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.ueberfahrt
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.ueberfahrt
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.ueberfahrt
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.bord_flaeche
 (
-	-- streifenart okstra.wlo_streifenart NOT NULL default '640',--aready an attribute in querschnittstreifen, therefore setting the constraint with an alter table
+	-- streifenart okstra.wlo_streifenart NOT NULL default '640',--aready an attribute in querschnittstreifen, therefore setting the CONSTRAINT with an alter table
 	flaeche numeric,
 	deckschicht character varying,
 	ausbauzustand character varying,
 	bauklasse character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_bord_flaeche_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
 ALTER TABLE doppik.bord_flaeche ALTER COLUMN streifenart SET NOT NULL;
 ALTER TABLE doppik.bord_flaeche ALTER COLUMN streifenart SET DEFAULT '640';
 
+-- Trigger: tr_idents_add_ident on doppik.bord_flaeche
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.bord_flaeche
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.bord_flaeche
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.bord_flaeche
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.dammschuettung
 (
-	-- streifenart okstra.wlo_streifenart NOT NULL default '700', --aready an attribute in querschnittstreifen, therefore setting the constraint with an alter table
+	-- streifenart okstra.wlo_streifenart NOT NULL default '700', --aready an attribute in querschnittstreifen, therefore setting the CONSTRAINT with an alter table
 	standort character varying,
 	material character varying,
 	laenge numeric,
@@ -5068,11 +5966,26 @@ CREATE TABLE doppik.dammschuettung
 	dammkronenbreite numeric,
 	hoehe numeric,
 	zweck character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_dammschuettung_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
 ALTER TABLE doppik.dammschuettung ALTER COLUMN streifenart SET NOT NULL;
 ALTER TABLE doppik.dammschuettung ALTER COLUMN streifenart SET DEFAULT '700';
+
+-- Trigger: tr_idents_add_ident on doppik.dammschuettung
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.dammschuettung
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.dammschuettung
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.dammschuettung
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.spielplatz
 (
@@ -5080,10 +5993,24 @@ CREATE TABLE doppik.spielplatz
 	material character varying,
 	zweck character varying,
 	deckschicht character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_spielplatz_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
 
+-- Trigger: tr_idents_add_ident on doppik.spielplatz
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.spielplatz
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.spielplatz
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.spielplatz
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.sportplatz
 (
@@ -5091,23 +6018,53 @@ CREATE TABLE doppik.sportplatz
 	material character varying,
 	zweck character varying,
 	deckschicht character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_sportplatz_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
 
+-- Trigger: tr_idents_add_ident on doppik.sportplatz
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.sportplatz
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.sportplatz
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.sportplatz
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.strasse
 (
-	-- streifenart okstra.wlo_streifenart NOT NULL default '100',--aready an attribute in querschnittstreifen, therefore setting the constraint with an alter table
+	-- streifenart okstra.wlo_streifenart NOT NULL default '100',--aready an attribute in querschnittstreifen, therefore setting the CONSTRAINT with an alter table
 	standort character varying,
 	material character varying,
 	zweck character varying,
 	bauklasse character varying,
 	deckschicht character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_strasse_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
 ALTER TABLE doppik.strasse ALTER COLUMN streifenart SET NOT NULL;
 ALTER TABLE doppik.strasse ALTER COLUMN streifenart SET DEFAULT '100';
+
+-- Trigger: tr_idents_add_ident on doppik.strasse
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.strasse
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.strasse
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.strasse
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.sonstige_flaeche
 (
@@ -5115,27 +6072,72 @@ CREATE TABLE doppik.sonstige_flaeche
 	deckschicht character varying,
 	ausbauzustand character varying,
 	bauklasse character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_sonstige_flaeche_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
 
+-- Trigger: tr_idents_add_ident on doppik.sonstige_flaeche
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.sonstige_flaeche
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.sonstige_flaeche
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.sonstige_flaeche
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.ueberwachungsanlage
 (
- material character varying,
- standort character varying,
+    material character varying,
+    standort character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_ueberwachungsanlage_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.ueberwachungsanlage
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.ueberwachungsanlage
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.ueberwachungsanlage
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.ueberwachungsanlage
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.ueberweg
 (
- flaeche numeric,
- deckschicht character varying,
- ausbauzustand character varying,
- bauklasse character varying,
- CONSTRAINT pk_ueberweg_id PRIMARY KEY (id)
+    flaeche numeric,
+    deckschicht character varying,
+    ausbauzustand character varying,
+    bauklasse character varying,
+    ident character(6) NOT NULL,
+	CONSTRAINT pk_ueberweg_id PRIMARY KEY (id)
 )
 INHERITS (okstra.querschnittstreifen);
+
+-- Trigger: tr_idents_add_ident on doppik.ueberweg
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.ueberweg
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.ueberweg
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.ueberweg
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.verkehrszeichenbruecke
 (
@@ -5144,9 +6146,24 @@ CREATE TABLE doppik.verkehrszeichenbruecke
 	standort character varying,
 	durchfahrtshohe numeric,
 	fahrtrichtung character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_verkehrszeichenbruecke_id PRIMARY KEY (id)
 )
 INHERITS (okstra.verkehrszeichenbruecke);
+
+-- Trigger: tr_idents_add_ident on doppik.verkehrszeichenbruecke
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.verkehrszeichenbruecke
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.verkehrszeichenbruecke
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.verkehrszeichenbruecke
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.vorwegweiser
 (
@@ -5155,9 +6172,24 @@ CREATE TABLE doppik.vorwegweiser
 	standort character varying,
 	laenge_schild numeric,
 	fahrtrichtung character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_vorwegweiser_id PRIMARY KEY (id)
 )
 INHERITS (okstra.verkehrszeichenbruecke);
+
+-- Trigger: tr_idents_add_ident on doppik.vorwegweiser
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.vorwegweiser
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.vorwegweiser
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.vorwegweiser
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.ueberdachung_fahrradstaender
 (
@@ -5165,9 +6197,24 @@ CREATE TABLE doppik.ueberdachung_fahrradstaender
 	standort character varying,
 	laenge numeric,
 	fahrtrichtung character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_ueberdachung_fahrradstaender_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
+
+-- Trigger: tr_idents_add_ident on doppik.ueberdachung_fahrradstaender
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.ueberdachung_fahrradstaender
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.ueberdachung_fahrradstaender
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.ueberdachung_fahrradstaender
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.stuetzbauwerk
 (
@@ -5177,9 +6224,24 @@ CREATE TABLE doppik.stuetzbauwerk
 	breite numeric,
 	hoehe numeric,
 	sichtbare_bauwerksflaeche character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_stuetzbauwerk_id PRIMARY KEY (id)
 )
 INHERITS(okstra.stuetzbauwerk);
+
+-- Trigger: tr_idents_add_ident on doppik.stuetzbauwerk
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.stuetzbauwerk
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.stuetzbauwerk
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.stuetzbauwerk
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.laermschutzbauwerk
 (
@@ -5189,53 +6251,158 @@ CREATE TABLE doppik.laermschutzbauwerk
 	breite numeric,
 	hoehe numeric,
 	sichtbare_bauwerksflaeche character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_laermschutzbauwerk_id PRIMARY KEY (id)
 )
 INHERITS(okstra.laermschutzbauwerk);
 
+-- Trigger: tr_idents_add_ident on doppik.laermschutzbauwerk
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.laermschutzbauwerk
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.laermschutzbauwerk
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.laermschutzbauwerk
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.hydrant
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_hydrant_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
+
+-- Trigger: tr_idents_add_ident on doppik.hydrant
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.hydrant
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.hydrant
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.hydrant
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.loeschwasserentnahmestelle_saugstutzen
 (
 	material character varying,
 	dimension_saugstutzen character varying,
 	gewaesser character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_loeschwasserentnahmestelle_saugstutzen_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.loeschwasserentnahmestelle_saugstutzen
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.loeschwasserentnahmestelle_saugstutzen
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.loeschwasserentnahmestelle_saugstutzen
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.loeschwasserentnahmestelle_saugstutzen
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.auslauf
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_auslauf_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.auslauf
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.auslauf
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.auslauf
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.auslauf
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.dueker
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_dueker_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_strecke);
 
+-- Trigger: tr_idents_add_ident on doppik.dueker
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.dueker
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.dueker
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.dueker
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.einlauf
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_einlauf_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.einlauf
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.einlauf
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.einlauf
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.einlauf
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.klaeranlage
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_klaeranlage_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
+
+-- Trigger: tr_idents_add_ident on doppik.klaeranlage
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.klaeranlage
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.klaeranlage
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.klaeranlage
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
 
 CREATE TABLE doppik.leitplanke
 (
@@ -5243,76 +6410,241 @@ CREATE TABLE doppik.leitplanke
 	breite numeric,
 	hoehe numeric,
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_leitplanke_id PRIMARY KEY (id)
 )
 INHERITS(okstra.schutzeinrichtung_aus_stahl);
 
+-- Trigger: tr_idents_add_ident on doppik.leitplanke
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.leitplanke
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.leitplanke
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.leitplanke
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.markierung
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_markierung_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.markierung
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.markierung
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.markierung
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.markierung
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.mast
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_mast_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.mast
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.mast
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.mast
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.mast
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.medien
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_medien_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.medien
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.medien
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.medien
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.medien
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.papierkorb
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_papierkorb_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.papierkorb
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.papierkorb
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.papierkorb
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.papierkorb
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.spundwand
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_spundwand_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.spundwand
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.spundwand
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.spundwand
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.spundwand
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.telefon
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_telefon_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.telefon
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.telefon
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.telefon
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.telefon
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.tor
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_tor_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.tor
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.tor
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.tor
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.tor
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.turm
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_turm_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.turm
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.turm
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.turm
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.turm
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.haltestelle
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_haltestelle_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
 
+-- Trigger: tr_idents_add_ident on doppik.haltestelle
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.haltestelle
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.haltestelle
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.haltestelle
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
+
 CREATE TABLE doppik.wehr
 (
 	material character varying,
+	ident character(6) NOT NULL,
 	CONSTRAINT pk_wehr_id PRIMARY KEY (id)
 )
 INHERITS (okstra.strassenausstattung_punkt);
+
+-- Trigger: tr_idents_add_ident on doppik.wehr
+CREATE TRIGGER tr_idents_add_ident
+    BEFORE INSERT
+    ON doppik.wehr
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_add_ident();
+
+-- Trigger: tr_idents_remove_ident on doppik.wehr
+CREATE TRIGGER tr_idents_remove_ident
+    AFTER DELETE
+    ON doppik.wehr
+    FOR EACH ROW
+    EXECUTE PROCEDURE base.idents_remove_ident();
