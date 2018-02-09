@@ -16,7 +16,7 @@ Codeliste
 ---------
 
 .. sqltable::
-   :class: codeliste-strasse
+   :class: codeliste
 
    SELECT
     k.bezeichnung AS "Kreis",
