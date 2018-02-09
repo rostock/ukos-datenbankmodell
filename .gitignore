@@ -1,9 +1,11 @@
 # kompilierte Dateien und Cache
+codelisten/build
 __pycache__/
 *.py[cod]
 
 # private Konfiguration
 alembic.ini
+codelisten/source/conf.py
 
 # produktive Skripte
 *.sh

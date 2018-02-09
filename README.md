@@ -2,6 +2,8 @@
 
 Datenbankmodell für *UkoS*, das *Umsetzungsprojekt kommunale Straßendaten Mecklenburg-Vorpommern*
 
+Die aktuellen Codelisten werden gehostet bei der Hanse- und Universitätsstadt Rostock unter https://geo.sv.rostock.de/ukos-codelisten. Bei Ergänzungs- und/oder Änderungswünschen zu den Codelisten nutzen Sie bitte die [Issues](https://github.com/rostock/ukos-datenbankmodell/issues) dieses Repositories.
+
 ## Voraussetzungen
 
 *   [*Python*](https://www.python.org)
@@ -33,6 +35,11 @@ Datenbankmodell für *UkoS*, das *Umsetzungsprojekt kommunale Straßendaten Meck
         cp /usr/local/ukos-datenbankmodell/ukos-datenbankmodell/alembic.template /usr/local/ukos-datenbankmodell/ukos-datenbankmodell/alembic.ini
 
 1.  Konfigurationsdatei bearbeiten (dabei vor allem den Datenbankverbindungsparameter `sqlalchemy.url`)
+1.  Konfigurationsdatei für die mit [*Sphinx*](http://www.sphinx-doc.org) erzeugten Codelisten erstellen auf Basis der entsprechenden Vorlage:
+
+        cp /usr/local/ukos-datenbankmodell/ukos-datenbankmodell/codelisten/source/conf.template /usr/local/ukos-datenbankmodell/ukos-datenbankmodell/codelisten/source/conf.py
+
+1.  Konfigurationsdatei bearbeiten (dabei vor allem den Datenbankverbindungsparameter `sqltable_connection_string`)
 
 ## Initialisierung
 
@@ -44,3 +51,19 @@ Datenbankmodell für *UkoS*, das *Umsetzungsprojekt kommunale Straßendaten Meck
 1.  aktuelle Datenbankmodell-Revision auf Datenbank anwenden:
 
         alembic upgrade head
+
+1.  Codelisten-Webseiten bauen:
+
+        cd codelisten
+        rm -r build/* && make html
+
+## Deployment der Codelisten (am Beispiel des [*Apache HTTP Servers*](https://httpd.apache.org))
+
+1.  Konfigurationsdatei des *Apache HTTP Servers* öffnen und in etwa folgenden Inhalt einfügen:
+    
+        Alias /ukos-codelisten /usr/local/ukos-datenbankmodell/ukos-datenbankmodell/codelisten/build/html
+
+        <Directory /usr/local/ukos-datenbankmodell/ukos-datenbankmodell/codelisten/build/html>
+            Order deny,allow
+            Require all granted
+        </Directory>
