@@ -1,4 +1,4 @@
 alembic
 psycopg2
 Sphinx
-pip install sphinxcontrib-sqltable
+sphinxcontrib-sqltable
