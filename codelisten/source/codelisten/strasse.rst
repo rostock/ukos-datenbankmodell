@@ -8,7 +8,7 @@ Straße
 Datenbanktabelle
 ----------------
 
-strassennetz.strasse
+ukos_okstra.strasse
 
 .. _strasse_codeliste:
 
@@ -24,7 +24,7 @@ Codeliste
     g.bezeichnung AS "Gemeinde",
     s.schluessel AS "Straßenschlüssel",
     s.bezeichnung AS "Straße"
-     FROM strassennetz.strasse s, kataster.kreis k, kataster.gemeindeverband gv, kataster.gemeinde g
+     FROM ukos_okstra.strasse s, ukos_kataster.kreis k, ukos_kataster.gemeindeverband gv, ukos_kataster.gemeinde g
       WHERE s.id != '00000000-0000-0000-0000-000000000000'
       AND g.id != '00000000-0000-0000-0000-000000000000'
       AND gv.id != '00000000-0000-0000-0000-000000000000'

@@ -7,16 +7,16 @@ STARTZEIT=$(date +%s)
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 
 # Kreise aus WFS in temporäre Datenbanktabelle einlesen
-ogr2ogr -f PostgreSQL PG:"host=host dbname=database user=user password=password" -a_srs EPSG:25833 -nlt CONVERT_TO_LINEAR -skipfailures -nln temp_kreis -lco SCHEMA=kataster WFS:https://geo.sv.rostock.de/geodienste/kreise/wfs hro.kreise.kreise 2> /dev/null
+ogr2ogr -f PostgreSQL PG:"host=host dbname=database user=user password=password" -a_srs EPSG:25833 -nlt CONVERT_TO_LINEAR -skipfailures -nln temp_kreis -lco SCHEMA=ukos_kataster WFS:https://geo.sv.rostock.de/geodienste/kreise/wfs hro.kreise.kreise 2> /dev/null
 
 # Gemeindeverbände aus WFS in temporäre Datenbanktabelle einlesen
-ogr2ogr -f PostgreSQL PG:"host=host dbname=database user=user password=password" -a_srs EPSG:25833 -nlt CONVERT_TO_LINEAR -skipfailures -nln temp_gemeindeverband -lco SCHEMA=kataster WFS:https://geo.sv.rostock.de/geodienste/gemeindeverbaende/wfs hro.gemeindeverbaende.gemeindeverbaende 2> /dev/null
+ogr2ogr -f PostgreSQL PG:"host=host dbname=database user=user password=password" -a_srs EPSG:25833 -nlt CONVERT_TO_LINEAR -skipfailures -nln temp_gemeindeverband -lco SCHEMA=ukos_kataster WFS:https://geo.sv.rostock.de/geodienste/gemeindeverbaende/wfs hro.gemeindeverbaende.gemeindeverbaende 2> /dev/null
 
 # Gemeinden aus WFS in temporäre Datenbanktabelle einlesen
-ogr2ogr -f PostgreSQL PG:"host=host dbname=database user=user password=password" -a_srs EPSG:25833 -nlt CONVERT_TO_LINEAR -skipfailures -nln temp_gemeinde -lco SCHEMA=kataster WFS:https://geo.sv.rostock.de/geodienste/gemeinden/wfs hro.gemeinden.gemeinden 2> /dev/null
+ogr2ogr -f PostgreSQL PG:"host=host dbname=database user=user password=password" -a_srs EPSG:25833 -nlt CONVERT_TO_LINEAR -skipfailures -nln temp_gemeinde -lco SCHEMA=ukos_kataster WFS:https://geo.sv.rostock.de/geodienste/gemeinden/wfs hro.gemeinden.gemeinden 2> /dev/null
 
 # Gemeindeteile aus WFS in temporäre Datenbanktabelle einlesen
-ogr2ogr -f PostgreSQL PG:"host=host dbname=database user=user password=password" -a_srs EPSG:25833 -nlt CONVERT_TO_LINEAR -skipfailures -nln temp_gemeindeteil -lco SCHEMA=kataster WFS:https://geo.sv.rostock.de/geodienste/gemeindeteile/wfs hro.gemeindeteile.gemeindeteile 2> /dev/null
+ogr2ogr -f PostgreSQL PG:"host=host dbname=database user=user password=password" -a_srs EPSG:25833 -nlt CONVERT_TO_LINEAR -skipfailures -nln temp_gemeindeteil -lco SCHEMA=ukos_kataster WFS:https://geo.sv.rostock.de/geodienste/gemeindeteile/wfs hro.gemeindeteile.gemeindeteile 2> /dev/null
 
 # Inhalte aus temporären in permanente Datenbanktabellen überführen
 export PGPASSWORD="password"

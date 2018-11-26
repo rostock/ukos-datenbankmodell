@@ -7,7 +7,7 @@ STARTZEIT=$(date +%s)
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 
 # Straßen aus CSV in temporäre Datenbanktabelle einlesen
-ogr2ogr -f PostgreSQL PG:"host=host dbname=database user=user password=password" -skipfailures -nln temp_strasse -lco SCHEMA=strassennetz https://geo.sv.rostock.de/download/listen/strassen_mv.csv 2> /dev/null
+ogr2ogr -f PostgreSQL PG:"host=host dbname=database user=user password=password" -skipfailures -nln temp_strasse -lco SCHEMA=ukos_okstra https://geo.sv.rostock.de/download/listen/strassen_mv.csv 2> /dev/null
 
 # Inhalte aus temporären in permanente Datenbanktabellen überführen
 export PGPASSWORD="password"
