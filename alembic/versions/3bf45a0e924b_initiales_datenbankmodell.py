@@ -1,8 +1,8 @@
-"""Datenbankmodell-Revision 0006m
+"""initiales Datenbankmodell
 
-Revision ID: c1902d23bef8
-Revises: 27bfc72137cf
-Create Date: 2018-01-03 09:38:14.281699
+Revision ID: 3bf45a0e924b
+Revises: 
+Create Date: 2018-11-26 14:39:27.326568
 
 """
 from alembic import op
@@ -12,14 +12,14 @@ import os
 
 
 # revision identifiers, used by Alembic.
-revision = 'c1902d23bef8'
-down_revision = '27bfc72137cf'
+revision = '3bf45a0e924b'
+down_revision = None
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
-    sql_file = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..', 'datenbankmodell/revision-0006m.sql'))
+    sql_file = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..', 'datenbankmodell/initial.sql'))
     sql = io.open(sql_file, mode = 'r', encoding = 'utf-8').read()
     connection = op.get_bind()
     connection.execute(sa.text(sql))
