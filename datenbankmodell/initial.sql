@@ -8,43 +8,43 @@ CREATE OR REPLACE FUNCTION public.gdi_lineinterpolatepointwithoffset(
     abscissa numeric)
   RETURNS geometry AS
 $BODY$
-		DECLARE
-			point_geom GEOMETRY;
-			rec RECORD;
-			sql text;
-		BEGIN
-			EXECUTE '
-				SELECT
-					ST_LineInterpolatePoint(
-						offset_section,
-						(rs - ra) / (rb - ra)
-					)
-				FROM (
-					SELECT
-						CASE
-							WHEN $2 < 0 THEN ST_OffsetCurve(ST_MakeLine((p).geom, lead((p).geom) over ()), -1 * $2)
-							WHEN $2 > 0 THEN ST_Reverse(ST_OffsetCurve(ST_MakeLine((p).geom, lead((p).geom) over ()), -1 * $2))
-							ELSE ST_MakeLine((p).geom, lead((p).geom) over ())
-						END offset_section,
-						CASE WHEN $3 = 0 THEN 0 ELSE $3 / ST_Length(l) END rs,
-						ST_LineLocatePoint(l, (p).geom) ra,
-						ST_LineLocatePoint(l, lead((p).geom) over ()) rb
-					FROM
-						(
-							SELECT
-								ST_DumpPoints($1) p,
-								$1 l
-						) line_tab
-					) ratio_tab
-				WHERE
-					rs >= ra AND rs <= rb
-			'
-			USING line_geom, abscissa, ordinate
-			INTO point_geom;
+    DECLARE
+      point_geom GEOMETRY;
+      rec RECORD;
+      sql text;
+    BEGIN
+      EXECUTE '
+        SELECT
+          ST_LineInterpolatePoint(
+            offset_section,
+            (rs - ra) / (rb - ra)
+          )
+        FROM (
+          SELECT
+            CASE
+              WHEN $2 < 0 THEN ST_OffsetCurve(ST_MakeLine((p).geom, lead((p).geom) over ()), -1 * $2)
+              WHEN $2 > 0 THEN ST_Reverse(ST_OffsetCurve(ST_MakeLine((p).geom, lead((p).geom) over ()), -1 * $2))
+              ELSE ST_MakeLine((p).geom, lead((p).geom) over ())
+            END offset_section,
+            CASE WHEN $3 = 0 THEN 0 ELSE $3 / ST_Length(l) END rs,
+            ST_LineLocatePoint(l, (p).geom) ra,
+            ST_LineLocatePoint(l, lead((p).geom) over ()) rb
+          FROM
+            (
+              SELECT
+                ST_DumpPoints($1) p,
+                $1 l
+            ) line_tab
+          ) ratio_tab
+        WHERE
+          rs >= ra AND rs <= rb
+      '
+      USING line_geom, abscissa, ordinate
+      INTO point_geom;
 
-			RETURN point_geom;
-		END;
-	$BODY$
+      RETURN point_geom;
+    END;
+  $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 COMMENT ON FUNCTION public.gdi_lineinterpolatepointwithoffset(geometry, numeric, numeric) IS 'Calculate the point on or beside the line with abscissa as positive (right) or negative (left) perpendicular distance from the line_geom in the direction of the line and ordinate as the length along the line from start to the plumb foot point. Return NULL if ordinate is negative or longer than linestrings length.';
@@ -54,24 +54,24 @@ CREATE OR REPLACE FUNCTION public.gdi_linelocatepointwithoffset(
     point_geom geometry)
   RETURNS record AS
 $BODY$
-		DECLARE
-			rec RECORD;
-		BEGIN
-			EXECUTE '
-				SELECT
-					ST_LineInterpolatePoint($1, ST_LineLocatePoint($1, $2)) AS foot_point,
-					(ST_LineLocatePoint($1, $2) * ST_Length($1))::NUMERIC AS ordinate,
-					(CASE WHEN ST_Distance(ST_OffsetCurve($1, ST_Distance($1, $2)), $2) > ST_Distance($1, $2)
-					THEN 1
-					ELSE -1
-					END * ST_Distance($1, $2))::NUMERIC AS abscissa
-			'
-			USING line_geom, point_geom
-			INTO rec;
+    DECLARE
+      rec RECORD;
+    BEGIN
+      EXECUTE '
+        SELECT
+          ST_LineInterpolatePoint($1, ST_LineLocatePoint($1, $2)) AS foot_point,
+          (ST_LineLocatePoint($1, $2) * ST_Length($1))::NUMERIC AS ordinate,
+          (CASE WHEN ST_Distance(ST_OffsetCurve($1, ST_Distance($1, $2)), $2) > ST_Distance($1, $2)
+          THEN 1
+          ELSE -1
+          END * ST_Distance($1, $2))::NUMERIC AS abscissa
+      '
+      USING line_geom, point_geom
+      INTO rec;
 
-			RETURN rec;
-		END;
-	$BODY$
+      RETURN rec;
+    END;
+  $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 COMMENT ON FUNCTION public.gdi_linelocatepointwithoffset(geometry, geometry) IS 'Calculate the abscissa as positive (right) or negative (left) perpendicular distance from the given line_geom in the direction of the line and ordinate as the length along the line from start to the plumb foot point of given point geometry.';
@@ -129,7 +129,7 @@ CREATE SCHEMA ukos_okstra;
 -- Name: SCHEMA ukos_okstra; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON SCHEMA ukos_okstra IS 'This schema contains relevant OKSTRA	features and codelists. All tables can be considered abstract and realized through inheritance in ukos_doppik. They likewise contain all relevant information to create okstra-gml.';
+COMMENT ON SCHEMA ukos_okstra IS 'This schema contains relevant OKSTRA  features and codelists. All tables can be considered abstract and realized through inheritance in ukos_doppik. They likewise contain all relevant information to create okstra-gml.';
 
 
 SET search_path = ukos_base, pg_catalog;
@@ -141,50 +141,50 @@ SET search_path = ukos_base, pg_catalog;
 CREATE FUNCTION first_snap_to_grid() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			rec RECORD;
-			accuracy NUMERIC;
+    DECLARE
+      rec RECORD;
+      accuracy NUMERIC;
       table_schema CHARACTER VARYING = TG_TABLE_SCHEMA;
       table_name CHARACTER VARYING = TG_TABLE_NAME;
-		BEGIN
+    BEGIN
       RAISE NOTICE 'SnapToGrid in table: %.% ', table_schema, table_name;
-			EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Koordinatengenauigkeit' INTO accuracy;
-			IF accuracy IS NOT NULL THEN
-				-- Runde Koordinaten auf die Genauigkeit accuracy nach dem Komma
-				FOR rec IN EXECUTE '
+      EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Koordinatengenauigkeit' INTO accuracy;
+      IF accuracy IS NOT NULL THEN
+        -- Runde Koordinaten auf die Genauigkeit accuracy nach dem Komma
+        FOR rec IN EXECUTE '
           SELECT
             g.f_geometry_column
           FROM
-						geometry_columns g
-						LEFT JOIN (
-							SELECT
-								n.nspname AS table_schema,
-								c.relname as table_name,
-								a.attname as column_name
-							FROM pg_class c
-								JOIN pg_inherits i on c.oid = i.inhrelid
-								JOIN pg_attribute a on i.inhparent = a.attrelid
-								JOIN pg_namespace n ON n.oid = c.relnamespace
-							WHERE
-								a.attnum > 0
-						) inherited ON g.f_table_schema = inherited.table_schema AND g.f_table_name = inherited.table_name AND g.f_geometry_column = inherited.column_name
-					WHERE
-						g.f_table_schema = ' || quote_literal(table_schema) || ' AND
-						g.f_table_name = ' || quote_literal(table_name) || ' AND
-						inherited.column_name IS NULL
-					ORDER BY
-						g.f_table_schema,
-						g.f_geometry_column
-				'
-				LOOP
-					IF (hstore(NEW)->rec.f_geometry_column) IS NOT NULL THEN
-						NEW = populate_record(NEW, (rec.f_geometry_column || ' => ' || ST_SnapToGrid(hstore(NEW)->rec.f_geometry_column, accuracy)::text)::hstore);
-					END IF;
-				END LOOP;
-			END IF;
-			RETURN NEW;
-		END;
-	$_$;
+            geometry_columns g
+            LEFT JOIN (
+              SELECT
+                n.nspname AS table_schema,
+                c.relname as table_name,
+                a.attname as column_name
+              FROM pg_class c
+                JOIN pg_inherits i on c.oid = i.inhrelid
+                JOIN pg_attribute a on i.inhparent = a.attrelid
+                JOIN pg_namespace n ON n.oid = c.relnamespace
+              WHERE
+                a.attnum > 0
+            ) inherited ON g.f_table_schema = inherited.table_schema AND g.f_table_name = inherited.table_name AND g.f_geometry_column = inherited.column_name
+          WHERE
+            g.f_table_schema = ' || quote_literal(table_schema) || ' AND
+            g.f_table_name = ' || quote_literal(table_name) || ' AND
+            inherited.column_name IS NULL
+          ORDER BY
+            g.f_table_schema,
+            g.f_geometry_column
+        '
+        LOOP
+          IF (hstore(NEW)->rec.f_geometry_column) IS NOT NULL THEN
+            NEW = populate_record(NEW, (rec.f_geometry_column || ' => ' || ST_SnapToGrid(hstore(NEW)->rec.f_geometry_column, accuracy)::text)::hstore);
+          END IF;
+        END LOOP;
+      END IF;
+      RETURN NEW;
+    END;
+  $_$;
 
 
 --
@@ -194,25 +194,25 @@ CREATE FUNCTION first_snap_to_grid() RETURNS trigger
 CREATE FUNCTION idents_add_ident() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-		DECLARE
-			chars char[];
-		BEGIN
-				IF (NEW.ident IS NULL OR NEW.ident = '') THEN
-						chars := ARRAY['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
-						LOOP
-								NEW.ident = (SELECT array_to_string(ARRAY(SELECT chars[(1 + round(random() * 62))::integer] FROM generate_series(1, 6)), ''));
-								EXIT WHEN NEW.ident NOT IN (SELECT ident FROM ukos_base.idents);
-						END LOOP;
-						INSERT INTO ukos_base.idents (ident, name_schema, name_tabelle) VALUES (NEW.ident, TG_TABLE_SCHEMA, TG_TABLE_NAME);
-						RETURN NEW;
-				ELSIF (NEW.ident NOT IN (SELECT ident FROM ukos_base.idents)) THEN
-						INSERT INTO ukos_base.idents (ident, name_schema, name_tabelle) VALUES (NEW.ident, TG_TABLE_SCHEMA, TG_TABLE_NAME);
-						RETURN NEW;
-				ELSIF (NEW.gueltig_bis != '2100-01-01 02:00:00+01'::timestamp with time zone) THEN
-						RAISE EXCEPTION 'Es wird versucht ein lebendes Objekt mit bereits vorhandenem Attribut ident zu erzeugen.';
-				END IF;
-		END
-	$$;
+    DECLARE
+      chars char[];
+    BEGIN
+        IF (NEW.ident IS NULL OR NEW.ident = '') THEN
+            chars := ARRAY['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+            LOOP
+                NEW.ident = (SELECT array_to_string(ARRAY(SELECT chars[(1 + round(random() * 62))::integer] FROM generate_series(1, 6)), ''));
+                EXIT WHEN NEW.ident NOT IN (SELECT ident FROM ukos_base.idents);
+            END LOOP;
+            INSERT INTO ukos_base.idents (ident, name_schema, name_tabelle) VALUES (NEW.ident, TG_TABLE_SCHEMA, TG_TABLE_NAME);
+            RETURN NEW;
+        ELSIF (NEW.ident NOT IN (SELECT ident FROM ukos_base.idents)) THEN
+            INSERT INTO ukos_base.idents (ident, name_schema, name_tabelle) VALUES (NEW.ident, TG_TABLE_SCHEMA, TG_TABLE_NAME);
+            RETURN NEW;
+        ELSIF (NEW.gueltig_bis != '2100-01-01 02:00:00+01'::timestamp with time zone) THEN
+            RAISE EXCEPTION 'Es wird versucht ein lebendes Objekt mit bereits vorhandenem Attribut ident zu erzeugen.';
+        END IF;
+    END
+  $$;
 
 
 --
@@ -222,13 +222,13 @@ CREATE FUNCTION idents_add_ident() RETURNS trigger
 CREATE FUNCTION idents_remove_ident() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-		BEGIN
-				IF (OLD.ident IN (SELECT ident FROM ukos_base.idents)) THEN
-						DELETE FROM ukos_base.idents WHERE ident = OLD.ident;
-				END IF;
-				RETURN NEW;
-		END
-	$$;
+    BEGIN
+        IF (OLD.ident IN (SELECT ident FROM ukos_base.idents)) THEN
+            DELETE FROM ukos_base.idents WHERE ident = OLD.ident;
+        END IF;
+        RETURN NEW;
+    END
+  $$;
 
 
 SET search_path = ukos_doppik, pg_catalog;
@@ -240,18 +240,18 @@ SET search_path = ukos_doppik, pg_catalog;
 CREATE FUNCTION calc_flaecheninhalt() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-		DECLARE
+    DECLARE
 
-		BEGIN
-			--------------------------------------------------------------------------------------------------------
-			-- Wenn die Verkehrsflaeche eine Fläche hat,
-			IF NEW.flaeche IS NOT NULL THEN
-				NEW.flaecheninhalt = ST_Area(NEW.flaeche);
-			END IF;
+    BEGIN
+      --------------------------------------------------------------------------------------------------------
+      -- Wenn die Verkehrsflaeche eine Fläche hat,
+      IF NEW.flaeche IS NOT NULL THEN
+        NEW.flaecheninhalt = ST_Area(NEW.flaeche);
+      END IF;
 
-			RETURN NEW;
-		END;
-	$$;
+      RETURN NEW;
+    END;
+  $$;
 
 
 SET search_path = ukos_okstra, pg_catalog;
@@ -263,27 +263,27 @@ SET search_path = ukos_okstra, pg_catalog;
 CREATE FUNCTION add_querschnittstreifen() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			qs_id CHARACTER VARYING;
-		BEGIN
-			--------------------------------------------------------------------------------------------------------
-			-- Wenn die Verkehrsflaeche eine Fläche hat,
-			IF NEW.flaeche IS NOT NULL THEN
-				-- erzeuge daraus einen Querschnittstreifen
-				EXECUTE '
-					INSERT INTO ukos_okstra.querschnittstreifen (angelegt_von, flaechengeometrie, angelegt_am, erfassungsdatum, in_verkehrsflaeche) VALUES
-					($1, $2, $3, $4, $5)
-					RETURNING id
-				'
-				USING NEW.angelegt_von, ST_GeometryN(NEW.flaeche, 1) , NEW.angelegt_am, NEW.angelegt_am, NEW.id
-				INTO qs_id;
-			ELSE
-				RAISE NOTICE 'Die Verkehrsfläche hat noch keine Flächengeometrie. Digitalisieren Sie eine Fläche oder erfassen Sie Querschnitttrapeze mit Zuordnung zu einem Strassenelement!';
-			END IF;
+    DECLARE
+      qs_id CHARACTER VARYING;
+    BEGIN
+      --------------------------------------------------------------------------------------------------------
+      -- Wenn die Verkehrsflaeche eine Fläche hat,
+      IF NEW.flaeche IS NOT NULL THEN
+        -- erzeuge daraus einen Querschnittstreifen
+        EXECUTE '
+          INSERT INTO ukos_okstra.querschnittstreifen (angelegt_von, flaechengeometrie, angelegt_am, erfassungsdatum, in_verkehrsflaeche) VALUES
+          ($1, $2, $3, $4, $5)
+          RETURNING id
+        '
+        USING NEW.angelegt_von, ST_GeometryN(NEW.flaeche, 1) , NEW.angelegt_am, NEW.angelegt_am, NEW.id
+        INTO qs_id;
+      ELSE
+        RAISE NOTICE 'Die Verkehrsfläche hat noch keine Flächengeometrie. Digitalisieren Sie eine Fläche oder erfassen Sie Querschnitttrapeze mit Zuordnung zu einem Strassenelement!';
+      END IF;
 
-			RETURN NEW;
-		END;
-	$_$;
+      RETURN NEW;
+    END;
+  $_$;
 
 
 --
@@ -293,275 +293,275 @@ CREATE FUNCTION add_querschnittstreifen() RETURNS trigger
 CREATE FUNCTION add_teilelement_von_flaeche() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			schnitt RECORD;
-			se RECORD;
-			se_id CHARACTER VARYING;
-			sep RECORD;
-			num_sep INTEGER;
-			station NUMERIC;
-			geschnitten BOOLEAN = false;
-			te_id CHARACTER VARYING;
-			beginnt_bei_strassenelempkt CHARACTER VARYING;
-			endet_bei_strassenelempkt CHARACTER VARYING;
-			sql text;
-			strassenelementsuchabstand integer;
-			aenderungszeit TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
-		BEGIN
+    DECLARE
+      schnitt RECORD;
+      se RECORD;
+      se_id CHARACTER VARYING;
+      sep RECORD;
+      num_sep INTEGER;
+      station NUMERIC;
+      geschnitten BOOLEAN = false;
+      te_id CHARACTER VARYING;
+      beginnt_bei_strassenelempkt CHARACTER VARYING;
+      endet_bei_strassenelempkt CHARACTER VARYING;
+      sql text;
+      strassenelementsuchabstand integer;
+      aenderungszeit TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
+    BEGIN
 
-		-- Initialisieren
-		EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Strassenelementsuchabstand' INTO strassenelementsuchabstand;
+    -- Initialisieren
+    EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Strassenelementsuchabstand' INTO strassenelementsuchabstand;
 
-			--------------------------------------------------------------------------------------------------------
-			IF NEW.flaechengeometrie IS NULL THEN
-				-- Es ist keine Flächengeometrie übergeben worden
-				-- das ist erlaubt, da diese nachträglich über den view querschnitttrapeze eingegeben werden kann
-				-- in dem Fall muss hier aber die Strassenelement_id übergeben werden, damit man später weiss
-				-- mit welchem Strassenelement die Trapeze gerechnet werden sollen.
-				-- setze die Strassenelement_id
-				se_id = NEW.id_strassenelement;
-			ELSE
-				-- Es ist eine Flaechengeometrie übergeben worden, die sich in 2 oder keinem Punkt schneidet
-				-- verschneide die flaechengeometrie mit Strassenelementen und finde Strassenelementpunkt am Beginn und Ende
-				FOR schnitt IN EXECUTE '
-					SELECT
-						id auf_strassenelement,
-						(p).geom punktgeometrie
-					FROM
-						(
-							SELECT
-								id,
-								ST_DumpPoints(ST_Intersection(liniengeometrie, ST_ExteriorRing($1))) p
-							FROM
-								ukos_okstra.strassenelement
-							WHERE
-								gueltig_bis > $2 AND
-								ST_Intersects(liniengeometrie, ST_ExteriorRing($1))
-						)	ptab
-					'
-				USING NEW.flaechengeometrie, aenderungszeit
-				LOOP
-					EXECUTE '
-						INSERT INTO ukos_okstra.strassenelementpunkt (punktgeometrie, auf_strassenelement) VALUES
-						($1, $2)
-						RETURNING id, station
-					'
-					USING schnitt.punktgeometrie, schnitt.auf_strassenelement
-					INTO sep;
-					IF station IS NULL THEN
-						-- Beim ersten Schnittpunkt merke die Station und id
-						station = sep.station;
-						beginnt_bei_strassenelempkt = sep.id;
-					ELSE
-						-- Beim zweiten Schnittpunkt
-						IF sep.station > station THEN
-							-- Station des zweiten ist größer als beim ersten Punkt, also ist dieser der Endpunkt
-							endet_bei_strassenelempkt = sep.id;
-						ELSE
-							-- Station des zweiten ist kleiner als beim ersten Punkt, also ist dieser der Anfangspunkt
-							endet_bei_strassenelempkt = beginnt_bei_strassenelempkt;
-							beginnt_bei_strassenelempkt = sep.id;
-						END IF;
-						se_id = schnitt.auf_strassenelement;
-					END IF;
-					geschnitten = true;
-				END LOOP;
+      --------------------------------------------------------------------------------------------------------
+      IF NEW.flaechengeometrie IS NULL THEN
+        -- Es ist keine Flächengeometrie übergeben worden
+        -- das ist erlaubt, da diese nachträglich über den view querschnitttrapeze eingegeben werden kann
+        -- in dem Fall muss hier aber die Strassenelement_id übergeben werden, damit man später weiss
+        -- mit welchem Strassenelement die Trapeze gerechnet werden sollen.
+        -- setze die Strassenelement_id
+        se_id = NEW.id_strassenelement;
+      ELSE
+        -- Es ist eine Flaechengeometrie übergeben worden, die sich in 2 oder keinem Punkt schneidet
+        -- verschneide die flaechengeometrie mit Strassenelementen und finde Strassenelementpunkt am Beginn und Ende
+        FOR schnitt IN EXECUTE '
+          SELECT
+            id auf_strassenelement,
+            (p).geom punktgeometrie
+          FROM
+            (
+              SELECT
+                id,
+                ST_DumpPoints(ST_Intersection(liniengeometrie, ST_ExteriorRing($1))) p
+              FROM
+                ukos_okstra.strassenelement
+              WHERE
+                gueltig_bis > $2 AND
+                ST_Intersects(liniengeometrie, ST_ExteriorRing($1))
+            )  ptab
+          '
+        USING NEW.flaechengeometrie, aenderungszeit
+        LOOP
+          EXECUTE '
+            INSERT INTO ukos_okstra.strassenelementpunkt (punktgeometrie, auf_strassenelement) VALUES
+            ($1, $2)
+            RETURNING id, station
+          '
+          USING schnitt.punktgeometrie, schnitt.auf_strassenelement
+          INTO sep;
+          IF station IS NULL THEN
+            -- Beim ersten Schnittpunkt merke die Station und id
+            station = sep.station;
+            beginnt_bei_strassenelempkt = sep.id;
+          ELSE
+            -- Beim zweiten Schnittpunkt
+            IF sep.station > station THEN
+              -- Station des zweiten ist größer als beim ersten Punkt, also ist dieser der Endpunkt
+              endet_bei_strassenelempkt = sep.id;
+            ELSE
+              -- Station des zweiten ist kleiner als beim ersten Punkt, also ist dieser der Anfangspunkt
+              endet_bei_strassenelempkt = beginnt_bei_strassenelempkt;
+              beginnt_bei_strassenelempkt = sep.id;
+            END IF;
+            se_id = schnitt.auf_strassenelement;
+          END IF;
+          geschnitten = true;
+        END LOOP;
 
-				IF NOT geschnitten THEN
-					-- Die Fläche schneidet sich nicht mit einem Strassenelement
-					-- Finde das Strassenlement über die dichtesten Entfernungen
-					RAISE NOTICE 'Suche dichtestes Strassenelement an der Fläche %', NEW.flaechengeometrie;
-					sql = '
-						SELECT
-							se.id,
-							se.beginnt_bei_vp,
-							se.endet_bei_vp,
-							vp_beginnt.punktgeometrie AS beginnt_bei_vp_geom,
-							vp_endet.punktgeometrie AS endet_bei_vp_geom,
-							avg(ST_Distance((points.dump).geom, se.liniengeometrie)) dist
-						FROM
-							ukos_okstra.strassenelement se JOIN
-							ukos_okstra.verbindungspunkt vp_beginnt ON (se.beginnt_bei_vp = vp_beginnt.id) JOIN
-							ukos_okstra.verbindungspunkt vp_endet ON (se.endet_bei_vp = vp_endet.id),
-							(
-								SELECT ST_DumpPoints($2) dump
-							) points
-						WHERE
-							se.gueltig_bis > $1 AND
-							se.liniengeometrie && ST_Expand(ST_Envelope($2), $3)
-						GROUP BY
-						  se.id, se.beginnt_bei_vp, se.endet_bei_vp, vp_beginnt.punktgeometrie, vp_endet.punktgeometrie
-						ORDER BY dist
-						LIMIT 1
-					';
-					EXECUTE sql
-					USING aenderungszeit, NEW.flaechengeometrie, strassenelementsuchabstand
-					INTO se;
+        IF NOT geschnitten THEN
+          -- Die Fläche schneidet sich nicht mit einem Strassenelement
+          -- Finde das Strassenlement über die dichtesten Entfernungen
+          RAISE NOTICE 'Suche dichtestes Strassenelement an der Fläche %', NEW.flaechengeometrie;
+          sql = '
+            SELECT
+              se.id,
+              se.beginnt_bei_vp,
+              se.endet_bei_vp,
+              vp_beginnt.punktgeometrie AS beginnt_bei_vp_geom,
+              vp_endet.punktgeometrie AS endet_bei_vp_geom,
+              avg(ST_Distance((points.dump).geom, se.liniengeometrie)) dist
+            FROM
+              ukos_okstra.strassenelement se JOIN
+              ukos_okstra.verbindungspunkt vp_beginnt ON (se.beginnt_bei_vp = vp_beginnt.id) JOIN
+              ukos_okstra.verbindungspunkt vp_endet ON (se.endet_bei_vp = vp_endet.id),
+              (
+                SELECT ST_DumpPoints($2) dump
+              ) points
+            WHERE
+              se.gueltig_bis > $1 AND
+              se.liniengeometrie && ST_Expand(ST_Envelope($2), $3)
+            GROUP BY
+              se.id, se.beginnt_bei_vp, se.endet_bei_vp, vp_beginnt.punktgeometrie, vp_endet.punktgeometrie
+            ORDER BY dist
+            LIMIT 1
+          ';
+          EXECUTE sql
+          USING aenderungszeit, NEW.flaechengeometrie, strassenelementsuchabstand
+          INTO se;
 
-					IF se.id IS NULL THEN
-						RAISE EXCEPTION 'Es konnte kein Strassenelement im Abstand von % m zum Querschnittstreifen gefunden werden. Erhöhen Sie ggf. den Parameter Strassenelementsuchabstand!', strassenelementsuchabstand;
-					ELSE
-						-- setze Strassenelementpunkte an beginnt_ und endet_bei_vp des Strassenelementes um ein Teilelement über das gesamte Strassenelement bilden zu können.
-						-- falls sie noch nicht existieren
-						-- suche Strassenelementpunkt am Anfang des Strassenelementes
-						EXECUTE '
-							SELECT
-								sep.id
-							FROM
-								ukos_okstra.strassenelement se JOIN
-								ukos_okstra.strassenelementpunkt sep ON (se.id = sep.auf_strassenelement)
-							WHERE
-								se.gueltig_bis > $1 AND
-								sep.gueltig_bis > $1 AND
-								(
-									se.beginnt_bei_vp = $2 OR
-									se.endet_bei_vp = $2
-								) AND
-								ST_Equals(punktgeometrie, $3)
-							LIMIT 1
-						'
-						USING aenderungszeit, se.beginnt_bei_vp, se.beginnt_bei_vp_geom
-						INTO sep;
+          IF se.id IS NULL THEN
+            RAISE EXCEPTION 'Es konnte kein Strassenelement im Abstand von % m zum Querschnittstreifen gefunden werden. Erhöhen Sie ggf. den Parameter Strassenelementsuchabstand!', strassenelementsuchabstand;
+          ELSE
+            -- setze Strassenelementpunkte an beginnt_ und endet_bei_vp des Strassenelementes um ein Teilelement über das gesamte Strassenelement bilden zu können.
+            -- falls sie noch nicht existieren
+            -- suche Strassenelementpunkt am Anfang des Strassenelementes
+            EXECUTE '
+              SELECT
+                sep.id
+              FROM
+                ukos_okstra.strassenelement se JOIN
+                ukos_okstra.strassenelementpunkt sep ON (se.id = sep.auf_strassenelement)
+              WHERE
+                se.gueltig_bis > $1 AND
+                sep.gueltig_bis > $1 AND
+                (
+                  se.beginnt_bei_vp = $2 OR
+                  se.endet_bei_vp = $2
+                ) AND
+                ST_Equals(punktgeometrie, $3)
+              LIMIT 1
+            '
+            USING aenderungszeit, se.beginnt_bei_vp, se.beginnt_bei_vp_geom
+            INTO sep;
 
-						IF sep.id IS NULL THEN
-							RAISE NOTICE 'Kein Straßenelementpunkt am Anfang des Strassenelementes gefunden. Lege neuen an.';
-							EXECUTE '
-								INSERT INTO ukos_okstra.strassenelementpunkt (punktgeometrie, auf_strassenelement) VALUES
-								($1, $2)
-								RETURNING id, station
-							'
-							USING se.beginnt_bei_vp_geom, se.id
-							INTO sep;
-						ELSE
-							RAISE NOTICE 'Straßenelementpunkt: % am Anfang des Strassenelementes gefunden', sep.id;
-						END IF;
-						beginnt_bei_strassenelempkt = sep.id;
+            IF sep.id IS NULL THEN
+              RAISE NOTICE 'Kein Straßenelementpunkt am Anfang des Strassenelementes gefunden. Lege neuen an.';
+              EXECUTE '
+                INSERT INTO ukos_okstra.strassenelementpunkt (punktgeometrie, auf_strassenelement) VALUES
+                ($1, $2)
+                RETURNING id, station
+              '
+              USING se.beginnt_bei_vp_geom, se.id
+              INTO sep;
+            ELSE
+              RAISE NOTICE 'Straßenelementpunkt: % am Anfang des Strassenelementes gefunden', sep.id;
+            END IF;
+            beginnt_bei_strassenelempkt = sep.id;
 
-						-- suche Strassenelementpunkt am Ende des Strassenelementes
-						EXECUTE '
-							SELECT
-								sep.id
-							FROM
-								ukos_okstra.strassenelement se JOIN
-								ukos_okstra.strassenelementpunkt sep ON (se.id = sep.auf_strassenelement)
-							WHERE
-								se.gueltig_bis > $1 AND
-								sep.gueltig_bis > $1 AND
-								(
-									se.beginnt_bei_vp = $2 OR
-									se.endet_bei_vp = $2
-								) AND
-								ST_Equals(punktgeometrie, $3)
-							LIMIT 1
-						'
-						USING aenderungszeit, se.endet_bei_vp, se.endet_bei_vp_geom
-						INTO sep;
+            -- suche Strassenelementpunkt am Ende des Strassenelementes
+            EXECUTE '
+              SELECT
+                sep.id
+              FROM
+                ukos_okstra.strassenelement se JOIN
+                ukos_okstra.strassenelementpunkt sep ON (se.id = sep.auf_strassenelement)
+              WHERE
+                se.gueltig_bis > $1 AND
+                sep.gueltig_bis > $1 AND
+                (
+                  se.beginnt_bei_vp = $2 OR
+                  se.endet_bei_vp = $2
+                ) AND
+                ST_Equals(punktgeometrie, $3)
+              LIMIT 1
+            '
+            USING aenderungszeit, se.endet_bei_vp, se.endet_bei_vp_geom
+            INTO sep;
 
-						IF sep.id IS NULL THEN
-							RAISE NOTICE 'Kein Straßenelementpunkt am Ende des Strassenelementes gefunden. Lege neuen an.';
-							EXECUTE '
-								INSERT INTO ukos_okstra.strassenelementpunkt (punktgeometrie, auf_strassenelement) VALUES
-								($1, $2)
-								RETURNING id, station
-							'
-							USING se.endet_bei_vp_geom, se.id
-							INTO sep;
-						ELSE
-							RAISE NOTICE 'Straßenelementpunkt: % am Ende des Strassenelementes gefunden', sep.id;
-						END IF;
-						endet_bei_strassenelempkt = sep.id;
+            IF sep.id IS NULL THEN
+              RAISE NOTICE 'Kein Straßenelementpunkt am Ende des Strassenelementes gefunden. Lege neuen an.';
+              EXECUTE '
+                INSERT INTO ukos_okstra.strassenelementpunkt (punktgeometrie, auf_strassenelement) VALUES
+                ($1, $2)
+                RETURNING id, station
+              '
+              USING se.endet_bei_vp_geom, se.id
+              INTO sep;
+            ELSE
+              RAISE NOTICE 'Straßenelementpunkt: % am Ende des Strassenelementes gefunden', sep.id;
+            END IF;
+            endet_bei_strassenelempkt = sep.id;
 
-					END IF; -- end of se an flaeche gefunden
-					se_id = se.id;
-				END IF; -- end of is not geschnitten
+          END IF; -- end of se an flaeche gefunden
+          se_id = se.id;
+        END IF; -- end of is not geschnitten
 
-				-- erzeuge das Teilelement mit den gefundenen Strassenlementpunkten falls es noch nicht existiert
-				EXECUTE '
-					SELECT
-						id
-					FROM
-						ukos_okstra.teilelement
-					WHERE
-						gueltig_bis > $1 AND
-						beginnt_bei_strassenelempkt = $2 AND
-						endet_bei_strassenelempkt = $3 AND
-						auf_strassenelement = $4
-				'
-				USING aenderungszeit, beginnt_bei_strassenelempkt, endet_bei_strassenelempkt, se_id
-				INTO te_id;
+        -- erzeuge das Teilelement mit den gefundenen Strassenlementpunkten falls es noch nicht existiert
+        EXECUTE '
+          SELECT
+            id
+          FROM
+            ukos_okstra.teilelement
+          WHERE
+            gueltig_bis > $1 AND
+            beginnt_bei_strassenelempkt = $2 AND
+            endet_bei_strassenelempkt = $3 AND
+            auf_strassenelement = $4
+        '
+        USING aenderungszeit, beginnt_bei_strassenelempkt, endet_bei_strassenelempkt, se_id
+        INTO te_id;
 
-				IF te_id IS NULL THEN
-					EXECUTE '
-						INSERT INTO ukos_okstra.teilelement (erfassungsdatum, angelegt_von, beginnt_bei_strassenelempkt, endet_bei_strassenelempkt, auf_strassenelement) VALUES
-						($1, $2, $3, $4, $5)
-						RETURNING id
-					'
-					USING aenderungszeit, NEW.angelegt_von, beginnt_bei_strassenelempkt, endet_bei_strassenelempkt, se_id
-					INTO te_id;
-				END IF;
+        IF te_id IS NULL THEN
+          EXECUTE '
+            INSERT INTO ukos_okstra.teilelement (erfassungsdatum, angelegt_von, beginnt_bei_strassenelempkt, endet_bei_strassenelempkt, auf_strassenelement) VALUES
+            ($1, $2, $3, $4, $5)
+            RETURNING id
+          '
+          USING aenderungszeit, NEW.angelegt_von, beginnt_bei_strassenelempkt, endet_bei_strassenelempkt, se_id
+          INTO te_id;
+        END IF;
 
-				-- Zuordnung Streckenobjekt Querschnittstreifen zu Teilelement erzeugen wenn noch nicht exisitert
-				EXECUTE '
-					INSERT INTO ukos_okstra.streckenobjekt_to_teilelement (streckenobjekt_id, teilelement_id)
-					SELECT $1, $2
-					WHERE
-						NOT EXISTS (
-							SELECT
-								streckenobjekt_id, teilelement_id
-							FROM
-								ukos_okstra.streckenobjekt_to_teilelement
-							WHERE
-								streckenobjekt_id = $1 AND
-								teilelement_id = $2
-						)
-					RETURNING teilelement_id
-				'
-				USING NEW.id, te_id
-				INTO te_id;
+        -- Zuordnung Streckenobjekt Querschnittstreifen zu Teilelement erzeugen wenn noch nicht exisitert
+        EXECUTE '
+          INSERT INTO ukos_okstra.streckenobjekt_to_teilelement (streckenobjekt_id, teilelement_id)
+          SELECT $1, $2
+          WHERE
+            NOT EXISTS (
+              SELECT
+                streckenobjekt_id, teilelement_id
+              FROM
+                ukos_okstra.streckenobjekt_to_teilelement
+              WHERE
+                streckenobjekt_id = $1 AND
+                teilelement_id = $2
+            )
+          RETURNING teilelement_id
+        '
+        USING NEW.id, te_id
+        INTO te_id;
 
-				IF te_id IS NULL THEN
-					RAISE NOTICE 'Zuordnung zwischen Querschnittstreifen: % und Teilelement: % schon vorhanden.', NEW.id, te_id;
-				ELSE
-					RAISE NOTICE 'Zuordnung zwischen Querschnittstreifen: % und Teilelement: % erzeugt.', NEW.id, te_id;
-				END IF;
+        IF te_id IS NULL THEN
+          RAISE NOTICE 'Zuordnung zwischen Querschnittstreifen: % und Teilelement: % schon vorhanden.', NEW.id, te_id;
+        ELSE
+          RAISE NOTICE 'Zuordnung zwischen Querschnittstreifen: % und Teilelement: % erzeugt.', NEW.id, te_id;
+        END IF;
 
-			END IF; -- end of flaechengeometrie is not null
+      END IF; -- end of flaechengeometrie is not null
 
-			-- Aggregiere die Flächengeometrien aller Querschnittstreifen die zur Verkehrsfläche gehören und
-			-- trage diese in der verkehrsfläche ein und
-			-- berechne den Flächeninhalt neu und
-			-- setze die strassenelement_id
-			EXECUTE '
-				UPDATE
-					ukos_okstra.verkehrsflaeche
-				SET
-					flaeche = (
-						SELECT
-							ST_Multi(ST_Union(flaechengeometrie))
-						FROM
-							ukos_okstra.querschnittstreifen
-						WHERE
-							in_verkehrsflaeche = $1 AND
-							gueltig_bis > $3
-					),
-					flaecheninhalt = (
-						SELECT
-							ST_Area(ST_Union(flaechengeometrie))
-						FROM
-							ukos_okstra.querschnittstreifen
-						WHERE
-							in_verkehrsflaeche = $1 AND
-							gueltig_bis > $3
-					),
-					id_strassenelement = $2
-				WHERE
-					id = $1
-			'
-			USING NEW.in_verkehrsflaeche, se_id, aenderungszeit;
+      -- Aggregiere die Flächengeometrien aller Querschnittstreifen die zur Verkehrsfläche gehören und
+      -- trage diese in der verkehrsfläche ein und
+      -- berechne den Flächeninhalt neu und
+      -- setze die strassenelement_id
+      EXECUTE '
+        UPDATE
+          ukos_okstra.verkehrsflaeche
+        SET
+          flaeche = (
+            SELECT
+              ST_Multi(ST_Union(flaechengeometrie))
+            FROM
+              ukos_okstra.querschnittstreifen
+            WHERE
+              in_verkehrsflaeche = $1 AND
+              gueltig_bis > $3
+          ),
+          flaecheninhalt = (
+            SELECT
+              ST_Area(ST_Union(flaechengeometrie))
+            FROM
+              ukos_okstra.querschnittstreifen
+            WHERE
+              in_verkehrsflaeche = $1 AND
+              gueltig_bis > $3
+          ),
+          id_strassenelement = $2
+        WHERE
+          id = $1
+      '
+      USING NEW.in_verkehrsflaeche, se_id, aenderungszeit;
 
-			RETURN NEW;
-		END;
-	$_$;
+      RETURN NEW;
+    END;
+  $_$;
 
 
 --
@@ -571,255 +571,255 @@ CREATE FUNCTION add_teilelement_von_flaeche() RETURNS trigger
 CREATE FUNCTION add_teilelement_von_trapez() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			se_liniengeometrie public.geometry;
-			sep_id CHARACTER VARYING;
-			te_id CHARACTER VARYING;
-			qs_id CHARACTER VARYING;
-			aenderungszeit TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
-			beginnt_bei_strassenelempkt CHARACTER VARYING;
-			endet_bei_strassenelempkt CHARACTER VARYING;
-			accuracy NUMERIC;
-			decimals INTEGER;
-		BEGIN
-			--------------------------------------------------------------------------------------------------------
-			-- Initialisierung
-			EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Koordinatengenauigkeit' INTO accuracy;
+    DECLARE
+      se_liniengeometrie public.geometry;
+      sep_id CHARACTER VARYING;
+      te_id CHARACTER VARYING;
+      qs_id CHARACTER VARYING;
+      aenderungszeit TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
+      beginnt_bei_strassenelempkt CHARACTER VARYING;
+      endet_bei_strassenelempkt CHARACTER VARYING;
+      accuracy NUMERIC;
+      decimals INTEGER;
+    BEGIN
+      --------------------------------------------------------------------------------------------------------
+      -- Initialisierung
+      EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Koordinatengenauigkeit' INTO accuracy;
 
-			decimals = CASE WHEN log(1 / accuracy) < 0 THEN 0 ELSE round(log(1 / accuracy))::INTEGER END;
+      decimals = CASE WHEN log(1 / accuracy) < 0 THEN 0 ELSE round(log(1 / accuracy))::INTEGER END;
 
-			IF NEW.in_verkehrsflaeche IS NULL THEN
-				RAISE EXCEPTION 'in_verkehrsflaeche ist leer! Es muss angegeben werden zu welcher Verkehrsfläche der Querschnittstreifen-Trapez gehören werden soll.';
-			END IF;
+      IF NEW.in_verkehrsflaeche IS NULL THEN
+        RAISE EXCEPTION 'in_verkehrsflaeche ist leer! Es muss angegeben werden zu welcher Verkehrsfläche der Querschnittstreifen-Trapez gehören werden soll.';
+      END IF;
 
-			IF NEW.strassenelement_id IS NULL THEN
-				RAISE EXCEPTION 'strassenelement_id ist leer! Es muss angegeben werden über welchem Strassenelement das Trapez berechnet werden soll.';
-			END IF;
+      IF NEW.strassenelement_id IS NULL THEN
+        RAISE EXCEPTION 'strassenelement_id ist leer! Es muss angegeben werden über welchem Strassenelement das Trapez berechnet werden soll.';
+      END IF;
 
-			IF NEW.beginnt_bei_station IS NULL THEN
-				RAISE EXCEPTION 'beginnt_bei_station ist leer!';
-			END IF;
+      IF NEW.beginnt_bei_station IS NULL THEN
+        RAISE EXCEPTION 'beginnt_bei_station ist leer!';
+      END IF;
 
-			IF NEW.x_wert_von_station_links IS NULL THEN
-				RAISE EXCEPTION 'x_wert_von_station_links ist leer!';
-			END IF;
+      IF NEW.x_wert_von_station_links IS NULL THEN
+        RAISE EXCEPTION 'x_wert_von_station_links ist leer!';
+      END IF;
 
-			IF NEW.x_wert_von_station_rechts IS NULL THEN
-				RAISE EXCEPTION 'x_wert_von_station_rechts ist leer!';
-			END IF;
+      IF NEW.x_wert_von_station_rechts IS NULL THEN
+        RAISE EXCEPTION 'x_wert_von_station_rechts ist leer!';
+      END IF;
 
-			IF NEW.endet_bei_station IS NULL THEN
-				RAISE EXCEPTION 'endet_bei_station ist leer!';
-			END IF;
+      IF NEW.endet_bei_station IS NULL THEN
+        RAISE EXCEPTION 'endet_bei_station ist leer!';
+      END IF;
 
-			IF NEW.x_wert_bis_station_links IS NULL THEN
-				RAISE EXCEPTION 'x_wert_bis_station_links ist leer!';
-			END IF;
+      IF NEW.x_wert_bis_station_links IS NULL THEN
+        RAISE EXCEPTION 'x_wert_bis_station_links ist leer!';
+      END IF;
 
-			IF NEW.x_wert_bis_station_rechts IS NULL THEN
-				RAISE EXCEPTION 'x_wert_bis_station_rechts ist leer!';
-			END IF;
+      IF NEW.x_wert_bis_station_rechts IS NULL THEN
+        RAISE EXCEPTION 'x_wert_bis_station_rechts ist leer!';
+      END IF;
 
-			-- Runde die angegebenen numerischen Werte
-			NEW.beginnt_bei_station = round(NEW.beginnt_bei_station, decimals);
-			NEW.x_wert_von_station_links = round(NEW.x_wert_von_station_links, decimals);
-			NEW.x_wert_von_station_rechts = round(NEW.x_wert_von_station_rechts, decimals);
-			NEW.endet_bei_station = round(NEW.endet_bei_station, decimals);
-			NEW.x_wert_bis_station_links = round(NEW.x_wert_bis_station_links, decimals);
-			NEW.x_wert_bis_station_rechts = round(NEW.x_wert_bis_station_rechts, decimals);
+      -- Runde die angegebenen numerischen Werte
+      NEW.beginnt_bei_station = round(NEW.beginnt_bei_station, decimals);
+      NEW.x_wert_von_station_links = round(NEW.x_wert_von_station_links, decimals);
+      NEW.x_wert_von_station_rechts = round(NEW.x_wert_von_station_rechts, decimals);
+      NEW.endet_bei_station = round(NEW.endet_bei_station, decimals);
+      NEW.x_wert_bis_station_links = round(NEW.x_wert_bis_station_links, decimals);
+      NEW.x_wert_bis_station_rechts = round(NEW.x_wert_bis_station_rechts, decimals);
 
-			-- Frage die Liniengeometrie des Strassenelementes ab
-			EXECUTE '
-				SELECT liniengeometrie
-				FROM ukos_okstra.strassenelement
-				WHERE id = $1
-			'
-			USING NEW.strassenelement_id
-			INTO se_liniengeometrie;
+      -- Frage die Liniengeometrie des Strassenelementes ab
+      EXECUTE '
+        SELECT liniengeometrie
+        FROM ukos_okstra.strassenelement
+        WHERE id = $1
+      '
+      USING NEW.strassenelement_id
+      INTO se_liniengeometrie;
 
 
-			--------------------------------------------------------------------------------------------------------
-			/*
-			-- Strassenelementpunkt am Beginn finden oder erzeugen
-			EXECUTE '
-				SELECT
-					id AS sep_id
-				FROM
-					ukos_okstra.strassenelementpunkt
-				WHERE
-					station = $1 AND
-					abstand_zur_bestandsachse = 0 AND
-					auf_strassenelement = $2 AND
-					gueltig_bis > $3
-			'
-			USING NEW.beginnt_bei_station, NEW.strassenelement_id, aenderungszeit
-			INTO beginnt_bei_strassenelempkt;
+      --------------------------------------------------------------------------------------------------------
+      /*
+      -- Strassenelementpunkt am Beginn finden oder erzeugen
+      EXECUTE '
+        SELECT
+          id AS sep_id
+        FROM
+          ukos_okstra.strassenelementpunkt
+        WHERE
+          station = $1 AND
+          abstand_zur_bestandsachse = 0 AND
+          auf_strassenelement = $2 AND
+          gueltig_bis > $3
+      '
+      USING NEW.beginnt_bei_station, NEW.strassenelement_id, aenderungszeit
+      INTO beginnt_bei_strassenelempkt;
 
-			IF beginnt_bei_strassenelempkt IS NULL THEN
-				EXECUTE '
-					INSERT INTO ukos_okstra.strassenelementpunkt (auf_strassenelement, station, abstand_zur_bestandsachse) VALUES
-					($1, $2, 0)
-					RETURNING id
-				'
-				USING NEW.strassenelement_id, NEW.beginnt_bei_station
-				INTO beginnt_bei_strassenelempkt;
-				RAISE NOTICE 'Straßenelementpunkt: % am Anfang an Station: % erzeugt.', beginnt_bei_strassenelempkt, NEW.beginnt_bei_station;
-			ELSE
-				RAISE NOTICE 'Straßenelementpunkt: % am Anfang an Station: % gefunden.', beginnt_bei_strassenelempkt, NEW.beginnt_bei_station;
-			END IF;
+      IF beginnt_bei_strassenelempkt IS NULL THEN
+        EXECUTE '
+          INSERT INTO ukos_okstra.strassenelementpunkt (auf_strassenelement, station, abstand_zur_bestandsachse) VALUES
+          ($1, $2, 0)
+          RETURNING id
+        '
+        USING NEW.strassenelement_id, NEW.beginnt_bei_station
+        INTO beginnt_bei_strassenelempkt;
+        RAISE NOTICE 'Straßenelementpunkt: % am Anfang an Station: % erzeugt.', beginnt_bei_strassenelempkt, NEW.beginnt_bei_station;
+      ELSE
+        RAISE NOTICE 'Straßenelementpunkt: % am Anfang an Station: % gefunden.', beginnt_bei_strassenelempkt, NEW.beginnt_bei_station;
+      END IF;
 
-			-- Strassenelementpunkt am Ende finden oder erzeugen
-			EXECUTE '
-				SELECT
-					id AS sep_id
-				FROM
-					ukos_okstra.strassenelementpunkt
-				WHERE
-					station = $1 AND
-					abstand_zur_bestandsachse = 0 AND
-					auf_strassenelement = $2 AND
-					gueltig_bis > $3
-			'
-			USING NEW.endet_bei_station, NEW.strassenelement_id, aenderungszeit
-			INTO endet_bei_strassenelempkt;
+      -- Strassenelementpunkt am Ende finden oder erzeugen
+      EXECUTE '
+        SELECT
+          id AS sep_id
+        FROM
+          ukos_okstra.strassenelementpunkt
+        WHERE
+          station = $1 AND
+          abstand_zur_bestandsachse = 0 AND
+          auf_strassenelement = $2 AND
+          gueltig_bis > $3
+      '
+      USING NEW.endet_bei_station, NEW.strassenelement_id, aenderungszeit
+      INTO endet_bei_strassenelempkt;
 
-			IF endet_bei_strassenelempkt IS NULL THEN
-				EXECUTE '
-					INSERT INTO ukos_okstra.strassenelementpunkt (auf_strassenelement, station, abstand_zur_bestandsachse) VALUES
-					($1, $2, 0)
-					RETURNING id
-				'
-				USING NEW.strassenelement_id, NEW.endet_bei_station
-				INTO endet_bei_strassenelempkt;
-				RAISE NOTICE 'Straßenelementpunkt: % am Ende an Station: % erzeugt.', endet_bei_strassenelempkt, NEW.endet_bei_station;
-			ELSE
-				RAISE NOTICE 'Straßenelementpunkt: % am Ende an Station: % gefunden.', endet_bei_strassenelempkt, NEW.endet_bei_station;
-			END IF;
+      IF endet_bei_strassenelempkt IS NULL THEN
+        EXECUTE '
+          INSERT INTO ukos_okstra.strassenelementpunkt (auf_strassenelement, station, abstand_zur_bestandsachse) VALUES
+          ($1, $2, 0)
+          RETURNING id
+        '
+        USING NEW.strassenelement_id, NEW.endet_bei_station
+        INTO endet_bei_strassenelempkt;
+        RAISE NOTICE 'Straßenelementpunkt: % am Ende an Station: % erzeugt.', endet_bei_strassenelempkt, NEW.endet_bei_station;
+      ELSE
+        RAISE NOTICE 'Straßenelementpunkt: % am Ende an Station: % gefunden.', endet_bei_strassenelempkt, NEW.endet_bei_station;
+      END IF;
 
-			-- Teilelement finden oder erzeugen
-			EXECUTE '
-				SELECT
-					id AS te_id
-				FROM
-					ukos_okstra.teilelement
-				WHERE
-					beginnt_bei_strassenelempkt = $1 AND
-					endet_bei_strassenelempkt = $2 AND
-					auf_strassenelement = $3 AND
-					gueltig_bis > $4
-			'
-			USING beginnt_bei_strassenelempkt, endet_bei_strassenelempkt, NEW.strassenelement_id, aenderungszeit
-			INTO te_id;
+      -- Teilelement finden oder erzeugen
+      EXECUTE '
+        SELECT
+          id AS te_id
+        FROM
+          ukos_okstra.teilelement
+        WHERE
+          beginnt_bei_strassenelempkt = $1 AND
+          endet_bei_strassenelempkt = $2 AND
+          auf_strassenelement = $3 AND
+          gueltig_bis > $4
+      '
+      USING beginnt_bei_strassenelempkt, endet_bei_strassenelempkt, NEW.strassenelement_id, aenderungszeit
+      INTO te_id;
 
-			IF te_id IS NULL THEN
-				EXECUTE '
-					INSERT INTO ukos_okstra.teilelement (beginnt_bei_strassenelempkt, endet_bei_strassenelempkt, auf_strassenelement) VALUES
-					($1, $2, $3)
-					RETURNING id
-				'
-				USING beginnt_bei_strassenelempkt, endet_bei_strassenelempkt, NEW.strassenelement_id, aenderungszeit
-				INTO te_id;
-				RAISE NOTICE 'Teilelement: % zwischen Strassenelementpunkt: % und % auf Strassenelement: % erzeugt.', te_id, beginnt_bei_strassenelempkt, endet_bei_strassenelempkt, NEW.strassenelement_id;
-			ELSE
-				RAISE NOTICE 'Teilelement: % zwischen Strassenelementpunkt: % und % auf Strassenelement: % gefunden.', te_id, beginnt_bei_strassenelempkt, endet_bei_strassenelempkt, NEW.strassenelement_id;
-			END IF;
+      IF te_id IS NULL THEN
+        EXECUTE '
+          INSERT INTO ukos_okstra.teilelement (beginnt_bei_strassenelempkt, endet_bei_strassenelempkt, auf_strassenelement) VALUES
+          ($1, $2, $3)
+          RETURNING id
+        '
+        USING beginnt_bei_strassenelempkt, endet_bei_strassenelempkt, NEW.strassenelement_id, aenderungszeit
+        INTO te_id;
+        RAISE NOTICE 'Teilelement: % zwischen Strassenelementpunkt: % und % auf Strassenelement: % erzeugt.', te_id, beginnt_bei_strassenelempkt, endet_bei_strassenelempkt, NEW.strassenelement_id;
+      ELSE
+        RAISE NOTICE 'Teilelement: % zwischen Strassenelementpunkt: % und % auf Strassenelement: % gefunden.', te_id, beginnt_bei_strassenelempkt, endet_bei_strassenelempkt, NEW.strassenelement_id;
+      END IF;
 */
-			-- Querschnittstreifen finden oder erzeugen
-			EXECUTE '
-				SELECT
-					id AS qs_id
-				FROM
-					ukos_okstra.querschnittstreifen
-				WHERE
-					x_wert_von_station_links = $2 AND
-					x_wert_von_station_rechts = $3 AND
-					x_wert_bis_station_links = $4 AND
-					x_wert_bis_station_rechts = $5 AND
-					in_verkehrsflaeche = $6 AND
-					gueltig_bis > $1
-			'
-			USING aenderungszeit, NEW.x_wert_von_station_links, NEW.x_wert_von_station_rechts, NEW.x_wert_bis_station_links, NEW.x_wert_bis_station_rechts, NEW.in_verkehrsflaeche
-			INTO qs_id;
+      -- Querschnittstreifen finden oder erzeugen
+      EXECUTE '
+        SELECT
+          id AS qs_id
+        FROM
+          ukos_okstra.querschnittstreifen
+        WHERE
+          x_wert_von_station_links = $2 AND
+          x_wert_von_station_rechts = $3 AND
+          x_wert_bis_station_links = $4 AND
+          x_wert_bis_station_rechts = $5 AND
+          in_verkehrsflaeche = $6 AND
+          gueltig_bis > $1
+      '
+      USING aenderungszeit, NEW.x_wert_von_station_links, NEW.x_wert_von_station_rechts, NEW.x_wert_bis_station_links, NEW.x_wert_bis_station_rechts, NEW.in_verkehrsflaeche
+      INTO qs_id;
 
-			IF qs_id IS NULL THEN
-				RAISE NOTICE 'Erzeuge Querschnittstreifen als Trapez für Verkehrsfläche: % auf Strassenelement: %', NEW.in_verkehrsflaeche, NEW.strassenelement_id;
-				EXECUTE '
-					INSERT INTO ukos_okstra.querschnittstreifen (
-						x_wert_von_station_links, x_wert_von_station_rechts, x_wert_bis_station_links, x_wert_bis_station_rechts,
-						in_verkehrsflaeche,
-						flaechengeometrie,
-						angelegt_am,
-						erfassungsdatum
-					)
-					VALUES (
-						$2, $3, $5, $6,
-						$7,
-						(
-							SELECT
-								ST_SetSrid(
-									ST_MakePolygon(
-										ST_MakeLine(
-											Array[
-												gdi_LineInterpolatePointWithOffset($8, $1, $3),
-												gdi_LineInterpolatePointWithOffset($8, $4, $6),
-												gdi_LineInterpolatePointWithOffset($8, $4, -1 * $5),
-												gdi_LineInterpolatePointWithOffset($8, $1, -1 * $2),
-												gdi_LineInterpolatePointWithOffset($8, $1, $3)
-											]
-										)
-									),
-									25833
-								)
-						),
-						$9,
-						$9
-					)
-					RETURNING id
-				'
-				USING
-					NEW.beginnt_bei_station,
-					NEW.x_wert_von_station_links,
-					NEW.x_wert_von_station_rechts,
-					NEW.endet_bei_station,
-					NEW.x_wert_bis_station_links,
-					NEW.x_wert_bis_station_rechts,
-					NEW.in_verkehrsflaeche,
-					se_liniengeometrie,
-					aenderungszeit
-				INTO qs_id;
-				RAISE NOTICE 'Querschnittstreifen: % für Verkehrsfläche: % erzeugt.', qs_id, NEW.in_verkehrsflaeche;
-			ELSE
-				RAISE NOTICE 'Querschnittstreifen: % für Verkehrsfläche: % gefunden.', qs_id, NEW.in_verkehrsflaeche;
-			END IF;
-			/*
-			-- Zuordnung Streckenobjekt Querschnittstreifen zu Teilelement erzeugen wenn noch nicht exisitert
-			EXECUTE '
-				INSERT INTO ukos_okstra.streckenobjekt_to_teilelement (streckenobjekt_id, teilelement_id)
-				SELECT $1, $2
-				WHERE
-					NOT EXISTS (
-						SELECT
-							streckenobjekt_id, teilelement_id
-						FROM
-							ukos_okstra.streckenobjekt_to_teilelement
-						WHERE
-							streckenobjekt_id = $1 AND
-							teilelement_id = $2
-					)
-				RETURNING teilelement_id
-			'
-			USING qs_id, te_id
-			INTO te_id;
+      IF qs_id IS NULL THEN
+        RAISE NOTICE 'Erzeuge Querschnittstreifen als Trapez für Verkehrsfläche: % auf Strassenelement: %', NEW.in_verkehrsflaeche, NEW.strassenelement_id;
+        EXECUTE '
+          INSERT INTO ukos_okstra.querschnittstreifen (
+            x_wert_von_station_links, x_wert_von_station_rechts, x_wert_bis_station_links, x_wert_bis_station_rechts,
+            in_verkehrsflaeche,
+            flaechengeometrie,
+            angelegt_am,
+            erfassungsdatum
+          )
+          VALUES (
+            $2, $3, $5, $6,
+            $7,
+            (
+              SELECT
+                ST_SetSrid(
+                  ST_MakePolygon(
+                    ST_MakeLine(
+                      Array[
+                        gdi_LineInterpolatePointWithOffset($8, $1, $3),
+                        gdi_LineInterpolatePointWithOffset($8, $4, $6),
+                        gdi_LineInterpolatePointWithOffset($8, $4, -1 * $5),
+                        gdi_LineInterpolatePointWithOffset($8, $1, -1 * $2),
+                        gdi_LineInterpolatePointWithOffset($8, $1, $3)
+                      ]
+                    )
+                  ),
+                  25833
+                )
+            ),
+            $9,
+            $9
+          )
+          RETURNING id
+        '
+        USING
+          NEW.beginnt_bei_station,
+          NEW.x_wert_von_station_links,
+          NEW.x_wert_von_station_rechts,
+          NEW.endet_bei_station,
+          NEW.x_wert_bis_station_links,
+          NEW.x_wert_bis_station_rechts,
+          NEW.in_verkehrsflaeche,
+          se_liniengeometrie,
+          aenderungszeit
+        INTO qs_id;
+        RAISE NOTICE 'Querschnittstreifen: % für Verkehrsfläche: % erzeugt.', qs_id, NEW.in_verkehrsflaeche;
+      ELSE
+        RAISE NOTICE 'Querschnittstreifen: % für Verkehrsfläche: % gefunden.', qs_id, NEW.in_verkehrsflaeche;
+      END IF;
+      /*
+      -- Zuordnung Streckenobjekt Querschnittstreifen zu Teilelement erzeugen wenn noch nicht exisitert
+      EXECUTE '
+        INSERT INTO ukos_okstra.streckenobjekt_to_teilelement (streckenobjekt_id, teilelement_id)
+        SELECT $1, $2
+        WHERE
+          NOT EXISTS (
+            SELECT
+              streckenobjekt_id, teilelement_id
+            FROM
+              ukos_okstra.streckenobjekt_to_teilelement
+            WHERE
+              streckenobjekt_id = $1 AND
+              teilelement_id = $2
+          )
+        RETURNING teilelement_id
+      '
+      USING qs_id, te_id
+      INTO te_id;
 
-			IF te_id IS NULL THEN
-				RAISE NOTICE 'Zuordnung zwischen Querschnittstreifen: % und Teilelement: % schon vorhanden.', qs_id, te_id;
-			ELSE
-				RAISE NOTICE 'Zuordnung zwischen Querschnittstreifen: % und Teilelement: % erzeugt.', qs_id, te_id;
-			END IF;
+      IF te_id IS NULL THEN
+        RAISE NOTICE 'Zuordnung zwischen Querschnittstreifen: % und Teilelement: % schon vorhanden.', qs_id, te_id;
+      ELSE
+        RAISE NOTICE 'Zuordnung zwischen Querschnittstreifen: % und Teilelement: % erzeugt.', qs_id, te_id;
+      END IF;
 */
-			RETURN NEW;
-		END;
-	$_$;
+      RETURN NEW;
+    END;
+  $_$;
 
 
 --
@@ -829,216 +829,216 @@ CREATE FUNCTION add_teilelement_von_trapez() RETURNS trigger
 CREATE FUNCTION add_teilelemente() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			sql text;
-			vp RECORD;
-			sep RECORD;
-			te RECORD;
-			tolerance NUMERIC;
-			accuracy NUMERIC;
-			liniengeometrie_streckenobjekt public.geometry(LineString, 25833);
-			punkt_anfang public.geometry(Point, 25833);
-			punkt_ende public.geometry(Point, 25833);
-			aenderungszeit TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
-		BEGIN
-			-------------------------------------------------------------------------
-			-- Initialisieren
-			EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Topologietolerance' INTO tolerance;
-			RAISE NOTICE 'add_teilelemente mit Geometrie: %', ST_ASText(NEW.geometrie_streckenobjekt);
-			liniengeometrie_streckenobjekt = ST_GeometryN(NEW.geometrie_streckenobjekt, 1);
-			punkt_anfang = ST_StartPoint(liniengeometrie_streckenobjekt);
-			punkt_ende  = ST_EndPoint(liniengeometrie_streckenobjekt);
+    DECLARE
+      sql text;
+      vp RECORD;
+      sep RECORD;
+      te RECORD;
+      tolerance NUMERIC;
+      accuracy NUMERIC;
+      liniengeometrie_streckenobjekt public.geometry(LineString, 25833);
+      punkt_anfang public.geometry(Point, 25833);
+      punkt_ende public.geometry(Point, 25833);
+      aenderungszeit TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
+    BEGIN
+      -------------------------------------------------------------------------
+      -- Initialisieren
+      EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Topologietolerance' INTO tolerance;
+      RAISE NOTICE 'add_teilelemente mit Geometrie: %', ST_ASText(NEW.geometrie_streckenobjekt);
+      liniengeometrie_streckenobjekt = ST_GeometryN(NEW.geometrie_streckenobjekt, 1);
+      punkt_anfang = ST_StartPoint(liniengeometrie_streckenobjekt);
+      punkt_ende  = ST_EndPoint(liniengeometrie_streckenobjekt);
 
-			RAISE NOTICE 'Add Teilelemente für Streckenobjekt: %, Anfang: %, Ende: %', ST_AsText(NEW.geometrie_streckenobjekt), ST_AsText(punkt_anfang), ST_AsText(punkt_ende);
-			-------------------------------------------------------------------------
-			-- Fehlende Strassenelementpunkte auf Verbindungspunkten erzeugen
-			sql = '
-				SELECT
-					vpse.id,
-					vpse.punktgeometrie,
-					vpse.auf_strassenelement
-				FROM
-					(
-						SELECT
-							vp.id,
-							vp.punktgeometrie,
-							min(se.id) auf_strassenelement
-						FROM
-							ukos_okstra.verbindungspunkt vp JOIN
-							ukos_okstra.strassenelement se ON se.beginnt_bei_vp = vp.id
-						WHERE
-							vp.gueltig_bis > now() AND
-							se.gueltig_bis > now() AND
-							ST_Distance(''' || NEW.geometrie_streckenobjekt::text || ''', vp.punktgeometrie) < ' || tolerance || '
-						GROUP BY vp.id
-					) vpse LEFT JOIN
-					(
-						SELECT
-							id,
-							punktgeometrie
-						FROM
-							ukos_okstra.strassenelementpunkt
-						WHERE
-							 gueltig_bis > ' || quote_literal(aenderungszeit) || '
-					) sep ON ST_Equals(vpse.punktgeometrie, sep.punktgeometrie)
-				WHERE
-					sep.id IS NULL
-				';
-			FOR vp IN EXECUTE sql
-			LOOP
-				RAISE NOTICE 'Erzeuge Strassenelementpunkt auf VP: % an Punkt: %', vp.id, ST_AsText(vp.punktgeometrie);
-				EXECUTE '
-					INSERT INTO ukos_okstra.strassenelementpunkt (punktgeometrie, auf_strassenelement, angelegt_von) VALUES
-					($1, $2, $3)
-				'
-				USING vp.punktgeometrie, vp.auf_strassenelement, NEW.angelegt_von;
-			END LOOP;
+      RAISE NOTICE 'Add Teilelemente für Streckenobjekt: %, Anfang: %, Ende: %', ST_AsText(NEW.geometrie_streckenobjekt), ST_AsText(punkt_anfang), ST_AsText(punkt_ende);
+      -------------------------------------------------------------------------
+      -- Fehlende Strassenelementpunkte auf Verbindungspunkten erzeugen
+      sql = '
+        SELECT
+          vpse.id,
+          vpse.punktgeometrie,
+          vpse.auf_strassenelement
+        FROM
+          (
+            SELECT
+              vp.id,
+              vp.punktgeometrie,
+              min(se.id) auf_strassenelement
+            FROM
+              ukos_okstra.verbindungspunkt vp JOIN
+              ukos_okstra.strassenelement se ON se.beginnt_bei_vp = vp.id
+            WHERE
+              vp.gueltig_bis > now() AND
+              se.gueltig_bis > now() AND
+              ST_Distance(''' || NEW.geometrie_streckenobjekt::text || ''', vp.punktgeometrie) < ' || tolerance || '
+            GROUP BY vp.id
+          ) vpse LEFT JOIN
+          (
+            SELECT
+              id,
+              punktgeometrie
+            FROM
+              ukos_okstra.strassenelementpunkt
+            WHERE
+               gueltig_bis > ' || quote_literal(aenderungszeit) || '
+          ) sep ON ST_Equals(vpse.punktgeometrie, sep.punktgeometrie)
+        WHERE
+          sep.id IS NULL
+        ';
+      FOR vp IN EXECUTE sql
+      LOOP
+        RAISE NOTICE 'Erzeuge Strassenelementpunkt auf VP: % an Punkt: %', vp.id, ST_AsText(vp.punktgeometrie);
+        EXECUTE '
+          INSERT INTO ukos_okstra.strassenelementpunkt (punktgeometrie, auf_strassenelement, angelegt_von) VALUES
+          ($1, $2, $3)
+        '
+        USING vp.punktgeometrie, vp.auf_strassenelement, NEW.angelegt_von;
+      END LOOP;
 
-			-------------------------------------------------------------------------
-			-- Fehlenden Strassenelementpunkt am Anfang der Strecke anlegen
-			EXECUTE '
-				SELECT
-					id,
-					punktgeometrie,
-					auf_strassenelement
-				FROM
-					ukos_okstra.strassenelementpunkt
-				WHERE
-					gueltig_bis > $3 AND
-					ST_Distance(punktgeometrie, $1) < $2
-				ORDER BY
-					ST_Distance(punktgeometrie, $1)
-				LIMIT 1
-			'
-			USING punkt_anfang, tolerance, aenderungszeit
-			INTO sep;
-			IF sep.id IS NULL THEN
-				--kein SEP an der Stelle gefunden, anlegen
-				RAISE NOTICE 'Erzeuge Strassenelementpunkt am Anfang an Punkt: %', ST_AsText(punkt_anfang);
-				EXECUTE '
-					INSERT INTO ukos_okstra.strassenelementpunkt (
-						punktgeometrie,
-						auf_strassenelement,
-						angelegt_von
-					) VALUES (
-						$1,
-						(SELECT id FROM ukos_okstra.strassenelement WHERE id != ''00000000-0000-0000-0000-000000000000'' AND gueltig_bis > $3 AND ST_Distance(liniengeometrie, $1) < $4),
-						$2
-					)
-					RETURNING id, punktgeometrie
-				'
-				USING punkt_anfang, NEW.angelegt_von, aenderungszeit, tolerance
-				INTO sep;
-			ELSE
-				RAISE NOTICE 'Strassenelementpunkt am Anfang: % an Punkt: % schon vorhanden.', sep.id, ST_AsText(sep.punktgeometrie);
-			END IF;
-			RAISE NOTICE 'Übernehme die Koordinaten des gefundenen Strassenelementpunktes % als neuen Anfang der Strecke', sep.id;
-			liniengeometrie_streckenobjekt = ST_SetPoint(liniengeometrie_streckenobjekt, 0, sep.punktgeometrie);
+      -------------------------------------------------------------------------
+      -- Fehlenden Strassenelementpunkt am Anfang der Strecke anlegen
+      EXECUTE '
+        SELECT
+          id,
+          punktgeometrie,
+          auf_strassenelement
+        FROM
+          ukos_okstra.strassenelementpunkt
+        WHERE
+          gueltig_bis > $3 AND
+          ST_Distance(punktgeometrie, $1) < $2
+        ORDER BY
+          ST_Distance(punktgeometrie, $1)
+        LIMIT 1
+      '
+      USING punkt_anfang, tolerance, aenderungszeit
+      INTO sep;
+      IF sep.id IS NULL THEN
+        --kein SEP an der Stelle gefunden, anlegen
+        RAISE NOTICE 'Erzeuge Strassenelementpunkt am Anfang an Punkt: %', ST_AsText(punkt_anfang);
+        EXECUTE '
+          INSERT INTO ukos_okstra.strassenelementpunkt (
+            punktgeometrie,
+            auf_strassenelement,
+            angelegt_von
+          ) VALUES (
+            $1,
+            (SELECT id FROM ukos_okstra.strassenelement WHERE id != ''00000000-0000-0000-0000-000000000000'' AND gueltig_bis > $3 AND ST_Distance(liniengeometrie, $1) < $4),
+            $2
+          )
+          RETURNING id, punktgeometrie
+        '
+        USING punkt_anfang, NEW.angelegt_von, aenderungszeit, tolerance
+        INTO sep;
+      ELSE
+        RAISE NOTICE 'Strassenelementpunkt am Anfang: % an Punkt: % schon vorhanden.', sep.id, ST_AsText(sep.punktgeometrie);
+      END IF;
+      RAISE NOTICE 'Übernehme die Koordinaten des gefundenen Strassenelementpunktes % als neuen Anfang der Strecke', sep.id;
+      liniengeometrie_streckenobjekt = ST_SetPoint(liniengeometrie_streckenobjekt, 0, sep.punktgeometrie);
 
-			-------------------------------------------------------------------------
-			-- Fehlenden Strassenelementpunkt am Ende der Strecke anlegen
-			EXECUTE '
-				SELECT
-					id,
-					punktgeometrie,
-					auf_strassenelement
-				FROM
-					ukos_okstra.strassenelementpunkt
-				WHERE
-					gueltig_bis > $3 AND
-					ST_Distance(punktgeometrie, $1) < $2
-				ORDER BY
-					ST_Distance(punktgeometrie, $1)
-				LIMIT 1
-			'
-			USING punkt_ende, tolerance, aenderungszeit
-			INTO sep;
-			IF sep.id IS NULL THEN
-				--kein SEP an der Stelle gefunden, anlegen
-				RAISE NOTICE 'Erzeuge Strassenelementpunkt am Ende an Punkt: %', ST_AsText(punkt_ende);
-				EXECUTE '
-					INSERT INTO ukos_okstra.strassenelementpunkt (
-						punktgeometrie,
-						auf_strassenelement,
-						angelegt_von
-					) VALUES (
-						$1,
-						(SELECT id FROM ukos_okstra.strassenelement WHERE id != ''00000000-0000-0000-0000-000000000000'' AND gueltig_bis > $3 AND ST_Distance(liniengeometrie, $1) < $4),
-						$2
-					)
-					RETURNING id, punktgeometrie
-				'
-				USING punkt_ende, NEW.angelegt_von, aenderungszeit, tolerance
-				INTO sep;
-			ELSE
-				RAISE NOTICE 'Strassenelementpunkt am Ende: % an Punkt: % schon vorhanden.', sep.id, ST_AsText(sep.punktgeometrie);
-			END IF;
-			RAISE NOTICE 'Übernehme die Koordinaten des gefundenen Strassenelementpunktes % als neues Ende der Strecke', sep.id;
-			liniengeometrie_streckenobjekt = ST_SetPoint(liniengeometrie_streckenobjekt, ST_NumPoints(liniengeometrie_streckenobjekt) - 1, sep.punktgeometrie);
+      -------------------------------------------------------------------------
+      -- Fehlenden Strassenelementpunkt am Ende der Strecke anlegen
+      EXECUTE '
+        SELECT
+          id,
+          punktgeometrie,
+          auf_strassenelement
+        FROM
+          ukos_okstra.strassenelementpunkt
+        WHERE
+          gueltig_bis > $3 AND
+          ST_Distance(punktgeometrie, $1) < $2
+        ORDER BY
+          ST_Distance(punktgeometrie, $1)
+        LIMIT 1
+      '
+      USING punkt_ende, tolerance, aenderungszeit
+      INTO sep;
+      IF sep.id IS NULL THEN
+        --kein SEP an der Stelle gefunden, anlegen
+        RAISE NOTICE 'Erzeuge Strassenelementpunkt am Ende an Punkt: %', ST_AsText(punkt_ende);
+        EXECUTE '
+          INSERT INTO ukos_okstra.strassenelementpunkt (
+            punktgeometrie,
+            auf_strassenelement,
+            angelegt_von
+          ) VALUES (
+            $1,
+            (SELECT id FROM ukos_okstra.strassenelement WHERE id != ''00000000-0000-0000-0000-000000000000'' AND gueltig_bis > $3 AND ST_Distance(liniengeometrie, $1) < $4),
+            $2
+          )
+          RETURNING id, punktgeometrie
+        '
+        USING punkt_ende, NEW.angelegt_von, aenderungszeit, tolerance
+        INTO sep;
+      ELSE
+        RAISE NOTICE 'Strassenelementpunkt am Ende: % an Punkt: % schon vorhanden.', sep.id, ST_AsText(sep.punktgeometrie);
+      END IF;
+      RAISE NOTICE 'Übernehme die Koordinaten des gefundenen Strassenelementpunktes % als neues Ende der Strecke', sep.id;
+      liniengeometrie_streckenobjekt = ST_SetPoint(liniengeometrie_streckenobjekt, ST_NumPoints(liniengeometrie_streckenobjekt) - 1, sep.punktgeometrie);
 
-			-- Fehlende Teilelemente entlang der Strecke bilden
-			-- Alle SEP finden, station berechnen sortieren und leg und die te finden, die fehlen
-			FOR te IN EXECUTE '
-				SELECT
-					a.beginnt_bei_sep,
-					a.endet_bei_sep,
-					a.auf_strassenelement,
-					t.id,
-					t.beginnt_bei_strassenelempkt,
-					t.endet_bei_strassenelempkt
-				FROM
-					(
-						SELECT
-							id AS beginnt_bei_sep,
-							lead(id) OVER (ORDER BY ST_LineLocatePoint($1, punktgeometrie)) endet_bei_sep,
-							sep.auf_strassenelement,
-							ST_LineLocatePoint($1, punktgeometrie) ordinate
-						FROM
-							ukos_okstra.strassenelementpunkt sep
-						WHERE
-							gueltig_bis > $3 AND
-							ST_Distance($1, punktgeometrie) < $2
-						ORDER BY ordinate
-					) a LEFT JOIN
-					ukos_okstra.teilelement t ON
-						(a.beginnt_bei_sep = t.beginnt_bei_strassenelempkt AND a.endet_bei_sep = t.endet_bei_strassenelempkt) OR
-						(a.beginnt_bei_sep = t.endet_bei_strassenelempkt AND a.endet_bei_sep = t.beginnt_bei_strassenelempkt)
-				'
-				USING liniengeometrie_streckenobjekt, tolerance, aenderungszeit
-			LOOP
-				IF te.endet_bei_sep IS NOT NULL THEN
-					IF te.id IS NULL THEN
-						RAISE NOTICE 'Lege fehlendes Teilelement zwischen Strassenelementpunkt % und % an.', te.beginnt_bei_sep, te.endet_bei_sep;
-						EXECUTE '
-							INSERT INTO ukos_okstra.teilelement (
-								beginnt_bei_strassenelempkt,
-								endet_bei_strassenelempkt,
-								auf_strassenelement,
-								erfassungsdatum,
-								angelegt_von
-							)
-							VALUES
-								($1, $2, $3, $4, $5)
-							RETURNING id
-						'
-						USING te.beginnt_bei_sep, te.endet_bei_sep, te.auf_strassenelement, aenderungszeit, NEW.angelegt_von
-						INTO te.id;
-					END IF;
+      -- Fehlende Teilelemente entlang der Strecke bilden
+      -- Alle SEP finden, station berechnen sortieren und leg und die te finden, die fehlen
+      FOR te IN EXECUTE '
+        SELECT
+          a.beginnt_bei_sep,
+          a.endet_bei_sep,
+          a.auf_strassenelement,
+          t.id,
+          t.beginnt_bei_strassenelempkt,
+          t.endet_bei_strassenelempkt
+        FROM
+          (
+            SELECT
+              id AS beginnt_bei_sep,
+              lead(id) OVER (ORDER BY ST_LineLocatePoint($1, punktgeometrie)) endet_bei_sep,
+              sep.auf_strassenelement,
+              ST_LineLocatePoint($1, punktgeometrie) ordinate
+            FROM
+              ukos_okstra.strassenelementpunkt sep
+            WHERE
+              gueltig_bis > $3 AND
+              ST_Distance($1, punktgeometrie) < $2
+            ORDER BY ordinate
+          ) a LEFT JOIN
+          ukos_okstra.teilelement t ON
+            (a.beginnt_bei_sep = t.beginnt_bei_strassenelempkt AND a.endet_bei_sep = t.endet_bei_strassenelempkt) OR
+            (a.beginnt_bei_sep = t.endet_bei_strassenelempkt AND a.endet_bei_sep = t.beginnt_bei_strassenelempkt)
+        '
+        USING liniengeometrie_streckenobjekt, tolerance, aenderungszeit
+      LOOP
+        IF te.endet_bei_sep IS NOT NULL THEN
+          IF te.id IS NULL THEN
+            RAISE NOTICE 'Lege fehlendes Teilelement zwischen Strassenelementpunkt % und % an.', te.beginnt_bei_sep, te.endet_bei_sep;
+            EXECUTE '
+              INSERT INTO ukos_okstra.teilelement (
+                beginnt_bei_strassenelempkt,
+                endet_bei_strassenelempkt,
+                auf_strassenelement,
+                erfassungsdatum,
+                angelegt_von
+              )
+              VALUES
+                ($1, $2, $3, $4, $5)
+              RETURNING id
+            '
+            USING te.beginnt_bei_sep, te.endet_bei_sep, te.auf_strassenelement, aenderungszeit, NEW.angelegt_von
+            INTO te.id;
+          END IF;
 
-					RAISE NOTICE 'Ordne das Teilelement % dem Streckenobjekt % zu.', te.id, NEW.id;
-					EXECUTE '
-						INSERT INTO ukos_okstra.streckenobjekt_to_teilelement (teilelement_id, streckenobjekt_id) VALUES
-						($1, $2)
-					'
-					USING te.id, NEW.id;
-				END IF;
-			END LOOP;
+          RAISE NOTICE 'Ordne das Teilelement % dem Streckenobjekt % zu.', te.id, NEW.id;
+          EXECUTE '
+            INSERT INTO ukos_okstra.streckenobjekt_to_teilelement (teilelement_id, streckenobjekt_id) VALUES
+            ($1, $2)
+          '
+          USING te.id, NEW.id;
+        END IF;
+      END LOOP;
 
-			NEW.geometrie_streckenobjekt = ST_Multi(liniengeometrie_streckenobjekt);
+      NEW.geometrie_streckenobjekt = ST_Multi(liniengeometrie_streckenobjekt);
       --RAISE EXCEPTION 'stop';
-			RETURN NEW;
-		END;
-	$_$;
+      RETURN NEW;
+    END;
+  $_$;
 
 
 --
@@ -1048,103 +1048,103 @@ CREATE FUNCTION add_teilelemente() RETURNS trigger
 CREATE FUNCTION add_verbindungspunkte() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			uuid_vp										character varying;
-			vp_beginnt_bei_geometrie	public.geometry(Point, 25833) = ST_StartPoint(NEW.liniengeometrie);
-			vp_endet_bei_geometrie		public.geometry(Point, 25833) = ST_EndPoint(NEW.liniengeometrie);
-			rec												RECORD;
-			tolerance									NUMERIC;
-			liniengeometrie_changed	BOOLEAN;
-			sql	TEXT;
-		BEGIN
-			--------------------------------------------------------------------------------------------------------
-			-- Initialisierung
-			EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Topologietolerance' INTO tolerance;
+    DECLARE
+      uuid_vp                    character varying;
+      vp_beginnt_bei_geometrie  public.geometry(Point, 25833) = ST_StartPoint(NEW.liniengeometrie);
+      vp_endet_bei_geometrie    public.geometry(Point, 25833) = ST_EndPoint(NEW.liniengeometrie);
+      rec                        RECORD;
+      tolerance                  NUMERIC;
+      liniengeometrie_changed  BOOLEAN;
+      sql  TEXT;
+    BEGIN
+      --------------------------------------------------------------------------------------------------------
+      -- Initialisierung
+      EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Topologietolerance' INTO tolerance;
 
-			RAISE NOTICE 'Füge Verindungspunkte des Strassenelementes mit Liniengeometrie: % und Topologietolerance: % hinzu,
-			falls noch nicht übergeben oder nicht vorhanden und setze ggf. neue Geometrie und Verindungspunkte in Strassenelement ein.', ST_AsText(NEW.liniengeometrie), tolerance;
+      RAISE NOTICE 'Füge Verindungspunkte des Strassenelementes mit Liniengeometrie: % und Topologietolerance: % hinzu,
+      falls noch nicht übergeben oder nicht vorhanden und setze ggf. neue Geometrie und Verindungspunkte in Strassenelement ein.', ST_AsText(NEW.liniengeometrie), tolerance;
 
-			--------------------------------------------------------------------------------------------------------
-			IF NEW.beginnt_bei_vp = '00000000-0000-0000-0000-000000000000' THEN
-				EXECUTE '
-					SELECT id, punktgeometrie, ST_Equals($1, punktgeometrie) punkt_gleich
-					FROM ukos_okstra.verbindungspunkt
-					WHERE ST_Distance(punktgeometrie, $1) < $2
-					ORDER BY ST_Distance(punktgeometrie, $1)
-					LIMIT 1
-				'
-				USING vp_beginnt_bei_geometrie, tolerance
-				INTO rec;
+      --------------------------------------------------------------------------------------------------------
+      IF NEW.beginnt_bei_vp = '00000000-0000-0000-0000-000000000000' THEN
+        EXECUTE '
+          SELECT id, punktgeometrie, ST_Equals($1, punktgeometrie) punkt_gleich
+          FROM ukos_okstra.verbindungspunkt
+          WHERE ST_Distance(punktgeometrie, $1) < $2
+          ORDER BY ST_Distance(punktgeometrie, $1)
+          LIMIT 1
+        '
+        USING vp_beginnt_bei_geometrie, tolerance
+        INTO rec;
 
-				IF rec.id IS NULL THEN --wenn kein Knoten an der Stelle gefunden wird
-					uuid_vp = uuid_generate_v4(); --dann uuid neu generieren
-					RAISE NOTICE 'Kein Verbindungspunkt (VP) am Anfang des Strassenelementes gefunden. Lege neuen VP an mit id: %', uuid_vp;
-					EXECUTE 'INSERT INTO ukos_okstra.verbindungspunkt (id, id_strasse, punktgeometrie) VALUES ( $1, $2, $3 )'
-					USING uuid_vp, NEW.id_strasse, vp_beginnt_bei_geometrie; --und Datensatz anlegen
-					NEW.beginnt_bei_vp = uuid_vp; --und die id im neuen strassenelement eintragen
-				ELSE
-					RAISE NOTICE 'Verbindungspunkt id: % am Anfang des Strassenelementes gefunden.', rec.id;
-					-- Die id des gefundenen Verbindungspunktes übernehmen
-					NEW.beginnt_bei_vp = rec.id;
-					IF NOT rec.punkt_gleich THEN
-						RAISE NOTICE 'Übernehme die Koordinaten des gefundenen Anfangspunktes % (%)', rec.id, ST_AsText(rec.punktgeometrie);
-						NEW.liniengeometrie = ST_SetPoint(NEW.liniengeometrie, 0, rec.punktgeometrie);
-						liniengeometrie_changed = true;
-					END IF;
-				END IF;
-			ELSE
-				RAISE NOTICE 'Verbindungspunkt am Anfang ist mit übergeben worden: %', NEW.beginnt_bei_vp;
-			END IF;
+        IF rec.id IS NULL THEN --wenn kein Knoten an der Stelle gefunden wird
+          uuid_vp = uuid_generate_v4(); --dann uuid neu generieren
+          RAISE NOTICE 'Kein Verbindungspunkt (VP) am Anfang des Strassenelementes gefunden. Lege neuen VP an mit id: %', uuid_vp;
+          EXECUTE 'INSERT INTO ukos_okstra.verbindungspunkt (id, id_strasse, punktgeometrie) VALUES ( $1, $2, $3 )'
+          USING uuid_vp, NEW.id_strasse, vp_beginnt_bei_geometrie; --und Datensatz anlegen
+          NEW.beginnt_bei_vp = uuid_vp; --und die id im neuen strassenelement eintragen
+        ELSE
+          RAISE NOTICE 'Verbindungspunkt id: % am Anfang des Strassenelementes gefunden.', rec.id;
+          -- Die id des gefundenen Verbindungspunktes übernehmen
+          NEW.beginnt_bei_vp = rec.id;
+          IF NOT rec.punkt_gleich THEN
+            RAISE NOTICE 'Übernehme die Koordinaten des gefundenen Anfangspunktes % (%)', rec.id, ST_AsText(rec.punktgeometrie);
+            NEW.liniengeometrie = ST_SetPoint(NEW.liniengeometrie, 0, rec.punktgeometrie);
+            liniengeometrie_changed = true;
+          END IF;
+        END IF;
+      ELSE
+        RAISE NOTICE 'Verbindungspunkt am Anfang ist mit übergeben worden: %', NEW.beginnt_bei_vp;
+      END IF;
 
-			--------------------------------------------------------------------------------------------------------
-			IF NEW.endet_bei_vp = '00000000-0000-0000-0000-000000000000' THEN
-				EXECUTE '
-					SELECT id, punktgeometrie, ST_Equals($1, punktgeometrie) punkt_gleich
-					FROM ukos_okstra.verbindungspunkt WHERE ST_Distance(punktgeometrie, $1) <= $2
-					ORDER BY ST_Distance(punktgeometrie, $1)
-					LIMIT 1
-				'
-				USING vp_endet_bei_geometrie, tolerance
-				INTO rec;
+      --------------------------------------------------------------------------------------------------------
+      IF NEW.endet_bei_vp = '00000000-0000-0000-0000-000000000000' THEN
+        EXECUTE '
+          SELECT id, punktgeometrie, ST_Equals($1, punktgeometrie) punkt_gleich
+          FROM ukos_okstra.verbindungspunkt WHERE ST_Distance(punktgeometrie, $1) <= $2
+          ORDER BY ST_Distance(punktgeometrie, $1)
+          LIMIT 1
+        '
+        USING vp_endet_bei_geometrie, tolerance
+        INTO rec;
 
-				IF rec.id IS NULL THEN --wenn kein Knoten an der Stelle gefunden wird
-					uuid_vp = uuid_generate_v4(); --dann uuid neu generieren
-					RAISE NOTICE 'Kein Verbindungspunkt (VP) am Ende des Strassenelementes gefunden. Lege neuen VP an mit id: %', uuid_vp;
-					EXECUTE 'INSERT INTO ukos_okstra.verbindungspunkt (id, id_strasse, punktgeometrie) VALUES ( $1, $2, $3 )'
-					USING uuid_vp, NEW.id_strasse, vp_endet_bei_geometrie; --und Datensatz anlegen
-					NEW.endet_bei_vp = uuid_vp; --und die id im neuen strassenelement eintragen
-				ELSE
-					RAISE NOTICE 'Verbindungspunkt id: % am Ende des Strassenelementes gefunden.', rec.id;
-					-- Die id des gefundenen Verbindungspunktes übernehmen
-					NEW.endet_bei_vp = rec.id;
-					IF NOT rec.punkt_gleich THEN
-						RAISE NOTICE 'Übernehme die Koordinaten des gefundenen Endpunktes % (%)', rec.id, ST_AsText(rec.punktgeometrie);
-						NEW.liniengeometrie = ST_SetPoint(NEW.liniengeometrie, ST_NumPoints(NEW.liniengeometrie) - 1, rec.punktgeometrie);
-						liniengeometrie_changed = true;
-					END IF;
-				END IF;
-			ELSE
-				RAISE NOTICE 'Verbindungspunkt am Ende ist mit übergeben worden: %', NEW.endet_bei_vp;
-			END IF;
+        IF rec.id IS NULL THEN --wenn kein Knoten an der Stelle gefunden wird
+          uuid_vp = uuid_generate_v4(); --dann uuid neu generieren
+          RAISE NOTICE 'Kein Verbindungspunkt (VP) am Ende des Strassenelementes gefunden. Lege neuen VP an mit id: %', uuid_vp;
+          EXECUTE 'INSERT INTO ukos_okstra.verbindungspunkt (id, id_strasse, punktgeometrie) VALUES ( $1, $2, $3 )'
+          USING uuid_vp, NEW.id_strasse, vp_endet_bei_geometrie; --und Datensatz anlegen
+          NEW.endet_bei_vp = uuid_vp; --und die id im neuen strassenelement eintragen
+        ELSE
+          RAISE NOTICE 'Verbindungspunkt id: % am Ende des Strassenelementes gefunden.', rec.id;
+          -- Die id des gefundenen Verbindungspunktes übernehmen
+          NEW.endet_bei_vp = rec.id;
+          IF NOT rec.punkt_gleich THEN
+            RAISE NOTICE 'Übernehme die Koordinaten des gefundenen Endpunktes % (%)', rec.id, ST_AsText(rec.punktgeometrie);
+            NEW.liniengeometrie = ST_SetPoint(NEW.liniengeometrie, ST_NumPoints(NEW.liniengeometrie) - 1, rec.punktgeometrie);
+            liniengeometrie_changed = true;
+          END IF;
+        END IF;
+      ELSE
+        RAISE NOTICE 'Verbindungspunkt am Ende ist mit übergeben worden: %', NEW.endet_bei_vp;
+      END IF;
 
-			--------------------------------------------------------------------------------------------------------
-			sql = '
-				UPDATE
-					ukos_okstra.strassenelement
-				SET
-					beginnt_bei_vp = ' || quote_literal(NEW.beginnt_bei_vp) || ',
-					endet_bei_vp = ' || quote_literal(NEW.endet_bei_vp) || '
-			';
-			IF liniengeometrie_changed THEN
-				sql = sql || ', liniengeometrie = ' || quote_literal(NEW.liniengeometrie::text);
-			END IF;
-			sql = sql || ' WHERE id = ' || quote_literal(NEW.id);
-			RAISE NOTICE 'Update Anfang, Endpunkt und ggf. Liniengeometrie von Strassenelement mit SQL: %', sql;
-			EXECUTE sql;
+      --------------------------------------------------------------------------------------------------------
+      sql = '
+        UPDATE
+          ukos_okstra.strassenelement
+        SET
+          beginnt_bei_vp = ' || quote_literal(NEW.beginnt_bei_vp) || ',
+          endet_bei_vp = ' || quote_literal(NEW.endet_bei_vp) || '
+      ';
+      IF liniengeometrie_changed THEN
+        sql = sql || ', liniengeometrie = ' || quote_literal(NEW.liniengeometrie::text);
+      END IF;
+      sql = sql || ' WHERE id = ' || quote_literal(NEW.id);
+      RAISE NOTICE 'Update Anfang, Endpunkt und ggf. Liniengeometrie von Strassenelement mit SQL: %', sql;
+      EXECUTE sql;
 
-		RETURN NEW;
-	END;
-	$_$;
+    RETURN NEW;
+  END;
+  $_$;
 
 
 --
@@ -1154,12 +1154,12 @@ CREATE FUNCTION add_verbindungspunkte() RETURNS trigger
 CREATE FUNCTION after1() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-		DECLARE
-		BEGIN
-			RAISE NOTICE 'after trigger 1 old';
-			RETURN old;
-		END;
-	$$;
+    DECLARE
+    BEGIN
+      RAISE NOTICE 'after trigger 1 old';
+      RETURN old;
+    END;
+  $$;
 
 
 --
@@ -1169,16 +1169,16 @@ CREATE FUNCTION after1() RETURNS trigger
 CREATE FUNCTION before1() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-		DECLARE
+    DECLARE
       test record;
-		BEGIN
-			RAISE NOTICE 'before trigger 1 old';
-			EXECUTE 'SELECT (new)'
-			into test;
-			raise notice 'test %' , test;
-			RETURN old;
-		END;
-	$$;
+    BEGIN
+      RAISE NOTICE 'before trigger 1 old';
+      EXECUTE 'SELECT (new)'
+      into test;
+      raise notice 'test %' , test;
+      RETURN old;
+    END;
+  $$;
 
 
 --
@@ -1188,12 +1188,12 @@ CREATE FUNCTION before1() RETURNS trigger
 CREATE FUNCTION before2() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-		DECLARE
-		BEGIN
-			RAISE NOTICE 'before trigger 2 null';
-			RETURN old;
-		END;
-	$$;
+    DECLARE
+    BEGIN
+      RAISE NOTICE 'before trigger 2 null';
+      RETURN old;
+    END;
+  $$;
 
 
 --
@@ -1203,50 +1203,50 @@ CREATE FUNCTION before2() RETURNS trigger
 CREATE FUNCTION check_abhaengigkeiten_strassenelementpunkt() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			anzahl_te INTEGER;
-			anzahl_sap INTEGER;
-			aenderungszeit TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
-		BEGIN
-			--------------------------------------------------------------------------------------------------------
-			-- Frage Abhängigkeiten von noch lebenden Teilelementen ab
-			EXECUTE '
-				SELECT
-					count(*)
-				FROM
-				  ukos_okstra.teilelement te
-				WHERE
-					gueltig_bis > $1 AND
-					(
-						beginnt_bei_strassenelempkt = $2 OR
-						endet_bei_strassenelempkt = $2
-					)
-			'
-			USING aenderungszeit, OLD.id
-			INTO anzahl_te;
-			IF anzahl_te > 0 THEN
-				RETURN NULL; -- Abbruch des Löschvorgangs der Strassenelemente
-			END IF;
-			--------------------------------------------------------------------------------------------------------
-			-- Frage Abhängigkeiten von noch lebenden Strassenausstattungspunkten ab
-			EXECUTE '
-				SELECT
-					count(*)
-				FROM
-					ukos_okstra.strassenausstattung_punkt
-				WHERE
-					gueltig_bis > $1 AND
-					bei_strassenelementpunkt_id = $2
-			'
-			USING aenderungszeit, OLD.id
-			INTO anzahl_sap;
-			IF anzahl_sap > 0 THEN
-				RETURN NULL; -- Abbruch des Löschvorgangs des Strassenelementes
-			END IF;
+    DECLARE
+      anzahl_te INTEGER;
+      anzahl_sap INTEGER;
+      aenderungszeit TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
+    BEGIN
+      --------------------------------------------------------------------------------------------------------
+      -- Frage Abhängigkeiten von noch lebenden Teilelementen ab
+      EXECUTE '
+        SELECT
+          count(*)
+        FROM
+          ukos_okstra.teilelement te
+        WHERE
+          gueltig_bis > $1 AND
+          (
+            beginnt_bei_strassenelempkt = $2 OR
+            endet_bei_strassenelempkt = $2
+          )
+      '
+      USING aenderungszeit, OLD.id
+      INTO anzahl_te;
+      IF anzahl_te > 0 THEN
+        RETURN NULL; -- Abbruch des Löschvorgangs der Strassenelemente
+      END IF;
+      --------------------------------------------------------------------------------------------------------
+      -- Frage Abhängigkeiten von noch lebenden Strassenausstattungspunkten ab
+      EXECUTE '
+        SELECT
+          count(*)
+        FROM
+          ukos_okstra.strassenausstattung_punkt
+        WHERE
+          gueltig_bis > $1 AND
+          bei_strassenelementpunkt_id = $2
+      '
+      USING aenderungszeit, OLD.id
+      INTO anzahl_sap;
+      IF anzahl_sap > 0 THEN
+        RETURN NULL; -- Abbruch des Löschvorgangs des Strassenelementes
+      END IF;
 
-		RETURN OLD; -- Weiter mit Löschvorgang des Strassenelementes
-	END;
-	$_$;
+    RETURN OLD; -- Weiter mit Löschvorgang des Strassenelementes
+  END;
+  $_$;
 
 
 --
@@ -1263,26 +1263,26 @@ COMMENT ON FUNCTION check_abhaengigkeiten_strassenelementpunkt() IS 'Objekte, di
 CREATE FUNCTION create_topogeom() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			tolerance									NUMERIC;
-		BEGIN
-			--------------------------------------------------------------------------------------------------------
-			-- Initialisierung
-			EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Topologietolerance' INTO tolerance;
+    DECLARE
+      tolerance                  NUMERIC;
+    BEGIN
+      --------------------------------------------------------------------------------------------------------
+      -- Initialisierung
+      EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Topologietolerance' INTO tolerance;
 
-			EXECUTE '
-				UPDATE
-					ukos_okstra.strassenelement
-				SET
-					liniengeometrie_topo = topology.toTopoGeom(liniengeometrie, ' || quote_literal('ukos_topo') || ', 1, $1)
-				WHERE
-					id = $2
-			'
-			USING tolerance, NEW.id;
+      EXECUTE '
+        UPDATE
+          ukos_okstra.strassenelement
+        SET
+          liniengeometrie_topo = topology.toTopoGeom(liniengeometrie, ' || quote_literal('ukos_topo') || ', 1, $1)
+        WHERE
+          id = $2
+      '
+      USING tolerance, NEW.id;
 
-			RETURN NEW;
-		END;
-	$_$;
+      RETURN NEW;
+    END;
+  $_$;
 
 
 --
@@ -1299,45 +1299,45 @@ COMMENT ON FUNCTION create_topogeom() IS 'Fügt das Strassenelement in die Topol
 CREATE FUNCTION delete_punkte() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			anzahl_strassenelemente	INTEGER;
-		BEGIN
-			--------------------------------------------------------------------------------------------------------
-			-- Verbinsungspunkt am Anfang löschen
-			IF OLD.beginnt_bei_vp != '00000000-0000-0000-0000-000000000000' THEN
-				RAISE NOTICE 'Versuche Verbindungspunkt am Anfang: % zu löschen.', OLD.beginnt_bei_vp;
-				EXECUTE '
-					DELETE FROM ukos_okstra.verbindungspunkt
-					WHERE id = $1
-				'
-				USING OLD.beginnt_bei_vp;
-			END IF;
-			--------------------------------------------------------------------------------------------------------
-			-- Verbindungspunkt am Ende löschen
-			IF OLD.endet_bei_vp != '00000000-0000-0000-0000-000000000000' THEN
-				RAISE NOTICE 'Versuche Verbindungspunkt am Ende: % zu löschen.', OLD.endet_bei_vp;
-				EXECUTE '
-					DELETE FROM ukos_okstra.verbindungspunkt
-					WHERE id = $1
-				'
-				USING OLD.endet_bei_vp;
-			END IF;
-			--------------------------------------------------------------------------------------------------------
-			-- Strassenelementpunkte zurücksetzen
-			EXECUTE '
-				UPDATE
-					ukos_okstra.strassenelementpunkt
-				SET
-					auf_strassenelement = ''00000000-0000-0000-0000-000000000000''
-				WHERE
-					auf_strassenelement = $1
-			'
-			USING OLD.id;
-			RAISE NOTICE 'Strassenelement: % in Strassenelementpunkten zurückgesetzt.', OLD.id;
+    DECLARE
+      anzahl_strassenelemente  INTEGER;
+    BEGIN
+      --------------------------------------------------------------------------------------------------------
+      -- Verbinsungspunkt am Anfang löschen
+      IF OLD.beginnt_bei_vp != '00000000-0000-0000-0000-000000000000' THEN
+        RAISE NOTICE 'Versuche Verbindungspunkt am Anfang: % zu löschen.', OLD.beginnt_bei_vp;
+        EXECUTE '
+          DELETE FROM ukos_okstra.verbindungspunkt
+          WHERE id = $1
+        '
+        USING OLD.beginnt_bei_vp;
+      END IF;
+      --------------------------------------------------------------------------------------------------------
+      -- Verbindungspunkt am Ende löschen
+      IF OLD.endet_bei_vp != '00000000-0000-0000-0000-000000000000' THEN
+        RAISE NOTICE 'Versuche Verbindungspunkt am Ende: % zu löschen.', OLD.endet_bei_vp;
+        EXECUTE '
+          DELETE FROM ukos_okstra.verbindungspunkt
+          WHERE id = $1
+        '
+        USING OLD.endet_bei_vp;
+      END IF;
+      --------------------------------------------------------------------------------------------------------
+      -- Strassenelementpunkte zurücksetzen
+      EXECUTE '
+        UPDATE
+          ukos_okstra.strassenelementpunkt
+        SET
+          auf_strassenelement = ''00000000-0000-0000-0000-000000000000''
+        WHERE
+          auf_strassenelement = $1
+      '
+      USING OLD.id;
+      RAISE NOTICE 'Strassenelement: % in Strassenelementpunkten zurückgesetzt.', OLD.id;
 
-		RETURN OLD;
-	END;
-	$_$;
+    RETURN OLD;
+  END;
+  $_$;
 
 
 --
@@ -1347,33 +1347,33 @@ CREATE FUNCTION delete_punkte() RETURNS trigger
 CREATE FUNCTION delete_querschnittstreifen() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			qs_id CHARACTER VARYING;
-		BEGIN
-			--------------------------------------------------------------------------------------------------------
-			-- Frage Querschnittstreifen der Verkehrsflaeche ab
-			EXECUTE '
-				SELECT
-					id
-				FROM
-				  ukos_okstra.querschnittstreifen
-				WHERE
-					in_verkehrsflaeche = $1
-				'
-			USING OLD.id
-			INTO qs_id;
-			IF qs_id IS NOT NULL THEN
-				EXECUTE '
-					DELETE FROM ukos_okstra.querschnittstreifen WHERE id = $1
-				'
-				USING qs_id;
-			ELSE
-				RAISE NOTICE 'Die Verkehrsfläche hat keinen Querschnittstreifen.';
-			END IF;
+    DECLARE
+      qs_id CHARACTER VARYING;
+    BEGIN
+      --------------------------------------------------------------------------------------------------------
+      -- Frage Querschnittstreifen der Verkehrsflaeche ab
+      EXECUTE '
+        SELECT
+          id
+        FROM
+          ukos_okstra.querschnittstreifen
+        WHERE
+          in_verkehrsflaeche = $1
+        '
+      USING OLD.id
+      INTO qs_id;
+      IF qs_id IS NOT NULL THEN
+        EXECUTE '
+          DELETE FROM ukos_okstra.querschnittstreifen WHERE id = $1
+        '
+        USING qs_id;
+      ELSE
+        RAISE NOTICE 'Die Verkehrsfläche hat keinen Querschnittstreifen.';
+      END IF;
 
-			RETURN OLD;
-		END;
-	$_$;
+      RETURN OLD;
+    END;
+  $_$;
 
 
 --
@@ -1383,34 +1383,34 @@ CREATE FUNCTION delete_querschnittstreifen() RETURNS trigger
 CREATE FUNCTION delete_strassenelementpunkte() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			te RECORD;
-			aenderungszeit TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
-		BEGIN
-			--------------------------------------------------------------------------------------------------------
-			-- Frage Strassenelementpunkte des Teilelementes ab und starte die Löschung
-			EXECUTE '
-				SELECT
-					beginnt_bei_strassenelempkt,
-					endet_bei_strassenelempkt
-				FROM
-				  ukos_okstra.teilelement te
-				WHERE
-					id = $1
-				'
-			USING OLD.id
-			INTO te;
-			EXECUTE '
-				DELETE FROM ukos_okstra.strassenelementpunkt WHERE id = $1
-			'
-			USING te.beginnt_bei_strassenelempkt;
-			EXECUTE '
-				DELETE FROM ukos_okstra.strassenelementpunkt WHERE id = $1
-			'
-			USING te.endet_bei_strassenelempkt;
-		RETURN OLD;
-	END;
-	$_$;
+    DECLARE
+      te RECORD;
+      aenderungszeit TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
+    BEGIN
+      --------------------------------------------------------------------------------------------------------
+      -- Frage Strassenelementpunkte des Teilelementes ab und starte die Löschung
+      EXECUTE '
+        SELECT
+          beginnt_bei_strassenelempkt,
+          endet_bei_strassenelempkt
+        FROM
+          ukos_okstra.teilelement te
+        WHERE
+          id = $1
+        '
+      USING OLD.id
+      INTO te;
+      EXECUTE '
+        DELETE FROM ukos_okstra.strassenelementpunkt WHERE id = $1
+      '
+      USING te.beginnt_bei_strassenelempkt;
+      EXECUTE '
+        DELETE FROM ukos_okstra.strassenelementpunkt WHERE id = $1
+      '
+      USING te.endet_bei_strassenelempkt;
+    RETURN OLD;
+  END;
+  $_$;
 
 
 --
@@ -1420,53 +1420,53 @@ CREATE FUNCTION delete_strassenelementpunkte() RETURNS trigger
 CREATE FUNCTION delete_teilelemente() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			te RECORD;
-			aenderungszeit TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
-		BEGIN
-			--------------------------------------------------------------------------------------------------------
-			-- Frage Teilelemente des Streckenobjektes ab, die nicht mehr von anderen abhängen und starte die Löschung
-			FOR te IN EXECUTE '
-				SELECT
-					s2t.teilelement_id,
-					s2t.streckenobjekt_id,
-				  andere_te.teilelement_id AS id
-				FROM
-					ukos_okstra.teilelement te JOIN
-					ukos_okstra.streckenobjekt_to_teilelement s2t ON te.id = s2t.teilelement_id LEFT JOIN
-					(
-						SELECT
-							s2t2.teilelement_id,
-							s2t2.streckenobjekt_id
-						FROM
-							ukos_okstra.teilelement te JOIN
-							ukos_okstra.streckenobjekt_to_teilelement s2t2 ON te.id = s2t2.teilelement_id JOIN
-							ukos_base.streckenobjekt so ON s2t2.streckenobjekt_id = so.id
-						WHERE
-							te.gueltig_bis > $1 AND
-							so.gueltig_bis > $1 AND
-							so.id != $2
-					) andere_te ON s2t.teilelement_id = andere_te.teilelement_id
-				WHERE
-					te.gueltig_bis > $1 AND
-					s2t.streckenobjekt_id = $2 AND
-				  andere_te.teilelement_id IS NULL
-				'
-				USING aenderungszeit, OLD.id
-			LOOP
-				EXECUTE '
-					DELETE FROM ukos_okstra.teilelement WHERE id = $1
-				'
-				USING te.teilelement_id;
-			END LOOP;
+    DECLARE
+      te RECORD;
+      aenderungszeit TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
+    BEGIN
+      --------------------------------------------------------------------------------------------------------
+      -- Frage Teilelemente des Streckenobjektes ab, die nicht mehr von anderen abhängen und starte die Löschung
+      FOR te IN EXECUTE '
+        SELECT
+          s2t.teilelement_id,
+          s2t.streckenobjekt_id,
+          andere_te.teilelement_id AS id
+        FROM
+          ukos_okstra.teilelement te JOIN
+          ukos_okstra.streckenobjekt_to_teilelement s2t ON te.id = s2t.teilelement_id LEFT JOIN
+          (
+            SELECT
+              s2t2.teilelement_id,
+              s2t2.streckenobjekt_id
+            FROM
+              ukos_okstra.teilelement te JOIN
+              ukos_okstra.streckenobjekt_to_teilelement s2t2 ON te.id = s2t2.teilelement_id JOIN
+              ukos_base.streckenobjekt so ON s2t2.streckenobjekt_id = so.id
+            WHERE
+              te.gueltig_bis > $1 AND
+              so.gueltig_bis > $1 AND
+              so.id != $2
+          ) andere_te ON s2t.teilelement_id = andere_te.teilelement_id
+        WHERE
+          te.gueltig_bis > $1 AND
+          s2t.streckenobjekt_id = $2 AND
+          andere_te.teilelement_id IS NULL
+        '
+        USING aenderungszeit, OLD.id
+      LOOP
+        EXECUTE '
+          DELETE FROM ukos_okstra.teilelement WHERE id = $1
+        '
+        USING te.teilelement_id;
+      END LOOP;
 
-			IF TG_OP = 'DELETE' THEN
-				RETURN OLD;
-			ELSE
-				RETURN NEW;
-			END IF;
-	END;
-	$_$;
+      IF TG_OP = 'DELETE' THEN
+        RETURN OLD;
+      ELSE
+        RETURN NEW;
+      END IF;
+  END;
+  $_$;
 
 
 --
@@ -1476,56 +1476,56 @@ CREATE FUNCTION delete_teilelemente() RETURNS trigger
 CREATE FUNCTION delete_topogeom() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			edge_id INTEGER;
-		BEGIN
-			--------------------------------------------------------------------------------------------------------
-			EXECUTE '
-				SELECT
-					e[1]
-				FROM
-					(
-						SELECT
-							topology.GetTopoGeomElements(liniengeometrie_topo) e
-						FROM
-							ukos_okstra.strassenelement
-						WHERE
-							id = $1
-						LIMIT 1
-					) e_tab
-			'
-			USING OLD.id
-			INTO edge_id;
+    DECLARE
+      edge_id INTEGER;
+    BEGIN
+      --------------------------------------------------------------------------------------------------------
+      EXECUTE '
+        SELECT
+          e[1]
+        FROM
+          (
+            SELECT
+              topology.GetTopoGeomElements(liniengeometrie_topo) e
+            FROM
+              ukos_okstra.strassenelement
+            WHERE
+              id = $1
+            LIMIT 1
+          ) e_tab
+      '
+      USING OLD.id
+      INTO edge_id;
 
-			EXECUTE '
-				UPDATE
-					ukos_okstra.strassenelement
-				SET
-					liniengeometrie_topo = topology.clearTopoGeom(liniengeometrie_topo)
-				WHERE
-					id = $1
-			'
-			USING OLD.id;
+      EXECUTE '
+        UPDATE
+          ukos_okstra.strassenelement
+        SET
+          liniengeometrie_topo = topology.clearTopoGeom(liniengeometrie_topo)
+        WHERE
+          id = $1
+      '
+      USING OLD.id;
 
-			IF edge_id IS NOT NULL THEN
-				EXECUTE '
-					SELECT topology.ST_RemEdgeModFace(' || quote_literal('ukos_topo') || ', $1)
-				'
-				USING edge_id;
-			END IF;
+      IF edge_id IS NOT NULL THEN
+        EXECUTE '
+          SELECT topology.ST_RemEdgeModFace(' || quote_literal('ukos_topo') || ', $1)
+        '
+        USING edge_id;
+      END IF;
 
-			EXECUTE '
-				SELECT
-					topology.ST_RemoveIsoNode(' || quote_literal('ukos_topo') || ', node_id)
-				FROM
-					ukos_topo.node
-				WHERE
-					containing_face = 0
-			';
+      EXECUTE '
+        SELECT
+          topology.ST_RemoveIsoNode(' || quote_literal('ukos_topo') || ', node_id)
+        FROM
+          ukos_topo.node
+        WHERE
+          containing_face = 0
+      ';
 
-			RETURN OLD;
-		END;
-	$_$;
+      RETURN OLD;
+    END;
+  $_$;
 
 
 --
@@ -1535,30 +1535,30 @@ CREATE FUNCTION delete_topogeom() RETURNS trigger
 CREATE FUNCTION liniengeometrie_aendern() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-			DECLARE
-				aenderungszeit	TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
-			BEGIN
-				--------------------------------------------------------------------------------------------------------
-				NEW.laenge = ST_Length(NEW.liniengeometrie);
-				NEW.geaendert_am = aenderungszeit;
-				RAISE NOTICE 'Länge des Strassenelementes: % aktualisiert.', NEW.id;
+      DECLARE
+        aenderungszeit  TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
+      BEGIN
+        --------------------------------------------------------------------------------------------------------
+        NEW.laenge = ST_Length(NEW.liniengeometrie);
+        NEW.geaendert_am = aenderungszeit;
+        RAISE NOTICE 'Länge des Strassenelementes: % aktualisiert.', NEW.id;
 
-				--------------------------------------------------------------------------------------------------------
-				EXECUTE '
-					UPDATE
-						ukos_okstra.strassenelementpunkt
-					SET
-						auf_strassenelement = ''00000000-0000-0000-0000-000000000000'',
-						geaendert_am = $2
-					WHERE
-						auf_strassenelement = (SELECT id FROM ukos_okstra.strassenelement WHERE id = $1)
-				'
-				USING NEW.id, aenderungszeit;
-				RAISE NOTICE 'Anhängende Punktobjekte zurückgesetzt.';
+        --------------------------------------------------------------------------------------------------------
+        EXECUTE '
+          UPDATE
+            ukos_okstra.strassenelementpunkt
+          SET
+            auf_strassenelement = ''00000000-0000-0000-0000-000000000000'',
+            geaendert_am = $2
+          WHERE
+            auf_strassenelement = (SELECT id FROM ukos_okstra.strassenelement WHERE id = $1)
+        '
+        USING NEW.id, aenderungszeit;
+        RAISE NOTICE 'Anhängende Punktobjekte zurückgesetzt.';
 
-			RETURN NEW;
-		END;
-	$_$;
+      RETURN NEW;
+    END;
+  $_$;
 
 
 --
@@ -1568,36 +1568,36 @@ CREATE FUNCTION liniengeometrie_aendern() RETURNS trigger
 CREATE FUNCTION pruefe_abhaengigkeiten() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			aenderungszeit TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
-			anzahl_strassenelemente	INTEGER;
-		BEGIN
-			--------------------------------------------------------------------------------------------------------
-			IF OLD.id = '00000000-0000-0000-0000-000000000000' THEN
-				RAISE EXCEPTION 'Default Verbindungspunkt id: % darf nicht gelöscht werden', OLD.id;
-				RETURN NULL;
-			ELSE
-				-- Frage ab ob noch gültige Strassenelemente an dem Verbindungspunkt hängen
-				EXECUTE '
-					SELECT count(id)
-					FROM ukos_okstra.strassenelement
-					WHERE
-						gueltig_bis > $2 AND
-						(beginnt_bei_vp = $1 OR endet_bei_vp = $1)
-				'
-				USING OLD.id, aenderungszeit
-				INTO anzahl_strassenelemente;
+    DECLARE
+      aenderungszeit TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
+      anzahl_strassenelemente  INTEGER;
+    BEGIN
+      --------------------------------------------------------------------------------------------------------
+      IF OLD.id = '00000000-0000-0000-0000-000000000000' THEN
+        RAISE EXCEPTION 'Default Verbindungspunkt id: % darf nicht gelöscht werden', OLD.id;
+        RETURN NULL;
+      ELSE
+        -- Frage ab ob noch gültige Strassenelemente an dem Verbindungspunkt hängen
+        EXECUTE '
+          SELECT count(id)
+          FROM ukos_okstra.strassenelement
+          WHERE
+            gueltig_bis > $2 AND
+            (beginnt_bei_vp = $1 OR endet_bei_vp = $1)
+        '
+        USING OLD.id, aenderungszeit
+        INTO anzahl_strassenelemente;
 
-				IF anzahl_strassenelemente > 0 THEN
-					-- es hängen noch Strassenelemente am Verbindungspunkt. Löschen abbrechen.
-					RAISE NOTICE 'Verbindungspunkt: % nicht gelöscht, weil noch % strassenelement(e) anhängen.', OLD.id, anzahl_strassenelemente;
-					RETURN NULL;
-				ELSE
-					RETURN OLD;
-				END IF;
-			END IF;
-		END;
-	$_$;
+        IF anzahl_strassenelemente > 0 THEN
+          -- es hängen noch Strassenelemente am Verbindungspunkt. Löschen abbrechen.
+          RAISE NOTICE 'Verbindungspunkt: % nicht gelöscht, weil noch % strassenelement(e) anhängen.', OLD.id, anzahl_strassenelemente;
+          RETURN NULL;
+        ELSE
+          RETURN OLD;
+        END IF;
+      END IF;
+    END;
+  $_$;
 
 
 --
@@ -1614,266 +1614,266 @@ COMMENT ON FUNCTION pruefe_abhaengigkeiten() IS 'Bricht den Trigger ab, wenn die
 CREATE FUNCTION split_strassenelemente() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-			DECLARE
-				tolerance				NUMERIC;
-				se							RECORD;
-				teil_anfang_id	CHARACTER VARYING;
-				teil_ende_id		CHARACTER VARYING;
-				new_se_id				CHARACTER VARYING;
-				sep							RECORD;
-				new_sep_id			CHARACTER VARYING;
-				new_sep_station	NUMERIC;
-				sql							TEXT;
-				aenderungszeit	TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
-			BEGIN
-				--------------------------------------------------------------------------------------------------------
-				-- Initialisierung
-				EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Topologietolerance' INTO tolerance;
+      DECLARE
+        tolerance        NUMERIC;
+        se              RECORD;
+        teil_anfang_id  CHARACTER VARYING;
+        teil_ende_id    CHARACTER VARYING;
+        new_se_id        CHARACTER VARYING;
+        sep              RECORD;
+        new_sep_id      CHARACTER VARYING;
+        new_sep_station  NUMERIC;
+        sql              TEXT;
+        aenderungszeit  TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
+      BEGIN
+        --------------------------------------------------------------------------------------------------------
+        -- Initialisierung
+        EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Topologietolerance' INTO tolerance;
 
-				RAISE NOTICE 'Trenne Strassenelemente am Verbindungspunkt % auf mit Punktgeometrie: % und Topologietolerance: %, wenn Verbindungspunkt auf solche fällt ', NEW.id, ST_AsText(NEW.punktgeometrie), tolerance;
-				--------------------------------------------------------------------------------------------------------
-				FOR se IN EXECUTE '
-					SELECT
-						id,
-						st_distance($1, liniengeometrie),
-						st_astext(liniengeometrie),
-						ST_LineLocatePoint(liniengeometrie, $1),
-						ST_LineSubstring(liniengeometrie, 0, ST_LineLocatePoint(liniengeometrie, $1)) teil_anfang,
-						ST_LineSubstring(liniengeometrie, ST_LineLocatePoint(liniengeometrie, $1), 1) teil_ende
-					FROM
-						ukos_okstra.strassenelement
-					WHERE
-						gueltig_bis > $3 AND
-						$1 && liniengeometrie AND
-						st_distance($1, liniengeometrie) < $2 AND
-						ST_Length(ST_LineSubstring(liniengeometrie, 0, ST_LineLocatePoint(liniengeometrie, $1))) > $2 AND
-						ST_Length(ST_LineSubstring(liniengeometrie, ST_LineLocatePoint(liniengeometrie, $1), 1)) > $2
-				'
-				USING NEW.punktgeometrie, tolerance, aenderungszeit
-				LOOP
-					RAISE NOTICE 'Teile Strassenelement % auf in die Teile % und %.', se.id, se.teil_anfang, se.teil_ende;
+        RAISE NOTICE 'Trenne Strassenelemente am Verbindungspunkt % auf mit Punktgeometrie: % und Topologietolerance: %, wenn Verbindungspunkt auf solche fällt ', NEW.id, ST_AsText(NEW.punktgeometrie), tolerance;
+        --------------------------------------------------------------------------------------------------------
+        FOR se IN EXECUTE '
+          SELECT
+            id,
+            st_distance($1, liniengeometrie),
+            st_astext(liniengeometrie),
+            ST_LineLocatePoint(liniengeometrie, $1),
+            ST_LineSubstring(liniengeometrie, 0, ST_LineLocatePoint(liniengeometrie, $1)) teil_anfang,
+            ST_LineSubstring(liniengeometrie, ST_LineLocatePoint(liniengeometrie, $1), 1) teil_ende
+          FROM
+            ukos_okstra.strassenelement
+          WHERE
+            gueltig_bis > $3 AND
+            $1 && liniengeometrie AND
+            st_distance($1, liniengeometrie) < $2 AND
+            ST_Length(ST_LineSubstring(liniengeometrie, 0, ST_LineLocatePoint(liniengeometrie, $1))) > $2 AND
+            ST_Length(ST_LineSubstring(liniengeometrie, ST_LineLocatePoint(liniengeometrie, $1), 1)) > $2
+        '
+        USING NEW.punktgeometrie, tolerance, aenderungszeit
+        LOOP
+          RAISE NOTICE 'Teile Strassenelement % auf in die Teile % und %.', se.id, se.teil_anfang, se.teil_ende;
 
-					-- Setze das alte Strassenelement auf historisch
-					EXECUTE 'UPDATE ukos_okstra.strassenelement SET gueltig_bis = $2 WHERE id = $1'
-					USING se.id, aenderungszeit;
+          -- Setze das alte Strassenelement auf historisch
+          EXECUTE 'UPDATE ukos_okstra.strassenelement SET gueltig_bis = $2 WHERE id = $1'
+          USING se.id, aenderungszeit;
 
-					-- Füge das neue Strassenelement vom Anfangsteil des alten Strassenelementes ein
-					EXECUTE '
-						INSERT INTO ukos_okstra.strassenelement(
-							gueltig_von, gueltig_bis,
-							id_strassenelement, id_preisermittlung, 
-							id_zustand, id_zustandsbewertung_01, id_zustandsbewertung_02, 
-							id_zustandsbewertung_03, id_zustandsbewertung_04, id_zustandsbewertung_05, 
-							id_eigentuemer, id_baulasttraeger, ahk, baujahr,
-							angelegt_am, angelegt_von,
-							geaendert_am, geaendert_von, ident_hist, bemerkung, 
-							objektname, zusatzbezeichnung,
-							objektart, objektart_kurz, 
-							objektnummer, zustandsnote, datum_der_benotung, pauschalpreis, 
-							baulasttraeger, baulasttraeger_dritter, abschreibung, art_der_preisermittlung, 
-							eroeffnungsbilanzwert, zeitwert, fremdobjekt, fremddatenbestand, 
-							kommunikationsobjekt, erzeugt_von_ereignis, geloescht_von_ereignis, 
-							hat_vorgaenger_hist_objekt, hat_nachfolger_hist_objekt,
-							geometrie_streckenobjekt, 
-							liniengeometrie,
-							gdf_id, verkehrsrichtung, laenge, stufe, erfassungsdatum, 
-							systemdatum, textfeld, art_der_erfassung, art_der_erfassung_sonst, 
-							quelle_der_information, quelle_der_information_sonst, rfid, migrationshinweise, 
-							unscharf, hat_objekt_id, zwischen_kreuzungsbereichen, im_kreuzungsbereich, 
-							hat_teilelement,
-							beginnt_bei_vp,
-							endet_bei_vp,
-							in_nullpunkt, 
-							in_komplexem_knoten)
-						SELECT
-							$1, ''2100-01-01 02:00:00+01'',
-							id_strassenelement, id_preisermittlung, 
-							id_zustand, id_zustandsbewertung_01, id_zustandsbewertung_02, 
-							id_zustandsbewertung_03, id_zustandsbewertung_04, id_zustandsbewertung_05, 
-							id_eigentuemer, id_baulasttraeger, ahk, baujahr,
-							$1, $2,
-							geaendert_am, geaendert_von, ident_hist, bemerkung, 
-							objektname, zusatzbezeichnung,
-							objektart, objektart_kurz, 
-							objektnummer, zustandsnote, datum_der_benotung, pauschalpreis, 
-							baulasttraeger, baulasttraeger_dritter, abschreibung, art_der_preisermittlung, 
-							eroeffnungsbilanzwert, zeitwert, fremdobjekt, fremddatenbestand, 
-							kommunikationsobjekt, erzeugt_von_ereignis, geloescht_von_ereignis, 
-							hat_vorgaenger_hist_objekt, hat_nachfolger_hist_objekt,
-							geometrie_streckenobjekt,
-							$3,
-							gdf_id, verkehrsrichtung,
-							$4,
-							stufe, erfassungsdatum, 
-							systemdatum, textfeld, art_der_erfassung, art_der_erfassung_sonst, 
-							quelle_der_information, quelle_der_information_sonst, rfid, migrationshinweise, 
-							unscharf, hat_objekt_id, zwischen_kreuzungsbereichen, im_kreuzungsbereich, 
-							hat_teilelement,
-							beginnt_bei_vp,
-							$5,
-							in_nullpunkt, 
-							in_komplexem_knoten
-						FROM ukos_okstra.strassenelement
-						WHERE id = $6
-						RETURNING id
-					'
-					USING aenderungszeit, NEW.angelegt_von, se.teil_anfang, ST_Length(se.teil_anfang), NEW.id, se.id
-					INTO teil_anfang_id;
-					RAISE NOTICE 'Strassenelement id: % am Anfang angelegt', teil_anfang_id;
+          -- Füge das neue Strassenelement vom Anfangsteil des alten Strassenelementes ein
+          EXECUTE '
+            INSERT INTO ukos_okstra.strassenelement(
+              gueltig_von, gueltig_bis,
+              id_strassenelement, id_preisermittlung, 
+              id_zustand, id_zustandsbewertung_01, id_zustandsbewertung_02, 
+              id_zustandsbewertung_03, id_zustandsbewertung_04, id_zustandsbewertung_05, 
+              id_eigentuemer, id_baulasttraeger, ahk, baujahr,
+              angelegt_am, angelegt_von,
+              geaendert_am, geaendert_von, ident_hist, bemerkung, 
+              objektname, zusatzbezeichnung,
+              objektart, objektart_kurz, 
+              objektnummer, zustandsnote, datum_der_benotung, pauschalpreis, 
+              baulasttraeger, baulasttraeger_dritter, abschreibung, art_der_preisermittlung, 
+              eroeffnungsbilanzwert, zeitwert, fremdobjekt, fremddatenbestand, 
+              kommunikationsobjekt, erzeugt_von_ereignis, geloescht_von_ereignis, 
+              hat_vorgaenger_hist_objekt, hat_nachfolger_hist_objekt,
+              geometrie_streckenobjekt, 
+              liniengeometrie,
+              gdf_id, verkehrsrichtung, laenge, stufe, erfassungsdatum, 
+              systemdatum, textfeld, art_der_erfassung, art_der_erfassung_sonst, 
+              quelle_der_information, quelle_der_information_sonst, rfid, migrationshinweise, 
+              unscharf, hat_objekt_id, zwischen_kreuzungsbereichen, im_kreuzungsbereich, 
+              hat_teilelement,
+              beginnt_bei_vp,
+              endet_bei_vp,
+              in_nullpunkt, 
+              in_komplexem_knoten)
+            SELECT
+              $1, ''2100-01-01 02:00:00+01'',
+              id_strassenelement, id_preisermittlung, 
+              id_zustand, id_zustandsbewertung_01, id_zustandsbewertung_02, 
+              id_zustandsbewertung_03, id_zustandsbewertung_04, id_zustandsbewertung_05, 
+              id_eigentuemer, id_baulasttraeger, ahk, baujahr,
+              $1, $2,
+              geaendert_am, geaendert_von, ident_hist, bemerkung, 
+              objektname, zusatzbezeichnung,
+              objektart, objektart_kurz, 
+              objektnummer, zustandsnote, datum_der_benotung, pauschalpreis, 
+              baulasttraeger, baulasttraeger_dritter, abschreibung, art_der_preisermittlung, 
+              eroeffnungsbilanzwert, zeitwert, fremdobjekt, fremddatenbestand, 
+              kommunikationsobjekt, erzeugt_von_ereignis, geloescht_von_ereignis, 
+              hat_vorgaenger_hist_objekt, hat_nachfolger_hist_objekt,
+              geometrie_streckenobjekt,
+              $3,
+              gdf_id, verkehrsrichtung,
+              $4,
+              stufe, erfassungsdatum, 
+              systemdatum, textfeld, art_der_erfassung, art_der_erfassung_sonst, 
+              quelle_der_information, quelle_der_information_sonst, rfid, migrationshinweise, 
+              unscharf, hat_objekt_id, zwischen_kreuzungsbereichen, im_kreuzungsbereich, 
+              hat_teilelement,
+              beginnt_bei_vp,
+              $5,
+              in_nullpunkt, 
+              in_komplexem_knoten
+            FROM ukos_okstra.strassenelement
+            WHERE id = $6
+            RETURNING id
+          '
+          USING aenderungszeit, NEW.angelegt_von, se.teil_anfang, ST_Length(se.teil_anfang), NEW.id, se.id
+          INTO teil_anfang_id;
+          RAISE NOTICE 'Strassenelement id: % am Anfang angelegt', teil_anfang_id;
 
-					-- Füge das neue Strassenelement vom Endteil des alten Strassenelementes ein
-					EXECUTE '
-						INSERT INTO ukos_okstra.strassenelement(
-							gueltig_von, gueltig_bis,
-							id_strassenelement, id_preisermittlung, 
-							id_zustand, id_zustandsbewertung_01, id_zustandsbewertung_02, 
-							id_zustandsbewertung_03, id_zustandsbewertung_04, id_zustandsbewertung_05, 
-							id_eigentuemer, id_baulasttraeger, ahk, baujahr,
-							angelegt_am, angelegt_von,
-							geaendert_am, geaendert_von, ident_hist, bemerkung, 
-							objektname, zusatzbezeichnung,
-							objektart, objektart_kurz, 
-							objektnummer, zustandsnote, datum_der_benotung, pauschalpreis, 
-							baulasttraeger, baulasttraeger_dritter, abschreibung, art_der_preisermittlung, 
-							eroeffnungsbilanzwert, zeitwert, fremdobjekt, fremddatenbestand, 
-							kommunikationsobjekt, erzeugt_von_ereignis, geloescht_von_ereignis, 
-							hat_vorgaenger_hist_objekt, hat_nachfolger_hist_objekt,
-							geometrie_streckenobjekt, 
-							liniengeometrie,
-							gdf_id, verkehrsrichtung, laenge, stufe, erfassungsdatum, 
-							systemdatum, textfeld, art_der_erfassung, art_der_erfassung_sonst, 
-							quelle_der_information, quelle_der_information_sonst, rfid, migrationshinweise, 
-							unscharf, hat_objekt_id, zwischen_kreuzungsbereichen, im_kreuzungsbereich, 
-							hat_teilelement,
-							beginnt_bei_vp,
-							endet_bei_vp,
-							in_nullpunkt, 
-							in_komplexem_knoten)
-						SELECT
-							$1, ''2100-01-01 02:00:00+01'',
-							id_strassenelement, id_preisermittlung, 
-							id_zustand, id_zustandsbewertung_01, id_zustandsbewertung_02, 
-							id_zustandsbewertung_03, id_zustandsbewertung_04, id_zustandsbewertung_05, 
-							id_eigentuemer, id_baulasttraeger, ahk, baujahr,
-							$1, $2,
-							geaendert_am, geaendert_von, ident_hist, bemerkung, 
-							objektname, zusatzbezeichnung,
-							objektart, objektart_kurz, 
-							objektnummer, zustandsnote, datum_der_benotung, pauschalpreis, 
-							baulasttraeger, baulasttraeger_dritter, abschreibung, art_der_preisermittlung, 
-							eroeffnungsbilanzwert, zeitwert, fremdobjekt, fremddatenbestand, 
-							kommunikationsobjekt, erzeugt_von_ereignis, geloescht_von_ereignis, 
-							hat_vorgaenger_hist_objekt, hat_nachfolger_hist_objekt,
-							geometrie_streckenobjekt,
-							$3,
-							gdf_id, verkehrsrichtung,
-							$4,
-							stufe, erfassungsdatum, 
-							systemdatum, textfeld, art_der_erfassung, art_der_erfassung_sonst, 
-							quelle_der_information, quelle_der_information_sonst, rfid, migrationshinweise, 
-							unscharf, hat_objekt_id, zwischen_kreuzungsbereichen, im_kreuzungsbereich, 
-							hat_teilelement,
-							$5,
-							endet_bei_vp,
-							in_nullpunkt, 
-							in_komplexem_knoten
-						FROM ukos_okstra.strassenelement
-						WHERE id = $6
-						RETURNING id
-					'
-					USING aenderungszeit, NEW.angelegt_von, se.teil_ende, ST_Length(se.teil_ende), NEW.id, se.id
-					INTO teil_ende_id;
-					RAISE NOTICE 'Strassenelement id: % am Ende angelegt', teil_ende_id;
+          -- Füge das neue Strassenelement vom Endteil des alten Strassenelementes ein
+          EXECUTE '
+            INSERT INTO ukos_okstra.strassenelement(
+              gueltig_von, gueltig_bis,
+              id_strassenelement, id_preisermittlung, 
+              id_zustand, id_zustandsbewertung_01, id_zustandsbewertung_02, 
+              id_zustandsbewertung_03, id_zustandsbewertung_04, id_zustandsbewertung_05, 
+              id_eigentuemer, id_baulasttraeger, ahk, baujahr,
+              angelegt_am, angelegt_von,
+              geaendert_am, geaendert_von, ident_hist, bemerkung, 
+              objektname, zusatzbezeichnung,
+              objektart, objektart_kurz, 
+              objektnummer, zustandsnote, datum_der_benotung, pauschalpreis, 
+              baulasttraeger, baulasttraeger_dritter, abschreibung, art_der_preisermittlung, 
+              eroeffnungsbilanzwert, zeitwert, fremdobjekt, fremddatenbestand, 
+              kommunikationsobjekt, erzeugt_von_ereignis, geloescht_von_ereignis, 
+              hat_vorgaenger_hist_objekt, hat_nachfolger_hist_objekt,
+              geometrie_streckenobjekt, 
+              liniengeometrie,
+              gdf_id, verkehrsrichtung, laenge, stufe, erfassungsdatum, 
+              systemdatum, textfeld, art_der_erfassung, art_der_erfassung_sonst, 
+              quelle_der_information, quelle_der_information_sonst, rfid, migrationshinweise, 
+              unscharf, hat_objekt_id, zwischen_kreuzungsbereichen, im_kreuzungsbereich, 
+              hat_teilelement,
+              beginnt_bei_vp,
+              endet_bei_vp,
+              in_nullpunkt, 
+              in_komplexem_knoten)
+            SELECT
+              $1, ''2100-01-01 02:00:00+01'',
+              id_strassenelement, id_preisermittlung, 
+              id_zustand, id_zustandsbewertung_01, id_zustandsbewertung_02, 
+              id_zustandsbewertung_03, id_zustandsbewertung_04, id_zustandsbewertung_05, 
+              id_eigentuemer, id_baulasttraeger, ahk, baujahr,
+              $1, $2,
+              geaendert_am, geaendert_von, ident_hist, bemerkung, 
+              objektname, zusatzbezeichnung,
+              objektart, objektart_kurz, 
+              objektnummer, zustandsnote, datum_der_benotung, pauschalpreis, 
+              baulasttraeger, baulasttraeger_dritter, abschreibung, art_der_preisermittlung, 
+              eroeffnungsbilanzwert, zeitwert, fremdobjekt, fremddatenbestand, 
+              kommunikationsobjekt, erzeugt_von_ereignis, geloescht_von_ereignis, 
+              hat_vorgaenger_hist_objekt, hat_nachfolger_hist_objekt,
+              geometrie_streckenobjekt,
+              $3,
+              gdf_id, verkehrsrichtung,
+              $4,
+              stufe, erfassungsdatum, 
+              systemdatum, textfeld, art_der_erfassung, art_der_erfassung_sonst, 
+              quelle_der_information, quelle_der_information_sonst, rfid, migrationshinweise, 
+              unscharf, hat_objekt_id, zwischen_kreuzungsbereichen, im_kreuzungsbereich, 
+              hat_teilelement,
+              $5,
+              endet_bei_vp,
+              in_nullpunkt, 
+              in_komplexem_knoten
+            FROM ukos_okstra.strassenelement
+            WHERE id = $6
+            RETURNING id
+          '
+          USING aenderungszeit, NEW.angelegt_von, se.teil_ende, ST_Length(se.teil_ende), NEW.id, se.id
+          INTO teil_ende_id;
+          RAISE NOTICE 'Strassenelement id: % am Ende angelegt', teil_ende_id;
 
-					-- Abfrage der Strassenelementpunkte des alten Strassenelementes
-					FOR sep IN EXECUTE '
-						SELECT
-							id,
-							station,
-							abstand_zur_bestandsachse
-						FROM
-							ukos_okstra.strassenelementpunkt
-						WHERE
-							gueltig_bis > $2 AND
-							auf_strassenelement = $1
-						ORDER BY
-							station, abstand_zur_bestandsachse
-					'
-					USING se.id, aenderungszeit
-					LOOP
-						IF sep.station < ST_Length(se.teil_anfang) THEN
-							RAISE NOTICE 'Erzeuge und ordne Strassenelementpunkt % dem Anfangsteil % zu,', sep.id, teil_anfang_id;
-							new_se_id = teil_anfang_id;
-							new_sep_station = sep.station;
-						ELSE
-							RAISE NOTICE 'Erzeuge und ordne Strassenelementpunkt % dem Endteil % zu.', se.id, teil_ende_id;
-							new_sep_station = sep.station - ST_Length(se.teil_anfang);
-							new_se_id = teil_ende_id;
-						END IF;
+          -- Abfrage der Strassenelementpunkte des alten Strassenelementes
+          FOR sep IN EXECUTE '
+            SELECT
+              id,
+              station,
+              abstand_zur_bestandsachse
+            FROM
+              ukos_okstra.strassenelementpunkt
+            WHERE
+              gueltig_bis > $2 AND
+              auf_strassenelement = $1
+            ORDER BY
+              station, abstand_zur_bestandsachse
+          '
+          USING se.id, aenderungszeit
+          LOOP
+            IF sep.station < ST_Length(se.teil_anfang) THEN
+              RAISE NOTICE 'Erzeuge und ordne Strassenelementpunkt % dem Anfangsteil % zu,', sep.id, teil_anfang_id;
+              new_se_id = teil_anfang_id;
+              new_sep_station = sep.station;
+            ELSE
+              RAISE NOTICE 'Erzeuge und ordne Strassenelementpunkt % dem Endteil % zu.', se.id, teil_ende_id;
+              new_sep_station = sep.station - ST_Length(se.teil_anfang);
+              new_se_id = teil_ende_id;
+            END IF;
 
-						-- Setze den alten Strassenelementpunkt auf historisch
-						EXECUTE 'UPDATE ukos_okstra.strassenelementpunkt SET gueltig_bis = $2 WHERE id = $1'
-						USING sep.id, aenderungszeit;
+            -- Setze den alten Strassenelementpunkt auf historisch
+            EXECUTE 'UPDATE ukos_okstra.strassenelementpunkt SET gueltig_bis = $2 WHERE id = $1'
+            USING sep.id, aenderungszeit;
 
-						-- Füge den neuen Strassenelementpunkt ein
-						EXECUTE '
-							INSERT INTO ukos_okstra.strassenelementpunkt(
-								gueltig_von, gueltig_bis,
-								id_strassenelement,
-								id_preisermittlung, 
-								id_zustand, id_zustandsbewertung_01, id_zustandsbewertung_02, 
-								id_zustandsbewertung_03, id_zustandsbewertung_04, id_zustandsbewertung_05, 
-								id_eigentuemer, id_baulasttraeger, ahk, baujahr,
-								angelegt_am, angelegt_von,
-								geaendert_am, geaendert_von,
-								ident_hist, bemerkung, 
-								objektname, zusatzbezeichnung, objektart, objektart_kurz, 
-								objektnummer, zustandsnote, datum_der_benotung, pauschalpreis, 
-								baulasttraeger, baulasttraeger_dritter, abschreibung, art_der_preisermittlung, 
-								eroeffnungsbilanzwert, zeitwert, fremdobjekt, fremddatenbestand, 
-								kommunikationsobjekt, erzeugt_von_ereignis, geloescht_von_ereignis, 
-								hat_vorgaenger_hist_objekt, hat_nachfolger_hist_objekt, punktgeometrie,
-								station,
-								abstand_zur_bestandsachse,
-								abstand_zur_fahrbahnoberkante,
-								auf_strassenelement,
-								id_strasse
-							)
-							SELECT
-								$1, ''2100-01-01 02:00:00+01'',
-								$2,
-								id_preisermittlung, 
-								id_zustand, id_zustandsbewertung_01, id_zustandsbewertung_02, 
-								id_zustandsbewertung_03, id_zustandsbewertung_04, id_zustandsbewertung_05, 
-								id_eigentuemer, id_baulasttraeger, ahk, baujahr,
-								$1, $3,
-								geaendert_am, geaendert_von, ident_hist, bemerkung,
-								objektname, zusatzbezeichnung, objektart, objektart_kurz,
-								objektnummer, zustandsnote, datum_der_benotung, pauschalpreis,
-								baulasttraeger, baulasttraeger_dritter, abschreibung, art_der_preisermittlung,
-								eroeffnungsbilanzwert, zeitwert, fremdobjekt, fremddatenbestand,
-								kommunikationsobjekt, erzeugt_von_ereignis, geloescht_von_ereignis,
-								hat_vorgaenger_hist_objekt, hat_nachfolger_hist_objekt, punktgeometrie,
-								$5,
-								abstand_zur_bestandsachse, abstand_zur_fahrbahnoberkante,
-								$2,
-								id_strasse
-							FROM ukos_okstra.strassenelementpunkt
-							WHERE id = $4
-							RETURNING id
-						'
-						USING aenderungszeit, new_se_id, NEW.angelegt_von, sep.id, new_sep_station
-						INTO new_sep_id;
+            -- Füge den neuen Strassenelementpunkt ein
+            EXECUTE '
+              INSERT INTO ukos_okstra.strassenelementpunkt(
+                gueltig_von, gueltig_bis,
+                id_strassenelement,
+                id_preisermittlung, 
+                id_zustand, id_zustandsbewertung_01, id_zustandsbewertung_02, 
+                id_zustandsbewertung_03, id_zustandsbewertung_04, id_zustandsbewertung_05, 
+                id_eigentuemer, id_baulasttraeger, ahk, baujahr,
+                angelegt_am, angelegt_von,
+                geaendert_am, geaendert_von,
+                ident_hist, bemerkung, 
+                objektname, zusatzbezeichnung, objektart, objektart_kurz, 
+                objektnummer, zustandsnote, datum_der_benotung, pauschalpreis, 
+                baulasttraeger, baulasttraeger_dritter, abschreibung, art_der_preisermittlung, 
+                eroeffnungsbilanzwert, zeitwert, fremdobjekt, fremddatenbestand, 
+                kommunikationsobjekt, erzeugt_von_ereignis, geloescht_von_ereignis, 
+                hat_vorgaenger_hist_objekt, hat_nachfolger_hist_objekt, punktgeometrie,
+                station,
+                abstand_zur_bestandsachse,
+                abstand_zur_fahrbahnoberkante,
+                auf_strassenelement,
+                id_strasse
+              )
+              SELECT
+                $1, ''2100-01-01 02:00:00+01'',
+                $2,
+                id_preisermittlung, 
+                id_zustand, id_zustandsbewertung_01, id_zustandsbewertung_02, 
+                id_zustandsbewertung_03, id_zustandsbewertung_04, id_zustandsbewertung_05, 
+                id_eigentuemer, id_baulasttraeger, ahk, baujahr,
+                $1, $3,
+                geaendert_am, geaendert_von, ident_hist, bemerkung,
+                objektname, zusatzbezeichnung, objektart, objektart_kurz,
+                objektnummer, zustandsnote, datum_der_benotung, pauschalpreis,
+                baulasttraeger, baulasttraeger_dritter, abschreibung, art_der_preisermittlung,
+                eroeffnungsbilanzwert, zeitwert, fremdobjekt, fremddatenbestand,
+                kommunikationsobjekt, erzeugt_von_ereignis, geloescht_von_ereignis,
+                hat_vorgaenger_hist_objekt, hat_nachfolger_hist_objekt, punktgeometrie,
+                $5,
+                abstand_zur_bestandsachse, abstand_zur_fahrbahnoberkante,
+                $2,
+                id_strasse
+              FROM ukos_okstra.strassenelementpunkt
+              WHERE id = $4
+              RETURNING id
+            '
+            USING aenderungszeit, new_se_id, NEW.angelegt_von, sep.id, new_sep_station
+            INTO new_sep_id;
 
-						RAISE NOTICE 'Neuen Strassenelementpunkt % mit Station % und Abstand: % angelegt.', new_sep_id, new_sep_station, sep.abstand_zur_bestandsachse;
+            RAISE NOTICE 'Neuen Strassenelementpunkt % mit Station % und Abstand: % angelegt.', new_sep_id, new_sep_station, sep.abstand_zur_bestandsachse;
 
-					END LOOP;
+          END LOOP;
 
-				END LOOP;
+        END LOOP;
 
-			RETURN NEW;
-		END;
-	$_$;
+      RETURN NEW;
+    END;
+  $_$;
 
 
 --
@@ -1883,20 +1883,20 @@ CREATE FUNCTION split_strassenelemente() RETURNS trigger
 CREATE FUNCTION stop() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			loeschsperre BOOLEAN;
-		BEGIN
-			--------------------------------------------------------------------------------------------------------
-			EXECUTE 'SELECT value::BOOLEAN FROM ukos_base.config WHERE key = $1' USING 'Löschsperre' INTO loeschsperre;
-			IF loeschsperre THEN
-				RAISE NOTICE 'Echtes Löschen von Objekt id: % gestoppt', OLD.id;
-				RAISE NOTICE 'success';
-				RETURN NULL;
-			ELSE
-				RETURN OLD;
-			END IF;
-		END;
-	$_$;
+    DECLARE
+      loeschsperre BOOLEAN;
+    BEGIN
+      --------------------------------------------------------------------------------------------------------
+      EXECUTE 'SELECT value::BOOLEAN FROM ukos_base.config WHERE key = $1' USING 'Löschsperre' INTO loeschsperre;
+      IF loeschsperre THEN
+        RAISE NOTICE 'Echtes Löschen von Objekt id: % gestoppt', OLD.id;
+        RAISE NOTICE 'success';
+        RETURN NULL;
+      ELSE
+        RETURN OLD;
+      END IF;
+    END;
+  $_$;
 
 
 --
@@ -1913,27 +1913,27 @@ COMMENT ON FUNCTION stop() IS 'Verhindert die Ausführung des Statements, wenn d
 CREATE FUNCTION untergang() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			aenderungszeit TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
-			loeschsperre BOOLEAN;
-		BEGIN
-			--------------------------------------------------------------------------------------------------------
-			EXECUTE 'SELECT value::BOOLEAN FROM ukos_base.config WHERE key = $1' USING 'Löschsperre' INTO loeschsperre;
-			IF loeschsperre AND OLD.gueltig_bis > aenderungszeit THEN
-				EXECUTE '
-					UPDATE
-						' || TG_TABLE_SCHEMA || '.' || TG_TABLE_NAME || '
-					SET
-						gueltig_bis = $2
-					WHERE
-						id = $1
-				'
-				USING OLD.id, aenderungszeit;
-				RAISE NOTICE '%.% id: % nicht mehr gültig seit: %', TG_TABLE_SCHEMA, TG_TABLE_NAME, OLD.id, OLD.gueltig_bis;
-			END IF;
-			RETURN OLD;
-		END;
-	$_$;
+    DECLARE
+      aenderungszeit TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
+      loeschsperre BOOLEAN;
+    BEGIN
+      --------------------------------------------------------------------------------------------------------
+      EXECUTE 'SELECT value::BOOLEAN FROM ukos_base.config WHERE key = $1' USING 'Löschsperre' INTO loeschsperre;
+      IF loeschsperre AND OLD.gueltig_bis > aenderungszeit THEN
+        EXECUTE '
+          UPDATE
+            ' || TG_TABLE_SCHEMA || '.' || TG_TABLE_NAME || '
+          SET
+            gueltig_bis = $2
+          WHERE
+            id = $1
+        '
+        USING OLD.id, aenderungszeit;
+        RAISE NOTICE '%.% id: % nicht mehr gültig seit: %', TG_TABLE_SCHEMA, TG_TABLE_NAME, OLD.id, OLD.gueltig_bis;
+      END IF;
+      RETURN OLD;
+    END;
+  $_$;
 
 
 --
@@ -1950,58 +1950,58 @@ COMMENT ON FUNCTION untergang() IS 'Setzt die Gültigkeit des Datensatzes OLD.id
 CREATE FUNCTION update_querschnittstreifen() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			sql text;
+    DECLARE
+      sql text;
 
-		BEGIN
-			-- querschnittstreifen löschen
-			-- dabei wird ggf. auch das Teilelement gelöscht,
-			-- sowie ggf. auch Strassenelementpunkte
-			sql = FORMAT('
-				DELETE FROM
-					ukos_okstra.querschnittstreifen
-				WHERE
-					oid = %1$L
-				',
-				NEW.oid
-			);
-			EXECUTE sql;
+    BEGIN
+      -- querschnittstreifen löschen
+      -- dabei wird ggf. auch das Teilelement gelöscht,
+      -- sowie ggf. auch Strassenelementpunkte
+      sql = FORMAT('
+        DELETE FROM
+          ukos_okstra.querschnittstreifen
+        WHERE
+          oid = %1$L
+        ',
+        NEW.oid
+      );
+      EXECUTE sql;
 
-			-- Neu anlegen des Querschnitttrapez
-			sql = FORMAT('
-				INSERT INTO ukos_okstra.querschnitttrapeze (
-					in_verkehrsflaeche,
-					strassenelement_id,
-					beginnt_bei_station,
-					x_wert_von_station_links,
-					x_wert_von_station_rechts,
-					endet_bei_station,
-					x_wert_bis_station_links,
-					x_wert_bis_station_rechts
-				)
-				VALUES (
-					%1$L,
-					%2$L,
-					%3$L,
-					%4$L,
-					%5L,
-					%6$L,
-					%7$L,
-					%8$L
-				)',
-				NEW.in_verkehrsflaeche,
-				NEW.strassenelement_id,
-				NEW.beginnt_bei_station,
-				NEW.x_wert_von_station_links,
-				NEW.x_wert_von_station_rechts,
-				NEW.endet_bei_station,
-				NEW.x_wert_bis_station_links,
-				NEW.x_wert_bis_station_rechts
-			);
-			EXECUTE sql;
-			RETURN NEW;
-		END;
-	$_$;
+      -- Neu anlegen des Querschnitttrapez
+      sql = FORMAT('
+        INSERT INTO ukos_okstra.querschnitttrapeze (
+          in_verkehrsflaeche,
+          strassenelement_id,
+          beginnt_bei_station,
+          x_wert_von_station_links,
+          x_wert_von_station_rechts,
+          endet_bei_station,
+          x_wert_bis_station_links,
+          x_wert_bis_station_rechts
+        )
+        VALUES (
+          %1$L,
+          %2$L,
+          %3$L,
+          %4$L,
+          %5L,
+          %6$L,
+          %7$L,
+          %8$L
+        )',
+        NEW.in_verkehrsflaeche,
+        NEW.strassenelement_id,
+        NEW.beginnt_bei_station,
+        NEW.x_wert_von_station_links,
+        NEW.x_wert_von_station_rechts,
+        NEW.endet_bei_station,
+        NEW.x_wert_bis_station_links,
+        NEW.x_wert_bis_station_rechts
+      );
+      EXECUTE sql;
+      RETURN NEW;
+    END;
+  $_$;
 
 
 --
@@ -2011,34 +2011,34 @@ CREATE FUNCTION update_querschnittstreifen() RETURNS trigger
 CREATE FUNCTION update_topogeom() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		BEGIN
-			--------------------------------------------------------------------------------------------------------
-			EXECUTE '
-				SELECT
-					topology.ST_ChangeEdgeGeom(
-						' || quote_literal('ukos_topo') || ',
-						(
-							SELECT
-								e[1]
-							FROM
-								(
-									SELECT
-										topology.GetTopoGeomElements(liniengeometrie_topo) e
-									FROM
-										ukos_okstra.strassenelement
-									WHERE
-										id = $1
-									LIMIT 1
-								) e_tab
-						),
-						$2
-					)
-			'
-			USING NEW.id, NEW.liniengeometrie;
+    BEGIN
+      --------------------------------------------------------------------------------------------------------
+      EXECUTE '
+        SELECT
+          topology.ST_ChangeEdgeGeom(
+            ' || quote_literal('ukos_topo') || ',
+            (
+              SELECT
+                e[1]
+              FROM
+                (
+                  SELECT
+                    topology.GetTopoGeomElements(liniengeometrie_topo) e
+                  FROM
+                    ukos_okstra.strassenelement
+                  WHERE
+                    id = $1
+                  LIMIT 1
+                ) e_tab
+            ),
+            $2
+          )
+      '
+      USING NEW.id, NEW.liniengeometrie;
 
-			RETURN NEW;
-		END;
-	$_$;
+      RETURN NEW;
+    END;
+  $_$;
 
 
 --
@@ -2055,57 +2055,57 @@ COMMENT ON FUNCTION update_topogeom() IS 'Aktualisiert die Liniengeometrie der E
 CREATE FUNCTION validate_querschnittstreifen() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-		DECLARE
-			sql text;
-			sum RECORD;
-			aenderungszeit TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
-		BEGIN
+    DECLARE
+      sql text;
+      sum RECORD;
+      aenderungszeit TIMESTAMP WITH time zone = timezone('utc-1'::text, now());
+    BEGIN
 
-			RAISE NOTICE 'Validate Querschnittstreifen.';
-			IF NEW.in_verkehrsflaeche IS NULL THEN
-				RAISE EXCEPTION 'in_verkehrsflaeche ist leer! Es muss angegeben werden in welcher Verkehrsfläche der Querschnittstreifen liegt.';
-			END IF;
+      RAISE NOTICE 'Validate Querschnittstreifen.';
+      IF NEW.in_verkehrsflaeche IS NULL THEN
+        RAISE EXCEPTION 'in_verkehrsflaeche ist leer! Es muss angegeben werden in welcher Verkehrsfläche der Querschnittstreifen liegt.';
+      END IF;
 
-			IF NEW.flaechengeometrie IS NULL THEN
-				IF NEW.id_strassenelement IS NULL THEN
-					RAISE EXCEPTION 'id_strassenelement ist leer. Wenn keine Geometrie übergeben wird, muss eine Strassenelement ID übergeben werden!';
-				END IF;
-			ELSE
-				-- Extrahiere die erste Geometrie des Multipolygons
-				IF ST_GeometryType(NEW.flaechengeometrie) = 'MultiPolygon' THEN
-					NEW.flaechengeometrie = ST_GeometryN(NEW.flaechengeometrie, 1);
-				END IF;
+      IF NEW.flaechengeometrie IS NULL THEN
+        IF NEW.id_strassenelement IS NULL THEN
+          RAISE EXCEPTION 'id_strassenelement ist leer. Wenn keine Geometrie übergeben wird, muss eine Strassenelement ID übergeben werden!';
+        END IF;
+      ELSE
+        -- Extrahiere die erste Geometrie des Multipolygons
+        IF ST_GeometryType(NEW.flaechengeometrie) = 'MultiPolygon' THEN
+          NEW.flaechengeometrie = ST_GeometryN(NEW.flaechengeometrie, 1);
+        END IF;
 
-				-- Weise Anfrage zurück, wenn flaechengeometrie mehr als 2 Schnittpunkte mit Strassenelementen hat
-				-- und wenn mehr als ein Strassenelment geschnitten werden
-				sql = '
-					SELECT
-						count(id) se,
-						sum(ST_NumGeometries(ST_Intersection(liniengeometrie, ST_ExteriorRing(''' || NEW.flaechengeometrie::text || ''')))) sep
-					FROM
-						ukos_okstra.strassenelement
-					WHERE
-						gueltig_bis > ' || quote_literal(aenderungszeit) || ' AND
-						ST_Intersects(liniengeometrie, ST_ExteriorRing(''' || NEW.flaechengeometrie::text || '''))
-				';
-				RAISE NOTICE 'SQL: %', sql;
-				EXECUTE sql
-				INTO sum;
-				IF sum.se > 1 THEN
-					RAISE EXCEPTION 'Die Flächengeometrie des Querschnittstreifen schneidet mehr als ein Strassenelement!';
-					RETURN NULL;
-				END IF;
+        -- Weise Anfrage zurück, wenn flaechengeometrie mehr als 2 Schnittpunkte mit Strassenelementen hat
+        -- und wenn mehr als ein Strassenelment geschnitten werden
+        sql = '
+          SELECT
+            count(id) se,
+            sum(ST_NumGeometries(ST_Intersection(liniengeometrie, ST_ExteriorRing(''' || NEW.flaechengeometrie::text || ''')))) sep
+          FROM
+            ukos_okstra.strassenelement
+          WHERE
+            gueltig_bis > ' || quote_literal(aenderungszeit) || ' AND
+            ST_Intersects(liniengeometrie, ST_ExteriorRing(''' || NEW.flaechengeometrie::text || '''))
+        ';
+        RAISE NOTICE 'SQL: %', sql;
+        EXECUTE sql
+        INTO sum;
+        IF sum.se > 1 THEN
+          RAISE EXCEPTION 'Die Flächengeometrie des Querschnittstreifen schneidet mehr als ein Strassenelement!';
+          RETURN NULL;
+        END IF;
 
-				IF sum.sep > 2 THEN
-					RAISE EXCEPTION 'Die Flächengeometrie des Querschnittstreifen schneidet sich in mehr als 2 Strassenelementpunkten!';
-					RETURN NULL;
-				END IF;
+        IF sum.sep > 2 THEN
+          RAISE EXCEPTION 'Die Flächengeometrie des Querschnittstreifen schneidet sich in mehr als 2 Strassenelementpunkten!';
+          RETURN NULL;
+        END IF;
 
-			END IF;
+      END IF;
 
-			RETURN NEW;
-		END;
-	$$;
+      RETURN NEW;
+    END;
+  $$;
 
 
 --
@@ -2115,46 +2115,46 @@ CREATE FUNCTION validate_querschnittstreifen() RETURNS trigger
 CREATE FUNCTION validate_strassenelement() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			vp_beginnt_bei_geometrie	public.geometry(Point, 25833) = ST_StartPoint(NEW.liniengeometrie);
-			vp_endet_bei_geometrie		public.geometry(Point, 25833) = ST_EndPoint(NEW.liniengeometrie);
-			rec												RECORD;
-			tolerance									NUMERIC;
-		BEGIN
-			--------------------------------------------------------------------------------------------------------
-			-- Initialisierung
-			EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Topologietolerance' INTO tolerance;
+    DECLARE
+      vp_beginnt_bei_geometrie  public.geometry(Point, 25833) = ST_StartPoint(NEW.liniengeometrie);
+      vp_endet_bei_geometrie    public.geometry(Point, 25833) = ST_EndPoint(NEW.liniengeometrie);
+      rec                        RECORD;
+      tolerance                  NUMERIC;
+    BEGIN
+      --------------------------------------------------------------------------------------------------------
+      -- Initialisierung
+      EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Topologietolerance' INTO tolerance;
 
-			--------------------------------------------------------------------------------------------------------
-			-- Exceptions
+      --------------------------------------------------------------------------------------------------------
+      -- Exceptions
 
-			-- Prüfe ob eine Liniengeometrie existiert
-			IF NEW.liniengeometrie IS NULL THEN
-				RAISE EXCEPTION 'Liniengeometrie leer. Strassenelement muss eine Liniengeometrie haben.';
-			END IF;
+      -- Prüfe ob eine Liniengeometrie existiert
+      IF NEW.liniengeometrie IS NULL THEN
+        RAISE EXCEPTION 'Liniengeometrie leer. Strassenelement muss eine Liniengeometrie haben.';
+      END IF;
 
-			-- Prüfe ob Strassenelement mit gleicher Geometrie schon existiert
-			FOR rec IN EXECUTE 'SELECT id FROM ukos_okstra.strassenelement WHERE '
-				|| 'gueltig_bis > now() AND '
-				|| 'ST_Equals($1, liniengeometrie)'
-				USING NEW.liniengeometrie
-			LOOP
-				RAISE EXCEPTION 'Strassenelement mit gleicher Liniengeometrie existiert schon.';
-			END LOOP;
+      -- Prüfe ob Strassenelement mit gleicher Geometrie schon existiert
+      FOR rec IN EXECUTE 'SELECT id FROM ukos_okstra.strassenelement WHERE '
+        || 'gueltig_bis > now() AND '
+        || 'ST_Equals($1, liniengeometrie)'
+        USING NEW.liniengeometrie
+      LOOP
+        RAISE EXCEPTION 'Strassenelement mit gleicher Liniengeometrie existiert schon.';
+      END LOOP;
 
-			-- ToDo: Prüfen ob neues Strassenelement
-			--				- vorhandenes Strassenelemnt schneidet
-			--				- Verbindungspunkt schneidet
-			--				- auf einem anderen Strassenelement liegt
+      -- ToDo: Prüfen ob neues Strassenelement
+      --        - vorhandenes Strassenelemnt schneidet
+      --        - Verbindungspunkt schneidet
+      --        - auf einem anderen Strassenelement liegt
 
-			--------------------------------------------------------------------------------------------------------
-			-- Berechnungen
-			-- Berechnung der Länge
-			NEW.laenge = ST_Length(NEW.liniengeometrie);
+      --------------------------------------------------------------------------------------------------------
+      -- Berechnungen
+      -- Berechnung der Länge
+      NEW.laenge = ST_Length(NEW.liniengeometrie);
 
-		RETURN NEW;
-	END;
-	$_$;
+    RETURN NEW;
+  END;
+  $_$;
 
 
 --
@@ -2164,114 +2164,114 @@ CREATE FUNCTION validate_strassenelement() RETURNS trigger
 CREATE FUNCTION validate_strassenelementpunkt() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			rec RECORD;
-			tolerance NUMERIC;
-			accuracy NUMERIC;
-			decimals INTEGER;
-			anzahl_strassenelemente INTEGER;
-		BEGIN
-			--------------------------------------------------------------------------------------------------------
-			-- Initialisierung
-			EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Topologietolerance' INTO tolerance;
-			EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Koordinatengenauigkeit' INTO accuracy;
-			decimals = CASE WHEN log(1 / accuracy) < 0 THEN 0 ELSE round(log(1 / accuracy))::INTEGER END;
-			--------------------------------------------------------------------------------------------------------
-			-- Exceptions
+    DECLARE
+      rec RECORD;
+      tolerance NUMERIC;
+      accuracy NUMERIC;
+      decimals INTEGER;
+      anzahl_strassenelemente INTEGER;
+    BEGIN
+      --------------------------------------------------------------------------------------------------------
+      -- Initialisierung
+      EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Topologietolerance' INTO tolerance;
+      EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Koordinatengenauigkeit' INTO accuracy;
+      decimals = CASE WHEN log(1 / accuracy) < 0 THEN 0 ELSE round(log(1 / accuracy))::INTEGER END;
+      --------------------------------------------------------------------------------------------------------
+      -- Exceptions
 
-			-- Prüfe ob eine Zuordnung zum Strassenelement existiert
-			IF NEW.auf_strassenelement IS NULL THEN
-				RAISE EXCEPTION 'Der Strassenelementpunkt muss einem Strassenelement zugeordnet sein!';
-			END IF;
+      -- Prüfe ob eine Zuordnung zum Strassenelement existiert
+      IF NEW.auf_strassenelement IS NULL THEN
+        RAISE EXCEPTION 'Der Strassenelementpunkt muss einem Strassenelement zugeordnet sein!';
+      END IF;
 
-			-- Prüfe ob das angegebene Strassenelement existiert
-			EXECUTE '
-				SELECT count(id)
-				FROM ukos_okstra.strassenelement
-				WHERE
-					id = $1
-			'
-			USING NEW.auf_strassenelement
-			INTO anzahl_strassenelemente;
+      -- Prüfe ob das angegebene Strassenelement existiert
+      EXECUTE '
+        SELECT count(id)
+        FROM ukos_okstra.strassenelement
+        WHERE
+          id = $1
+      '
+      USING NEW.auf_strassenelement
+      INTO anzahl_strassenelemente;
 
-			IF anzahl_strassenelemente = 0 THEN
-				RAISE EXCEPTION 'Das Strassenelement existiert nicht!';
-			END IF;
+      IF anzahl_strassenelemente = 0 THEN
+        RAISE EXCEPTION 'Das Strassenelement existiert nicht!';
+      END IF;
 
-			-- Prüfe ob Punktgeometrie und/oder Station im Strassenelementpunkt angegeben sind
-			-- und berechne jeweils fehlendes Element und fange Linie wenn Punkt in tolerance zu Linie liegt
-			IF NEW.punktgeometrie IS NULL THEN
-				IF NEW.station IS NULL THEN
-					RAISE EXCEPTION 'Punktgeometrie und Station sind leer. Ein Strassenelementpunkt muss entweder eine Punktgeometrie oder eine Stationierungsangabe haben!';
-				ELSE
-					RAISE NOTICE 'Berechne Punktgeometrie entlang des Strassenelementes: % aus Station: % und Abstand zur Bestandsachse: %', NEW.auf_strassenelement, NEW.station, NEW.abstand_zur_bestandsachse;
-					IF abs(NEW.abstand_zur_bestandsachse) > 0 AND abs(NEW.abstand_zur_bestandsachse) <= tolerance THEN
-						RAISE NOTICE 'Reduziere den Abstand zur Linie: % auf 0', NEW.auf_strassenelement;
-						NEW.abstand_zur_bestandsachse = 0;
-					END IF;
-					NEW.station = round(NEW.station, decimals);
-					RAISE NOTICE 'Runde Station auf: %', NEW.station;
-					EXECUTE '
-						SELECT
-							gdi_LineInterpolatePointWithOffset(liniengeometrie, $1, $2)
-						FROM
-							ukos_okstra.strassenelement
-						WHERE
-							id = $3
-					'
-					USING NEW.station, NEW.abstand_zur_bestandsachse, NEW.auf_strassenelement
-					INTO NEW.punktgeometrie;
-					RAISE NOTICE 'Korrigiere Punktgeometrie auf: %', ST_AsText(NEW.punktgeometrie);
-				END IF;
-			ELSE
-				RAISE NOTICE 'Punktgeometrie in Strassenelementpunkt vorhanden.';
-				IF NEW.station IS NULL OR NEW.abstand_zur_bestandsachse IS NULL THEN
-					RAISE NOTICE 'Berechne Station und Abstand zur Bestandsachse aus Punktgeometrie: %', ST_AsText(NEW.punktgeometrie);
-					EXECUTE '
-					SELECT
-						foot_point, ordinate, abscissa
-					FROM
-						gdi_LineLocatePointWithOffset(
-							(
-								SELECT
-									liniengeometrie
-								FROM
-									ukos_okstra.strassenelement
-								WHERE
-									id = $2
-							),
-							$1
-						) AS (
-							foot_point GEOMETRY,
-							ordinate NUMERIC,
-							abscissa NUMERIC
-						)
-					'
-					USING NEW.punktgeometrie, NEW.auf_strassenelement
-					INTO rec;
+      -- Prüfe ob Punktgeometrie und/oder Station im Strassenelementpunkt angegeben sind
+      -- und berechne jeweils fehlendes Element und fange Linie wenn Punkt in tolerance zu Linie liegt
+      IF NEW.punktgeometrie IS NULL THEN
+        IF NEW.station IS NULL THEN
+          RAISE EXCEPTION 'Punktgeometrie und Station sind leer. Ein Strassenelementpunkt muss entweder eine Punktgeometrie oder eine Stationierungsangabe haben!';
+        ELSE
+          RAISE NOTICE 'Berechne Punktgeometrie entlang des Strassenelementes: % aus Station: % und Abstand zur Bestandsachse: %', NEW.auf_strassenelement, NEW.station, NEW.abstand_zur_bestandsachse;
+          IF abs(NEW.abstand_zur_bestandsachse) > 0 AND abs(NEW.abstand_zur_bestandsachse) <= tolerance THEN
+            RAISE NOTICE 'Reduziere den Abstand zur Linie: % auf 0', NEW.auf_strassenelement;
+            NEW.abstand_zur_bestandsachse = 0;
+          END IF;
+          NEW.station = round(NEW.station, decimals);
+          RAISE NOTICE 'Runde Station auf: %', NEW.station;
+          EXECUTE '
+            SELECT
+              gdi_LineInterpolatePointWithOffset(liniengeometrie, $1, $2)
+            FROM
+              ukos_okstra.strassenelement
+            WHERE
+              id = $3
+          '
+          USING NEW.station, NEW.abstand_zur_bestandsachse, NEW.auf_strassenelement
+          INTO NEW.punktgeometrie;
+          RAISE NOTICE 'Korrigiere Punktgeometrie auf: %', ST_AsText(NEW.punktgeometrie);
+        END IF;
+      ELSE
+        RAISE NOTICE 'Punktgeometrie in Strassenelementpunkt vorhanden.';
+        IF NEW.station IS NULL OR NEW.abstand_zur_bestandsachse IS NULL THEN
+          RAISE NOTICE 'Berechne Station und Abstand zur Bestandsachse aus Punktgeometrie: %', ST_AsText(NEW.punktgeometrie);
+          EXECUTE '
+          SELECT
+            foot_point, ordinate, abscissa
+          FROM
+            gdi_LineLocatePointWithOffset(
+              (
+                SELECT
+                  liniengeometrie
+                FROM
+                  ukos_okstra.strassenelement
+                WHERE
+                  id = $2
+              ),
+              $1
+            ) AS (
+              foot_point GEOMETRY,
+              ordinate NUMERIC,
+              abscissa NUMERIC
+            )
+          '
+          USING NEW.punktgeometrie, NEW.auf_strassenelement
+          INTO rec;
 
-					NEW.station = round(rec.ordinate, decimals);
-					RAISE NOTICE 'Station auf: % gesetzt.', NEW.station;
-					IF abs(rec.abscissa) <= tolerance THEN
-						NEW.abstand_zur_bestandsachse = 0;
-						NEW.punktgeometrie = rec.foot_point;
-						RAISE NOTICE 'Abstand zur Bestandsachse auf 0 gesetzt und Punktgeometrie auf: %', ST_AsText(NEW.punktgeometrie);
-					ELSE
-						NEW.abstand_zur_bestandsachse = rec.abscissa;
-						RAISE NOTICE 'Abstand zur Bestandsachse mit Toleranz: % auf: % gesetzt.', tolerance, NEW.abstand_zur_bestandsachse;
-					END IF;
-				END IF;
-			END IF;
+          NEW.station = round(rec.ordinate, decimals);
+          RAISE NOTICE 'Station auf: % gesetzt.', NEW.station;
+          IF abs(rec.abscissa) <= tolerance THEN
+            NEW.abstand_zur_bestandsachse = 0;
+            NEW.punktgeometrie = rec.foot_point;
+            RAISE NOTICE 'Abstand zur Bestandsachse auf 0 gesetzt und Punktgeometrie auf: %', ST_AsText(NEW.punktgeometrie);
+          ELSE
+            NEW.abstand_zur_bestandsachse = rec.abscissa;
+            RAISE NOTICE 'Abstand zur Bestandsachse mit Toleranz: % auf: % gesetzt.', tolerance, NEW.abstand_zur_bestandsachse;
+          END IF;
+        END IF;
+      END IF;
 
-			-- ToDo:
-			-- Was machen mit Strassenelementpunkten, die negative Station oder Station länger als Strassenelement haben? Zulassen?
+      -- ToDo:
+      -- Was machen mit Strassenelementpunkten, die negative Station oder Station länger als Strassenelement haben? Zulassen?
 
-			NEW.punktgeometrie = ST_SnapToGrid(NEW.punktgeometrie, accuracy);
-			NEW.abstand_zur_bestandsachse = round(NEW.abstand_zur_bestandsachse, decimals);
+      NEW.punktgeometrie = ST_SnapToGrid(NEW.punktgeometrie, accuracy);
+      NEW.abstand_zur_bestandsachse = round(NEW.abstand_zur_bestandsachse, decimals);
 
-		RETURN NEW;
-	END;
-	$_$;
+    RETURN NEW;
+  END;
+  $_$;
 
 
 --
@@ -2281,28 +2281,28 @@ CREATE FUNCTION validate_strassenelementpunkt() RETURNS trigger
 CREATE FUNCTION validate_strecke() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-		DECLARE
-			rec RECORD;
-			tolerance NUMERIC;
-			accuracy NUMERIC;
-		BEGIN
-			-------------------------------------------------------------------------
-			-- Prüfe ob eine Streckengeometrie vorhanden ist
-			IF NEW.geometrie_streckenobjekt IS NULL THEN
-				RAISE EXCEPTION 'Das Streckenobjekt hat keine Liniengeometrie!';
-			END IF;
+    DECLARE
+      rec RECORD;
+      tolerance NUMERIC;
+      accuracy NUMERIC;
+    BEGIN
+      -------------------------------------------------------------------------
+      -- Prüfe ob eine Streckengeometrie vorhanden ist
+      IF NEW.geometrie_streckenobjekt IS NULL THEN
+        RAISE EXCEPTION 'Das Streckenobjekt hat keine Liniengeometrie!';
+      END IF;
 
-			-- Wandle die gegebene MultiLinestring in eine gerichtete Liniengeometrie
-			NEW.geometrie_streckenobjekt = ST_Multi(ST_LineMerge(NEW.geometrie_streckenobjekt));
-			RAISE NOTICE 'Übernehme Geometrie: %', ST_AsText(NEW.geometrie_streckenobjekt);
+      -- Wandle die gegebene MultiLinestring in eine gerichtete Liniengeometrie
+      NEW.geometrie_streckenobjekt = ST_Multi(ST_LineMerge(NEW.geometrie_streckenobjekt));
+      RAISE NOTICE 'Übernehme Geometrie: %', ST_AsText(NEW.geometrie_streckenobjekt);
 
-			-- ToDo:
-			-- Prüfe ob Anfangs und Endpunkt auf einem Strassenelement liegen
-			-- Prüfe ob Streckenteile alle auf Strassenelemente liegen
+      -- ToDo:
+      -- Prüfe ob Anfangs und Endpunkt auf einem Strassenelement liegen
+      -- Prüfe ob Streckenteile alle auf Strassenelemente liegen
 
-			RETURN NEW;
-		END;
-	$$;
+      RETURN NEW;
+    END;
+  $$;
 
 
 --
@@ -2312,37 +2312,37 @@ CREATE FUNCTION validate_strecke() RETURNS trigger
 CREATE FUNCTION validate_verbindungspunkt() RETURNS trigger
     LANGUAGE plpgsql
     AS $_$
-		DECLARE
-			rec												RECORD;
-			tolerance									NUMERIC;
-		BEGIN
-			--------------------------------------------------------------------------------------------------------
-			-- Initialisierung
-			EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Topologietolerance' INTO tolerance;
+    DECLARE
+      rec                        RECORD;
+      tolerance                  NUMERIC;
+    BEGIN
+      --------------------------------------------------------------------------------------------------------
+      -- Initialisierung
+      EXECUTE 'SELECT value::NUMERIC FROM ukos_base.config WHERE key = $1' USING 'Topologietolerance' INTO tolerance;
 
-			--------------------------------------------------------------------------------------------------------
-			-- Exceptions
-			-- Prüfe ob eine Punktgeometrie existiert
-			IF NEW.punktgeometrie IS NULL THEN
-				RAISE EXCEPTION 'Punktgeometrie leer. Verbindungspunkt muss eine Punktgeometrie haben.';
-			END IF;
+      --------------------------------------------------------------------------------------------------------
+      -- Exceptions
+      -- Prüfe ob eine Punktgeometrie existiert
+      IF NEW.punktgeometrie IS NULL THEN
+        RAISE EXCEPTION 'Punktgeometrie leer. Verbindungspunkt muss eine Punktgeometrie haben.';
+      END IF;
 
-			-- Prüfe ob schon ein Verbindungspunkt mit Tolerance-Abstand existiert
-			FOR rec IN EXECUTE '
-				SELECT id, punktgeometrie, ST_Equals($1, punktgeometrie) punkt_gleich
-				FROM ukos_okstra.verbindungspunkt
-				WHERE ST_Distance(punktgeometrie, $1) < $2
-				ORDER BY ST_Distance(punktgeometrie, $1)
-				LIMIT 1
-			'
-			USING NEW.punktgeometrie, tolerance
-			LOOP
-				RAISE EXCEPTION 'Verbindungspunkt % im Abstand von % existiert schon.', rec.id, tolerance;
-			END LOOP;
+      -- Prüfe ob schon ein Verbindungspunkt mit Tolerance-Abstand existiert
+      FOR rec IN EXECUTE '
+        SELECT id, punktgeometrie, ST_Equals($1, punktgeometrie) punkt_gleich
+        FROM ukos_okstra.verbindungspunkt
+        WHERE ST_Distance(punktgeometrie, $1) < $2
+        ORDER BY ST_Distance(punktgeometrie, $1)
+        LIMIT 1
+      '
+      USING NEW.punktgeometrie, tolerance
+      LOOP
+        RAISE EXCEPTION 'Verbindungspunkt % im Abstand von % existiert schon.', rec.id, tolerance;
+      END LOOP;
 
-		RETURN NEW;
-	END;
-	$_$;
+    RETURN NEW;
+  END;
+  $_$;
 
 
 SET search_path = ukos_base, pg_catalog;
@@ -31431,8 +31431,8 @@ INSERT INTO wld_nutzung (id, ident_hist, kurztext, langtext, bemerkung, sortierr
 INSERT INTO wld_nutzung (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('5dc35138-5c47-4e3e-a28d-456a24fa25f7', '4', '54201', 'Kreisstraße', 'noch keine Bemerkung', '001', '2018-10-17 15:35:37.120079+02', '2100-01-01 02:00:00+01', '2018-10-17 15:35:37.120079+02', 'unbekannt', '2018-10-17 15:35:37.120079+02', 'unbekannt');
 INSERT INTO wld_nutzung (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('4f769b29-1f79-413d-a651-69cd8ce0ebde', '6', '', 'Sonstige', 'noch keine Bemerkung', '001', '2018-10-17 15:35:37.120079+02', '2100-01-01 02:00:00+01', '2018-10-17 15:35:37.120079+02', 'unbekannt', '2018-10-17 15:35:37.120079+02', 'unbekannt');
 INSERT INTO wld_nutzung (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('42effcc0-c084-4c97-a63c-9a2678ea7f51', '7', '', 'unbekannt', 'noch keine Bemerkung', '001', '2018-10-17 15:35:37.120079+02', '2100-01-01 02:00:00+01', '2018-10-17 15:35:37.120079+02', 'unbekannt', '2018-10-17 15:35:37.120079+02', 'unbekannt');
-INSERT INTO wld_nutzung (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('f0483ed3-a881-406f-a05f-79aecdd50c65', '8', '55101', 'Öffentliche Grünflächen', 'noch keine Bemerkung', '001', '2018-10-17 15:35:37.120079+02', '2100-01-01 02:00:00+01', '2018-10-17 15:35:37.120079+02', 'unbekannt', '2018-10-17 15:35:37.120079+02', 'unbekannt');
-INSERT INTO wld_nutzung (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('a8567df8-2cf4-4a3e-aa02-87bb39611545', '9', '36601', 'Öffentliche Spielplätze', 'noch keine Bemerkung', '001', '2018-10-17 15:35:37.120079+02', '2100-01-01 02:00:00+01', '2018-10-17 15:35:37.120079+02', 'unbekannt', '2018-10-17 15:35:37.120079+02', 'unbekannt');
+INSERT INTO wld_nutzung (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('f0483ed3-a881-406f-a05f-79aecdd50c65', '8', '55101', 'öffentliche Grünflächen', 'noch keine Bemerkung', '001', '2018-10-17 15:35:37.120079+02', '2100-01-01 02:00:00+01', '2018-10-17 15:35:37.120079+02', 'unbekannt', '2018-10-17 15:35:37.120079+02', 'unbekannt');
+INSERT INTO wld_nutzung (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('a8567df8-2cf4-4a3e-aa02-87bb39611545', '9', '36601', 'öffentliche Spielplätze', 'noch keine Bemerkung', '001', '2018-10-17 15:35:37.120079+02', '2100-01-01 02:00:00+01', '2018-10-17 15:35:37.120079+02', 'unbekannt', '2018-10-17 15:35:37.120079+02', 'unbekannt');
 INSERT INTO wld_nutzung (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('1baa74f5-43d2-4644-b34c-67fd5b60889a', '10', '', 'Privat', 'noch keine Bemerkung', '001', '2018-10-17 15:35:37.120079+02', '2100-01-01 02:00:00+01', '2018-10-17 15:35:37.120079+02', 'unbekannt', '2018-10-17 15:35:37.120079+02', 'unbekannt');
 
 
@@ -32401,7 +32401,7 @@ INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierre
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('1cd18a0c-4683-46a3-bcfb-a8bcf6f867b5', '542', '1004-34', 'Entfernungsangabe in 600m', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('43b49afe-5c2b-4f89-8dd3-26d9535580d5', '543', '1004-35', 'Entfernungsangabe in 2km', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('c8c86007-1512-472b-81f3-db5ca9c166d9', '544', '1005-30', 'Reißverschluß erst "in ...m" (in Verbindung mit Einengungstafel)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
-INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('2c8be5c5-4dc5-4dae-ae0a-c638dcbbd5a3', '545', '1006-30', 'Hinweis auf Gefahr (Ölspur)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
+INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('2c8be5c5-4dc5-4dae-ae0a-c638dcbbd5a3', '545', '1006-30', 'Hinweis auf Gefahr (ölspur)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('241b6431-9aa0-4f86-8b8c-08e9825968f5', '546', '1006-31', 'Hinweis auf Gefahr (Rauch)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('7f9ec34b-dfb0-42b5-8eb6-71e67b667894', '547', '1006-32', 'Hinweis auf Gefahr (Rollsplitt)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('03dc4b64-012b-4bfd-b3cb-5360b6639710', '548', '1006-33', 'Hinweis auf Gefahr (Baustellenausfahrt)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
@@ -32467,8 +32467,8 @@ INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierre
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('b50f2ba7-dea6-4d9d-8c4c-cdc34e560c0c', '614', '1042-36', 'Zeitliche Beschränkung (Schulbus, tageszeitliche Benutzung)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('c1e55f49-6121-456c-a8a1-3f85e856805d', '615', '1042-37', 'Zeitliche Beschränkung (Parken Sa und So erlaubt)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('2863e6d5-a577-424a-8938-c09835e189f2', '616', '1044-10', 'Personengruppen (Nur Schwerbehinderte mit außergewöhnlicher Gehbehinderung und Blinde)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
-INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('0e1b8370-e13d-4839-8fa0-6039c27a4ea6', '617', '1044-11', 'Personengruppen (Nur Schwerbehinderte mit Parkausweis Nr. …)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
-INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('01eae480-aa30-4519-9db7-ed1069897c36', '618', '1044-30', 'Personengruppen (Nur Bewohner mit Parkausweis Nr. …)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
+INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('0e1b8370-e13d-4839-8fa0-6039c27a4ea6', '617', '1044-11', 'Personengruppen (Nur Schwerbehinderte mit Parkausweis Nr. â¦)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
+INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('01eae480-aa30-4519-9db7-ed1069897c36', '618', '1044-30', 'Personengruppen (Nur Bewohner mit Parkausweis Nr. â¦)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('6859b13c-25e3-4a08-abbf-10538186adca', '620', '1046-12', 'Nur Krafträder, auch mit Beiwagen, Kleinkrafträder und Mofas', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('2c2f8a25-e3f7-4af4-a949-e4227a2cbf08', '621', '1048-10', 'Mehrspurige Fahrzeuge (Nur Personenkraftwagen)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('310efac7-b7f4-4a63-aad9-852a896b2ece', '623', '1048-12', 'Mehrspurige Fahrzeuge (Nur Kfz mit einem zul. Gesamtgewicht über 3,5t, einschl. ihrer Anhänger, und Zugmaschinen, ausg. Pkw und Kraftomnibusse)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
@@ -32540,7 +32540,7 @@ INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierre
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('885e18f7-7034-497b-8782-d45a8eea40be', '715', '1013', 'Besondere Hinweise zur Seitenstreifenfreigabe', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('f2dacbf9-9473-4181-8a88-dd503e4b5f48', '716', '1013-50', 'Besondere Hinweise zur Seitenstreifenfreigabe (Seitenstreifen befahren)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('0c5e0007-0823-4f83-b9c4-5f0a62c284d3', '717', '1013-51', 'Besondere Hinweise zur Seitenstreifenfreigabe (Seitenstreifen räumen)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
-INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('467aa31c-f139-47f4-bd70-f22d90d1a6e9', '718', '1013-52', 'Besondere Hinweise zur Seitenstreifenfreigabe (Ende in … m)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
+INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('467aa31c-f139-47f4-bd70-f22d90d1a6e9', '718', '1013-52', 'Besondere Hinweise zur Seitenstreifenfreigabe (Ende in â¦ m)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('ff407c8e-a1df-4d5c-a190-021088a68882', '719', '1014', 'Tunnelkategorien gemäß ADR-Übereinkommen', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('076ad0de-54a9-4d98-a788-a5cf9931aebf', '720', '1014-50', 'Tunnelkategorien gemäß ADR-Übereinkommen (Kategorie B)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('e4519f14-03a5-4eb7-b083-fde89911d723', '721', '1014-51', 'Tunnelkategorien gemäß ADR-Übereinkommen (Kategorie C)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
@@ -32550,7 +32550,7 @@ INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierre
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('0738f7ca-21f0-4345-85ff-ef948413f77e', '725', '1020-14', 'Personengruppen frei (Wintersport frei)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('2c97362f-fc56-4154-bc9a-20db014ee487', '726', '1026-60', 'Besondere Fahrzeuge Frei (Elektrofahrzeuge während des Ladevorgangs frei)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('54911890-9139-4bc8-82c7-0e8a3d4e09eb', '727', '1026-61', 'Besondere Fahrzeuge Frei (Elektrofahrzeuge frei)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
-INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('fd197d27-3db2-45dc-84d4-a86fa714ee1d', '728', '1031', 'Freistellung vom Verkehrsverbot nach § 40 Abs. 1 des Bundes-Immissionsschutzgesetzes', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
+INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('fd197d27-3db2-45dc-84d4-a86fa714ee1d', '728', '1031', 'Freistellung vom Verkehrsverbot nach Â§ 40 Abs. 1 des Bundes-Immissionsschutzgesetzes', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('44052efe-cbc9-4157-8f10-93979eaaa5ad', '729', '1031-50', 'Freistellung vom Verkehrsverbot (rot, gelb und grün frei)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('29d0350b-5362-4974-bc41-a08ab5cae9cb', '730', '1031-51', 'Freistellung vom Verkehrsverbot (gelb und grün frei)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
 INSERT INTO wld_stvonr (id, ident_hist, kurztext, langtext, bemerkung, sortierreihenfolge, gueltig_von, gueltig_bis, angelegt_am, angelegt_von, geaendert_am, geaendert_von) VALUES ('c24bae35-bbd4-41be-bd3d-9c492ec9ae8b', '731', '1031-52', 'Freistellung vom Verkehrsverbot (grün frei)', 'noch keine Bemerkung', '', '2017-03-30 10:18:40.236+02', '2100-01-01 02:00:00+01', '2017-03-30 10:18:40.236+02', 'unbekannt', '2017-03-30 10:18:40.236+02', 'unbekannt');
@@ -33746,7 +33746,7 @@ INSERT INTO wlo_art_leitung (kennung, langtext) VALUES ('03', 'Wasser');
 INSERT INTO wlo_art_leitung (kennung, langtext) VALUES ('04', 'Abwasser');
 INSERT INTO wlo_art_leitung (kennung, langtext) VALUES ('05', 'Telekommunikation');
 INSERT INTO wlo_art_leitung (kennung, langtext) VALUES ('06', 'Fernwärme');
-INSERT INTO wlo_art_leitung (kennung, langtext) VALUES ('07', 'Öl');
+INSERT INTO wlo_art_leitung (kennung, langtext) VALUES ('07', 'öl');
 INSERT INTO wlo_art_leitung (kennung, langtext) VALUES ('99', 'Sonstiges');
 
 
@@ -34011,9 +34011,9 @@ INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_n
 INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_name) VALUES ('1639', '270', 'Rotdorn', 'Crataegus laevigata ''Paul''s Scarlet''');
 INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_name) VALUES ('1641', '270', 'Zweigriffliger Weißdorn', 'Crataegus laevigata');
 INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_name) VALUES ('1642', '270', 'Pflaumenbl. Weißdorn, Pflaumendorn', 'Crataegus prunifolia');
-INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_name) VALUES ('1697', '280', 'Schmalblättrige Ölweide', 'Elaeagnus angustifolia');
+INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_name) VALUES ('1697', '280', 'Schmalblättrige ölweide', 'Elaeagnus angustifolia');
 INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_name) VALUES ('1698', '280', 'Silberölweide', 'Elaeagnus commutata');
-INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_name) VALUES ('1699', '280', 'Essbare Ölweide', 'Elaeagnus muliflora');
+INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_name) VALUES ('1699', '280', 'Essbare ölweide', 'Elaeagnus muliflora');
 INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_name) VALUES ('1726', '290', 'Pfaffenhütchen', 'Euonymus europaeus');
 INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_name) VALUES ('1736', '770', 'Murray''s-Drehkiefer, Murraykiefer', 'Pinus contorta murrayana');
 INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_name) VALUES ('1739', '300', 'Rotbuche', 'Fagus sylvatica');
@@ -34179,7 +34179,7 @@ INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_n
 INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_name) VALUES ('2650', '770', 'Schlangenhautkiefer', 'Pinus leucodermis');
 INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_name) VALUES ('2651', '770', 'Jeffrey''s Kiefer', 'Pinus jeffreyi');
 INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_name) VALUES ('2654', '770', 'Bergkiefer, Latsche', 'Pinus mugo');
-INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_name) VALUES ('2660', '770', 'Österreichische Schwarzkiefer', 'Pinus nigra austriaca');
+INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_name) VALUES ('2660', '770', 'österreichische Schwarzkiefer', 'Pinus nigra austriaca');
 INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_name) VALUES ('2662', '770', 'Mädchenkiefer', 'Pinus parviflora');
 INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_name) VALUES ('2664', '770', 'Rumelische Kiefer, Mazedonische Kiefer', 'Pinus peuce');
 INSERT INTO wlo_baumart (kennung, deutscher_name, gattungskennung, botanischer_name) VALUES ('2665', '770', 'Gelbkiefer', 'Pinus ponderosa');
@@ -34289,7 +34289,7 @@ INSERT INTO wlo_baumgattung (kennung, deutscher_name, botanischer_name) VALUES (
 INSERT INTO wlo_baumgattung (kennung, deutscher_name, botanischer_name) VALUES ('250', 'Scheinhasel', 'Corylopsis');
 INSERT INTO wlo_baumgattung (kennung, deutscher_name, botanischer_name) VALUES ('260', 'Haselnuss', 'Corylus');
 INSERT INTO wlo_baumgattung (kennung, deutscher_name, botanischer_name) VALUES ('270', 'Weißdort', 'Crataegus');
-INSERT INTO wlo_baumgattung (kennung, deutscher_name, botanischer_name) VALUES ('280', 'Ölweide', 'Elaeagnus');
+INSERT INTO wlo_baumgattung (kennung, deutscher_name, botanischer_name) VALUES ('280', 'ölweide', 'Elaeagnus');
 INSERT INTO wlo_baumgattung (kennung, deutscher_name, botanischer_name) VALUES ('290', 'Spindelstrauch', 'Euonymus');
 INSERT INTO wlo_baumgattung (kennung, deutscher_name, botanischer_name) VALUES ('300', 'Buche', 'Fagus');
 INSERT INTO wlo_baumgattung (kennung, deutscher_name, botanischer_name) VALUES ('310', 'Esche', 'Fraxinus');
@@ -34893,7 +34893,7 @@ INSERT INTO wlo_personenklasse (kennung, langtext) VALUES ('G', 'Gemeindeverwalt
 INSERT INTO wlo_personenklasse (kennung, langtext) VALUES ('J', 'juristische Person');
 INSERT INTO wlo_personenklasse (kennung, langtext) VALUES ('L', 'Landwirtschaftsamt');
 INSERT INTO wlo_personenklasse (kennung, langtext) VALUES ('N', 'natürliche Person');
-INSERT INTO wlo_personenklasse (kennung, langtext) VALUES ('Ö', 'öffentlicher Bedarfsträger');
+INSERT INTO wlo_personenklasse (kennung, langtext) VALUES ('ö', 'öffentlicher Bedarfsträger');
 INSERT INTO wlo_personenklasse (kennung, langtext) VALUES ('V', 'verstorben');
 
 

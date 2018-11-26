@@ -1,8 +1,8 @@
 """initiales Datenbankmodell
 
-Revision ID: 3bf45a0e924b
+Revision ID: 58db9411272a
 Revises: 
-Create Date: 2018-11-26 14:39:27.326568
+Create Date: 2018-11-26 14:54:11.016196
 
 """
 from alembic import op
@@ -12,7 +12,7 @@ import os
 
 
 # revision identifiers, used by Alembic.
-revision = '3bf45a0e924b'
+revision = '58db9411272a'
 down_revision = None
 branch_labels = None
 depends_on = None
