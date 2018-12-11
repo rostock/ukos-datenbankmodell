@@ -22,7 +22,10 @@ INSERT INTO ukos_okstra.strasse (id_gemeinde, bezeichnung, schluessel, kennung)
   g.id,
   t.strasse_name,
   t.strasse_schluessel,
-  t.kennung
+  CASE
+   WHEN t.kennung IS NULL OR (t.kennung IS NOT NULL AND t.kennung = '') THEN NULL
+   ELSE t.kennung
+  END
    FROM ukos_okstra.temp_strasse t, ukos_kataster.kreis k, ukos_kataster.gemeindeverband gv, ukos_kataster.gemeinde g
     WHERE t.gemeinde_schluessel || t.strasse_schluessel NOT IN (SELECT k.schluessel || gv.schluessel || g.schluessel || s.schluessel FROM ukos_okstra.strasse s, ukos_kataster.kreis k, ukos_kataster.gemeindeverband gv, ukos_kataster.gemeinde g WHERE s.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone AND s.nachrichtlich IS FALSE AND s.id_gemeinde = g.id AND g.id_gemeindeverband = gv.id AND gv.id_kreis = k.id)
     AND substring(t.gemeinde_schluessel from 10) = g.schluessel
@@ -37,7 +40,10 @@ INSERT INTO ukos_okstra.strasse (id_gemeinde, bezeichnung, schluessel, kennung)
 -- vorhandene Datensätze aktualisieren
 UPDATE ukos_okstra.strasse s SET
  bezeichnung = t.strasse_name,
- kennung = t.kennung,
+ kennung = CASE
+            WHEN t.kennung IS NULL OR (t.kennung IS NOT NULL AND t.kennung = '') THEN NULL
+            ELSE t.kennung
+           END,
  geaendert_am = timezone('utc-1', now())
   FROM ukos_okstra.temp_strasse t, ukos_kataster.kreis k, ukos_kataster.gemeindeverband gv, ukos_kataster.gemeinde g
    WHERE s.id != '00000000-0000-0000-0000-000000000000'
