@@ -8,7 +8,8 @@ Die aktuellen Codelisten werden gehostet bei der Hanse- und Universitätsstadt R
 
 *   [*Python*](https://www.python.org)
 *   [*Virtualenv*](https://virtualenv.pypa.io)
-*   [*PostgreSQL*](https://www.postgresql.org) mit den Erweiterungen [*PostGIS*](http://postgis.net) (inklusive Topolgie) und [*uuid-ossp*](https://www.postgresql.org/docs/current/static/uuid-ossp.html)
+*   [*pip*](http://pip.pypa.io)
+*   [*PostgreSQL*](https://www.postgresql.org) mit den Erweiterungen [*hstore*](https://www.postgresql.org/docs/current/hstore.html), [*PostGIS*](http://postgis.net) (inklusive Topolgie) und [*uuid-ossp*](https://www.postgresql.org/docs/current/static/uuid-ossp.html)
 
 ## Installation
 
