@@ -2,7 +2,7 @@
 
 Datenbankmodell für *UkoS*, das *Umsetzungsprojekt kommunale Straßendaten Mecklenburg-Vorpommern*
 
-Die aktuellen Codelisten werden gehostet bei der Hanse- und Universitätsstadt Rostock unter https://geo.sv.rostock.de/ukos-codelisten. Bei Ergänzungs- und/oder Änderungswünschen zu den Codelisten nutzen Sie bitte die [Issues](https://github.com/rostock/ukos-datenbankmodell/issues) dieses Repositories.
+Die aktuellen Codelisten werden gehostet bei der Hanse- und Universitätsstadt Rostock unter https://www.ukos-mv.de/codelisten. Bei Ergänzungs- und/oder Änderungswünschen zu den Codelisten nutzen Sie bitte die [Issues](https://github.com/rostock/ukos-datenbankmodell/issues) dieses Repositories.
 
 ## Voraussetzungen
 
