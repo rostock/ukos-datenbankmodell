@@ -1,10 +1,3 @@
--- Tabelle 'ukos_okstra.widmung'
-
--- mit Standardeintrag befüllen, falls nötig
-INSERT INTO ukos_okstra.widmung (id, gueltig_von, gueltig_bis, id_strassenelement, id_preisermittlung, id_zustand, id_zustandsbewertung_01, id_zustandsbewertung_02, id_zustandsbewertung_03, id_zustandsbewertung_04, id_zustandsbewertung_05, id_eigentuemer, id_baulasttraeger, ahk, baujahr, angelegt_am, angelegt_von, geaendert_am, geaendert_von, ident_hist, bemerkung, objektname, zusatzbezeichnung, objekt_id, objektart, objektart_kurz, objektnummer, zustandsnote, datum_der_benotung, pauschalpreis, baulasttraeger, baulasttraeger_dritter, abschreibung, art_der_preisermittlung, eroeffnungsbilanzwert, zeitwert, fremdobjekt, fremddatenbestand, kommunikationsobjekt, erzeugt_von_ereignis, geloescht_von_ereignis, hat_vorgaenger_hist_objekt, hat_nachfolger_hist_objekt, geometrie_streckenobjekt, rechtsgueltig_ab, widmung, ident) VALUES ('00000000-0000-0000-0000-000000000000', now()::timestamp with time zone, '2100-01-01 02:00:00+01', '00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', '00000000-0000-0000-0000-000000000000', 1.00, now()::timestamp with time zone, now()::timestamp with time zone, 'unbekannt', now()::timestamp with time zone, 'unbekannt', 'unbekannt', 'noch keine Bemerkung', NULL, NULL, 16, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'nicht zugewiesen', NULL) ON CONFLICT DO NOTHING;
-
-
-
 -- Tabelle 'ukos_okstra.strasse'
 
 -- alte Datensätze entsprechend kennzeichnen
