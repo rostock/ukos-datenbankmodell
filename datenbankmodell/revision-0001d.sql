@@ -9,11 +9,31 @@ BEGIN;
 -- Data for Name: wld_baulasttraeger; Type: TABLE DATA; Schema: ukos_base; Owner: -
 --
 
+INSERT INTO ukos_base.wld_baulasttraeger VALUES ('00000000-0000-0000-0000-000000000000', 'unbekannt', 'unbekannt', 'unbekannt', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_baulasttraeger VALUES ('b44e739c-718b-11e9-a923-1681be663d3e', '1', 'B', 'Bund', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_baulasttraeger VALUES ('b44e7612-718b-11e9-a923-1681be663d3e', '2', 'G', 'Gemeinde', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_baulasttraeger VALUES ('b44e7770-718b-11e9-a923-1681be663d3e', '3', 'K', 'Kreis', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_baulasttraeger VALUES ('b44e7982-718b-11e9-a923-1681be663d3e', '4', 'L', 'Land', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_baulasttraeger VALUES ('b44e7b8a-718b-11e9-a923-1681be663d3e', '5', 'P', 'Privat', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_baulasttraeger VALUES ('b44e7e00-718b-11e9-a923-1681be663d3e', '7', 'Z', 'ZVG', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_baulasttraeger VALUES ('b44e7ffe-718b-11e9-a923-1681be663d3e', '8', 'WBV', 'Wasser- und Bodenverband', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_baulasttraeger VALUES ('b44e81ca-718b-11e9-a923-1681be663d3e', '9', 'rsag', 'Rostocker Straßenbahn AG', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+
 
 
 --
 -- Data for Name: wld_eigentuemer; Type: TABLE DATA; Schema: ukos_base; Owner: -
 --
+
+INSERT INTO ukos_base.wld_eigentuemer VALUES ('00000000-0000-0000-0000-000000000000', 'unbekannt', 'unbekannt', 'unbekannt', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_eigentuemer VALUES ('19887b22-718c-11e9-a923-1681be663d3e', '1', 'B', 'Bund', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_eigentuemer VALUES ('19887d98-718c-11e9-a923-1681be663d3e', '2', 'G', 'Gemeinde', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_eigentuemer VALUES ('1988818a-718c-11e9-a923-1681be663d3e', '3', 'K', 'Kreis', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_eigentuemer VALUES ('198882f2-718c-11e9-a923-1681be663d3e', '4', 'L', 'Land', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_eigentuemer VALUES ('198884b4-718c-11e9-a923-1681be663d3e', '5', 'P', 'Privat', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_eigentuemer VALUES ('198885ea-718c-11e9-a923-1681be663d3e', '7', 'Z', 'ZVG', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_eigentuemer VALUES ('19888784-718c-11e9-a923-1681be663d3e', '8', 'rsag', 'Rostocker Straßenbahn AG', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_eigentuemer VALUES ('198888ce-718c-11e9-a923-1681be663d3e', '9', 'sr', 'Stadtentsorgung Rostock GmbH', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
 
 
 
@@ -21,11 +41,24 @@ BEGIN;
 -- Data for Name: wld_preisermittlung; Type: TABLE DATA; Schema: ukos_base; Owner: -
 --
 
+INSERT INTO ukos_base.wld_preisermittlung VALUES ('00000000-0000-0000-0000-000000000000', 'unbekannt', 'unbekannt', 'unbekannt', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_preisermittlung VALUES ('b23fad9a-718c-11e9-a923-1681be663d3e', '1', 'G', 'Geschätzt', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_preisermittlung VALUES ('b23fb56a-718c-11e9-a923-1681be663d3e', '2', 'R', 'Rechnnr. 01', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_preisermittlung VALUES ('b23fb6be-718c-11e9-a923-1681be663d3e', '3', 'R', 'Rechnnr. 02', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_preisermittlung VALUES ('b23fb7f4-718c-11e9-a923-1681be663d3e', '4', 'E', 'Einzelwert', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+
 
 
 --
 -- Data for Name: wld_zustand; Type: TABLE DATA; Schema: ukos_base; Owner: -
 --
+
+INSERT INTO ukos_base.wld_zustand VALUES ('00000000-0000-0000-0000-000000000000', 'unbekannt', 'unbekannt', 'unbekannt', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_zustand VALUES ('b23fa354-718c-11e9-a923-1681be663d3e', '1', '1', '1', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_zustand VALUES ('b23fa61a-718c-11e9-a923-1681be663d3e', '2', '2', '2', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_zustand VALUES ('b23fa764-718c-11e9-a923-1681be663d3e', '3', '3', '3', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_zustand VALUES ('b23fab06-718c-11e9-a923-1681be663d3e', '4', '4', '4', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_zustand VALUES ('b23fac5a-718c-11e9-a923-1681be663d3e', '5', '5', '5', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
 
 
 
@@ -99,21 +132,71 @@ SELECT pg_catalog.setval('ukos_base.basisobjekt_objekt_id_seq', 1, false);
 --
 
 INSERT INTO ukos_base.wld_klassifizierung VALUES ('00000000-0000-0000-0000-000000000000', 'unbekannt', 'unbekannt', 'unbekannt', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_klassifizierung VALUES ('b23fbb96-718c-11e9-a923-1681be663d3e', '1', 'A', 'Anliegerstraße', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_klassifizierung VALUES ('b23fbcd6-718c-11e9-a923-1681be663d3e', '2', 'H', 'Hauptverkehrsstraße', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_klassifizierung VALUES ('b23fbe2a-718c-11e9-a923-1681be663d3e', '3', 'I', 'Innerortsstraße', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_klassifizierung VALUES ('b23fbf60-718c-11e9-a923-1681be663d3e', '5', 'V', 'Verkehrsberuhigter Bereich', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_klassifizierung VALUES ('b23fc08c-718c-11e9-a923-1681be663d3e', '6', 'BWA', 'Befahrbarer Wanderweg', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_klassifizierung VALUES ('b23fc438-718c-11e9-a923-1681be663d3e', '7', 'BWI', 'Befahrbarer Wiesenweg', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_klassifizierung VALUES ('b23fc596-718c-11e9-a923-1681be663d3e', '8', 'F', 'Feldweg', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_klassifizierung VALUES ('b23fc6c2-718c-11e9-a923-1681be663d3e', '9', 'G', 'Gartenweg', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_klassifizierung VALUES ('b23fc802-718c-11e9-a923-1681be663d3e', '10', 'W', 'Waldweg', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_klassifizierung VALUES ('b23fc99c-718c-11e9-a923-1681be663d3e', '11', 'Z', 'Zeltplatzweg', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_klassifizierung VALUES ('b23fcb9a-718c-11e9-a923-1681be663d3e', '12', 'WW', 'Wanderweg', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_klassifizierung VALUES ('b23fd1da-718c-11e9-a923-1681be663d3e', '13', 'AEW', 'Anliegererschließungsweg', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_klassifizierung VALUES ('b23fd356-718c-11e9-a923-1681be663d3e', '14', 'SBZ', 'Seebrückenzugang', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_klassifizierung VALUES ('b23fd48c-718c-11e9-a923-1681be663d3e', '15', 'A/F', 'Anliegerstraße/Feldweg', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_klassifizierung VALUES ('b23fd964-718c-11e9-a923-1681be663d3e', '16', 'WSW', 'Wirtschaftsweg', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_klassifizierung VALUES ('b23fdd10-718c-11e9-a923-1681be663d3e', '17', 'SZ', 'Strandzugang', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
 
 
 --
 -- Data for Name: wld_material; Type: TABLE DATA; Schema: ukos_base; Owner: -
 --
 
+INSERT INTO ukos_base.wld_material VALUES ('00000000-0000-0000-0000-000000000000', 'unbekannt', 'unbekannt', 'unbekannt', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('10264444-718a-11e9-a923-1681be663d3e', '2', 'B', 'Beton', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('102645b6-718a-11e9-a923-1681be663d3e', '3', 'G', 'Gestein', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('1026470a-718a-11e9-a923-1681be663d3e', '4', 'G', 'Granit', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('10264aac-718a-11e9-a923-1681be663d3e', '5', 'H', 'Holz', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('10264bf6-718a-11e9-a923-1681be663d3e', '8', 'K', 'Kunststoff', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('10264d22-718a-11e9-a923-1681be663d3e', '11', 'M', 'Metall', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('10264e62-718a-11e9-a923-1681be663d3e', '12', 'M', 'Metall/Granit', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('10264fac-718a-11e9-a923-1681be663d3e', '14', 'P', 'PVC', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('102650f6-718a-11e9-a923-1681be663d3e', '15', 'S', 'Stein', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('102655c4-718a-11e9-a923-1681be663d3e', '18', 'Glas', 'Glas', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('102656f0-718a-11e9-a923-1681be663d3e', '19', 'Gummi', 'Gummi', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('1026581c-718a-11e9-a923-1681be663d3e', '21', 'Holz/Granit', 'Holz/Granit', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('10265948-718a-11e9-a923-1681be663d3e', '22', 'Holz/Kunststoff', 'Holz/Kunststoff', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('10265a74-718a-11e9-a923-1681be663d3e', '29', 'Metall/Glas', 'Metall/Glas', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('10265dbc-718a-11e9-a923-1681be663d3e', '30', 'Metall/Holz', 'Metall/Holz', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('10265f1a-718a-11e9-a923-1681be663d3e', '31', 'Metall/Kunststoff', 'Metall/Kunststoff', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('10266050-718a-11e9-a923-1681be663d3e', '32', 'Metall/Stein', 'Metall/Stein', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('1026617c-718a-11e9-a923-1681be663d3e', '36', 'Stein/Glas', 'Stein/Glas', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('1026629e-718a-11e9-a923-1681be663d3e', '37', 'Stein/Holz', 'Stein/Holz', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('102663de-718a-11e9-a923-1681be663d3e', '38', 'N', 'Naturstein', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('10266500-718a-11e9-a923-1681be663d3e', '39', 'Mix', 'Materialmix', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('1026688e-718a-11e9-a923-1681be663d3e', '40', 'Dr', 'Draht', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('102669e2-718a-11e9-a923-1681be663d3e', '45', 'Pflaster', 'Pflaster', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('10266b18-718a-11e9-a923-1681be663d3e', '46', 'Dr', 'Drainage', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_material VALUES ('10266c44-718a-11e9-a923-1681be663d3e', '47', 'E', 'Erde', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+
 
 
 --
 -- Data for Name: wld_nutzung; Type: TABLE DATA; Schema: ukos_base; Owner: -
 --
-INSERT INTO ukos_base.wld_nutzung VALUES ('00000000-0000-0000-0000-000000000000', '0', '', 'unbekannt', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
-INSERT INTO ukos_base.wld_nutzung VALUES ('ef5dd3f4-5ef4-4557-b0b7-369081d8b2e7', '1', '', 'Autobahn', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+
+INSERT INTO ukos_base.wld_nutzung VALUES ('00000000-0000-0000-0000-000000000000', 'unbekannt', 'unbekannt', 'unbekannt', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_nutzung VALUES ('ef5dd3f4-5ef4-4557-b0b7-369081d8b2e7', '1', 'unbekannt', 'Autobahn', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
 INSERT INTO ukos_base.wld_nutzung VALUES ('9efe045d-9ed2-4bb1-ab73-6be41e25313f', '2', '54401', 'Bundesstraße', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_nutzung VALUES ('741f2e1b-b4ee-44d8-b13a-cd9b646d2e56', '3', '54101', 'Gemeindestraße', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_nutzung VALUES ('b6f41113-5020-4e99-ab81-f6853111cbfb', '4', '54201', 'Kreisstraße', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
 INSERT INTO ukos_base.wld_nutzung VALUES ('0cdf57ca-e243-4444-80df-8c86b9bafd48', '5', '54301', 'Landesstraße', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_nutzung VALUES ('b407fc63-0ed0-4bb8-89ec-431703f765a0', '6', 'unbekannt', 'Sonstige', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_nutzung VALUES ('6d77c6a6-7644-44f3-a279-c4a81c9e85ef', '8', '55101', 'Öffentliche Grünflächen', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_nutzung VALUES ('22029f22-5c1d-4a02-bdfb-f8c4d3710367', '9', '36601', 'Öffentliche Spielplätze', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_nutzung VALUES ('d77df4e3-f951-46ea-8a15-5eaccdcdee73', '10', 'unbekannt', 'Privat', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
 
 
 --
@@ -127,6 +210,8 @@ INSERT INTO ukos_base.wld_nutzung VALUES ('0cdf57ca-e243-4444-80df-8c86b9bafd48'
 --
 
 INSERT INTO ukos_base.wld_strassennetzlage VALUES ('00000000-0000-0000-0000-000000000000', 'unbekannt', 'unbekannt', 'unbekannt', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_strassennetzlage VALUES ('b23fde82-718c-11e9-a923-1681be663d3e', '2', 'O', 'Ortslage', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_strassennetzlage VALUES ('b23fe486-718c-11e9-a923-1681be663d3e', '3', 'F', 'Feldlage', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
 
 
 --

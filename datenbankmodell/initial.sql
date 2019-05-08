@@ -14408,7 +14408,7 @@ CREATE TABLE ukos_okstra.strasse (
     hat_strassenbezeichnung_zusatzbuchstabe character varying,
     hat_strassenbezeichnung_identifizierungskennzeichen character varying DEFAULT 'nicht zugewiesen'::character varying NOT NULL,
     bezeichnung character varying DEFAULT 'nicht zugewiesen'::character varying NOT NULL,
-    schluessel character(5) DEFAULT '00000'::character varying NOT NULL,
+    schluessel character varying DEFAULT '00000'::character varying NOT NULL,
     nachrichtlich boolean DEFAULT false NOT NULL,
     kennung character varying
 )
