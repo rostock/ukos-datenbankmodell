@@ -17,7 +17,8 @@ INSERT INTO ukos_base.wld_baulasttraeger VALUES ('b44e7982-718b-11e9-a923-1681be
 INSERT INTO ukos_base.wld_baulasttraeger VALUES ('b44e7b8a-718b-11e9-a923-1681be663d3e', '5', 'P', 'Privat', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
 INSERT INTO ukos_base.wld_baulasttraeger VALUES ('b44e7e00-718b-11e9-a923-1681be663d3e', '7', 'Z', 'ZVG', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
 INSERT INTO ukos_base.wld_baulasttraeger VALUES ('b44e7ffe-718b-11e9-a923-1681be663d3e', '8', 'WBV', 'Wasser- und Bodenverband', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
-INSERT INTO ukos_base.wld_baulasttraeger VALUES ('b44e81ca-718b-11e9-a923-1681be663d3e', '9', 'rsag', 'Rostocker Straßenbahn AG', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_baulasttraeger VALUES ('b44e81ca-718b-11e9-a923-1681be663d3e', '', 'rsag', 'Rostocker Straßenbahn AG', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_baulasttraeger VALUES ('d96d7bfe-4f59-479c-89f9-f93a36982988', '', 'warnowquerung', 'Warnowquerung GmbH & Co. KG', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
 
 
 
@@ -32,8 +33,8 @@ INSERT INTO ukos_base.wld_eigentuemer VALUES ('1988818a-718c-11e9-a923-1681be663
 INSERT INTO ukos_base.wld_eigentuemer VALUES ('198882f2-718c-11e9-a923-1681be663d3e', '4', 'L', 'Land', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
 INSERT INTO ukos_base.wld_eigentuemer VALUES ('198884b4-718c-11e9-a923-1681be663d3e', '5', 'P', 'Privat', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
 INSERT INTO ukos_base.wld_eigentuemer VALUES ('198885ea-718c-11e9-a923-1681be663d3e', '7', 'Z', 'ZVG', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
-INSERT INTO ukos_base.wld_eigentuemer VALUES ('19888784-718c-11e9-a923-1681be663d3e', '8', 'rsag', 'Rostocker Straßenbahn AG', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
-INSERT INTO ukos_base.wld_eigentuemer VALUES ('198888ce-718c-11e9-a923-1681be663d3e', '9', 'sr', 'Stadtentsorgung Rostock GmbH', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_eigentuemer VALUES ('19888784-718c-11e9-a923-1681be663d3e', '', 'rsag', 'Rostocker Straßenbahn AG', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_eigentuemer VALUES ('198888ce-718c-11e9-a923-1681be663d3e', '', 'sr', 'Stadtentsorgung Rostock GmbH', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
 
 
 
