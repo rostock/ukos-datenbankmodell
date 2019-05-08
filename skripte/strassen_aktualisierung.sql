@@ -14,6 +14,7 @@ UPDATE ukos_okstra.strasse s SET
    AND s.id_gemeinde = g.id
    AND g.id_gemeindeverband = gv.id
    AND gv.id_kreis = k.id
+   AND length(s.schluessel) = 5
    AND k.schluessel || gv.schluessel || g.schluessel || s.schluessel NOT IN (SELECT gemeinde_schluessel || strasse_schluessel FROM ukos_okstra.temp_strasse);
 
 -- mit neuen Datensätzen befüllen
