@@ -120,6 +120,12 @@ SELECT pg_catalog.setval('ukos_base.basisobjekt_objekt_id_seq', 1, false);
 -- Data for Name: wld_deckschicht; Type: TABLE DATA; Schema: ukos_base; Owner: -
 --
 
+INSERT INTO ukos_base.wld_deckschicht VALUES ('00000000-0000-0000-0000-000000000000', 'unbekannt', 'unbekannt', 'unbekannt', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_deckschicht VALUES ('2977b6cf-4f47-440f-b561-86b301b1d1c2', '', '', 'Beton', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_deckschicht VALUES ('d971f894-658e-4445-a15d-dea28067bba9', '', '', 'bituminös', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_deckschicht VALUES ('fa6059b0-8ffd-4df2-ada0-157829bfaf94', '', '', 'Pflaster', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_deckschicht VALUES ('37aeeb2c-1465-435f-b573-4e141169fe6c', '', '', 'sonstiges', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+INSERT INTO ukos_base.wld_deckschicht VALUES ('3b6e1189-cdc9-4c79-986b-cd950071a761', '', '', 'unbefestigt', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
 
 
 --
