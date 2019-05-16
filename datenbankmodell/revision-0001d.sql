@@ -108,6 +108,8 @@ SELECT pg_catalog.setval('ukos_base.basisobjekt_objekt_id_seq', 1, false);
 -- Data for Name: wld_bauklasse; Type: TABLE DATA; Schema: ukos_base; Owner: -
 --
 
+INSERT INTO ukos_base.wld_bauklasse VALUES ('00000000-0000-0000-0000-000000000000', 'unbekannt', 'unbekannt', 'unbekannt', 'noch keine Bemerkung', '001', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
+
 
 
 --
