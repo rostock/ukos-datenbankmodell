@@ -184,7 +184,7 @@ UPDATE ukos_kataster.gemeindeteil gt SET
    WHERE gt.id !='00000000-0000-0000-0000-000000000000'
    AND gt.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone
    AND gt.id = t.uuid AND
-   (gt.bezeichnung != t.gemeinde_name
+   (gt.bezeichnung != t.gemeindeteil_name
    OR gt.schluessel != t.gemeindeteil_schluessel
    OR NOT ST_Equals(gt.wkb_geometry, t.wkb_geometry));
 

@@ -46,7 +46,7 @@ UPDATE ukos_okstra.strasse s SET
    AND s.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone
    AND s.nachrichtlich IS FALSE
    AND s.id = t.uuid AND
-   (s.bezeichnung != t.gemeinde_name
+   (s.bezeichnung != t.strasse_name
    OR s.schluessel != t.strasse_schluessel
    OR COALESCE(s.kennung, '') != COALESCE(t.kennung, ''));
 
