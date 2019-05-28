@@ -19,8 +19,8 @@ UPDATE ukos_base.wld_bauklasse SET ident_hist = 'unbekannt', kurztext = 'V', lan
 INSERT INTO ukos_base.wld_bauklasse VALUES ('94f38003-c084-4466-9569-9c35880cb47c', 'unbekannt', 'VI', 'VI', 'Bauklasse nach RStO', '008', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
 INSERT INTO ukos_base.wld_bauklasse VALUES ('fd16ede6-0ef2-4e6b-9d18-fa174ff31c6c', 'unbekannt', 'SO', 'sonstige Bauklasse', 'Bauklasse nach RStO', '009', '2019-04-27 12:09:35.655799+02', '2100-01-01 02:00:00+01', '2019-04-27 12:09:35.655799+02', 'unbekannt', '2019-04-27 12:09:35.655799+02', 'unbekannt');
 
-DELETE FROM ukos_base.wld_baulasttraeger WHERE langtext = 'Öffentliche Grünflächen';
-DELETE FROM ukos_base.wld_baulasttraeger WHERE langtext = 'Öffentliche Spielplätze';
+DELETE FROM ukos_base.wld_nutzung WHERE langtext = 'Öffentliche Grünflächen';
+DELETE FROM ukos_base.wld_nutzung WHERE langtext = 'Öffentliche Spielplätze';
 UPDATE ukos_base.wld_nutzung SET kurztext = 'A', langtext = 'Bundesautobahn', sortierreihenfolge = '002' WHERE langtext = 'Autobahn';
 UPDATE ukos_base.wld_nutzung SET kurztext = 'B', sortierreihenfolge = '003' WHERE langtext = 'Bundesstraße';
 UPDATE ukos_base.wld_nutzung SET kurztext = 'L', sortierreihenfolge = '004' WHERE langtext = 'Landesstraße';
