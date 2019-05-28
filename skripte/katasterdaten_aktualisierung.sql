@@ -147,6 +147,9 @@ CREATE INDEX gemeinde_s ON ukos_kataster.gemeinde USING gist(wkb_geometry);
 -- Index auf Geometriespalte löschen
 DROP INDEX IF EXISTS ukos_kataster.gemeindeteil_s;
 
+-- Constraint temporär löschen
+ALTER TABLE ukos_kataster.gemeindeteil DROP CONSTRAINT uk1_gemeindeteil;
+
 -- alte Datensätze entsprechend kennzeichnen
 UPDATE ukos_kataster.gemeindeteil SET
  gueltig_bis = timezone('utc-1', now()),
@@ -187,6 +190,9 @@ UPDATE ukos_kataster.gemeindeteil gt SET
    (gt.bezeichnung != t.gemeindeteil_name
    OR gt.schluessel != t.gemeindeteil_schluessel
    OR NOT ST_Equals(gt.wkb_geometry, t.wkb_geometry));
+
+-- Constraint wieder hinzufügen
+ALTER TABLE ukos_kataster.gemeindeteil ADD CONSTRAINT uk1_gemeindeteil UNIQUE(id_gemeinde, schluessel, gueltig_bis);
 
 -- datenbanktechnisch bereinigen
 VACUUM FULL ANALYZE ukos_kataster.gemeindeteil;
