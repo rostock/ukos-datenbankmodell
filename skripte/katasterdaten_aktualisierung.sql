@@ -71,15 +71,19 @@ INSERT INTO ukos_kataster.gemeindeverband (id, id_kreis, bezeichnung, schluessel
 
 -- vorhandene Datensätze aktualisieren
 UPDATE ukos_kataster.gemeindeverband gv SET
+ id_kreis = k.id,
  bezeichnung = t.gemeindeverband_name,
  schluessel = substring(t.gemeindeverband_schluessel from 6),
  geaendert_am = timezone('utc-1', now()),
  wkb_geometry = t.wkb_geometry
-  FROM ukos_kataster.temp_gemeindeverband t
+  FROM ukos_kataster.temp_gemeindeverband t, ukos_kataster.kreis k
    WHERE gv.id !='00000000-0000-0000-0000-000000000000'
    AND gv.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone
-   AND gv.id = t.uuid AND
-   (gv.bezeichnung != t.gemeindeverband_name
+   AND gv.id = t.uuid
+   AND t.kreis_schluessel = k.schluessel
+   AND k.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone AND
+   (gv.id_kreis != k.id
+   OR gv.bezeichnung != t.gemeindeverband_name
    OR gv.schluessel != substring(t.gemeindeverband_schluessel from 6)
    OR NOT ST_Equals(gv.wkb_geometry, t.wkb_geometry));
 
@@ -122,15 +126,22 @@ INSERT INTO ukos_kataster.gemeinde (id, id_gemeindeverband, bezeichnung, schlues
 
 -- vorhandene Datensätze aktualisieren
 UPDATE ukos_kataster.gemeinde g SET
+ id_gemeindeverband = gv.id,
  bezeichnung = t.gemeinde_name,
  schluessel = substring(t.gemeinde_schluessel from 10),
  geaendert_am = timezone('utc-1', now()),
  wkb_geometry = t.wkb_geometry
-  FROM ukos_kataster.temp_gemeinde t
+  FROM ukos_kataster.temp_gemeinde t,  ukos_kataster.gemeindeverband gv, ukos_kataster.kreis k
    WHERE g.id !='00000000-0000-0000-0000-000000000000'
    AND g.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone
-   AND g.id = t.uuid AND
-   (g.bezeichnung != t.gemeinde_name
+   AND g.id = t.uuid
+   AND substring(t.gemeindeverband_schluessel from 6) = gv.schluessel
+   AND gv.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone
+   AND gv.id_kreis = k.id
+   AND t.kreis_schluessel = k.schluessel
+   AND k.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone AND
+   (g.id_gemeindeverband != gv.id
+   OR g.bezeichnung != t.gemeinde_name
    OR g.schluessel != substring(t.gemeinde_schluessel from 10)
    OR NOT ST_Equals(g.wkb_geometry, t.wkb_geometry));
 
@@ -146,9 +157,6 @@ CREATE INDEX gemeinde_s ON ukos_kataster.gemeinde USING gist(wkb_geometry);
 
 -- Index auf Geometriespalte löschen
 DROP INDEX IF EXISTS ukos_kataster.gemeindeteil_s;
-
--- Constraint temporär löschen
-ALTER TABLE ukos_kataster.gemeindeteil DROP CONSTRAINT uk1_gemeindeteil;
 
 -- alte Datensätze entsprechend kennzeichnen
 UPDATE ukos_kataster.gemeindeteil SET
@@ -179,20 +187,27 @@ INSERT INTO ukos_kataster.gemeindeteil (id, id_gemeinde, bezeichnung, schluessel
 
 -- vorhandene Datensätze aktualisieren
 UPDATE ukos_kataster.gemeindeteil gt SET
+ id_gemeinde = g.id,
  bezeichnung = t.gemeindeteil_name,
  schluessel = t.gemeindeteil_schluessel,
  wkb_geometry = t.wkb_geometry,
  geaendert_am = timezone('utc-1', now())
-  FROM ukos_kataster.temp_gemeindeteil t
+  FROM ukos_kataster.temp_gemeindeteil t, ukos_kataster.gemeinde g, ukos_kataster.gemeindeverband gv, ukos_kataster.kreis k
    WHERE gt.id !='00000000-0000-0000-0000-000000000000'
    AND gt.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone
-   AND gt.id = t.uuid AND
-   (gt.bezeichnung != t.gemeindeteil_name
+   AND gt.id = t.uuid
+   AND substring(t.gemeinde_schluessel from 10) = g.schluessel
+   AND g.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone
+   AND g.id_gemeindeverband = gv.id
+   AND substring(t.gemeindeverband_schluessel from 6) = gv.schluessel
+   AND gv.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone
+   AND gv.id_kreis = k.id
+   AND t.kreis_schluessel = k.schluessel
+   AND k.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone AND
+   (gt.id_gemeinde != g.id
+   OR gt.bezeichnung != t.gemeindeteil_name
    OR gt.schluessel != t.gemeindeteil_schluessel
    OR NOT ST_Equals(gt.wkb_geometry, t.wkb_geometry));
-
--- Constraint wieder hinzufügen
-ALTER TABLE ukos_kataster.gemeindeteil ADD CONSTRAINT uk1_gemeindeteil UNIQUE(id_gemeinde, schluessel, gueltig_bis);
 
 -- datenbanktechnisch bereinigen
 VACUUM FULL ANALYZE ukos_kataster.gemeindeteil;
