@@ -9,22 +9,14 @@ Bei Ergänzungs- und/oder Änderungswünschen zu den Codelisten nutzen Sie bitte
    :glob:
    :maxdepth: 2
 
-   codelisten/bauklasse
    codelisten/baulasttraeger
-   codelisten/baumart
    codelisten/deckschicht
-   codelisten/eigentuemer
-   codelisten/fertigstellung
-   codelisten/klassifizierung
-   codelisten/material
-   codelisten/nutzung
-   codelisten/objektbezeichnung
-   codelisten/preisermittlung
    codelisten/strasse
+   codelisten/strassenbauklasse
+   codelisten/strassenklassifizierung
    codelisten/strassennetzlage
+   codelisten/strassennutzung
    codelisten/stvonr
-   codelisten/zustand
-   codelisten/zustandsbewertung
 
 Indizes und Übersichten
 =======================

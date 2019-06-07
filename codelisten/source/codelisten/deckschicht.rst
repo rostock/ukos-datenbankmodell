@@ -8,7 +8,9 @@ Deckschicht
 Datenbanktabelle
 ----------------
 
-ukos_base.wld_deckschicht
+.. code-block:: postgresql
+
+   ukos_base.wld_deckschicht
 
 .. _deckschicht_codeliste:
 
@@ -19,8 +21,8 @@ Codeliste
    :class: codeliste
 
    SELECT
-    kurztext AS "Kurztext",
-    langtext AS "Langtext"
+    id AS "UUID",
+    langtext AS "Bezeichnung"
      FROM ukos_base.wld_deckschicht
       WHERE id != '00000000-0000-0000-0000-000000000000'
       AND gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone

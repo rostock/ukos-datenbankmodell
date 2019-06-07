@@ -8,7 +8,9 @@ Straße
 Datenbanktabelle
 ----------------
 
-ukos_okstra.strasse
+.. code-block:: postgresql
+
+   ukos_okstra.strasse
 
 .. _strasse_codeliste:
 
@@ -19,6 +21,7 @@ Codeliste
    :class: codeliste
 
    SELECT
+    s.id AS "UUID",
     k.bezeichnung AS "Kreis",
     k.schluessel || gv.schluessel || g.schluessel AS "Regionalschlüssel",
     g.bezeichnung AS "Gemeinde",
