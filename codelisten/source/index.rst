@@ -11,6 +11,10 @@ Bei Ergänzungs- und/oder Änderungswünschen zu den Codelisten nutzen Sie bitte
 
    codelisten/baulasttraeger
    codelisten/deckschicht
+   codelisten/gemeinde
+   codelisten/gemeindeteil
+   codelisten/gemeindeverband
+   codelisten/kreis
    codelisten/strasse
    codelisten/strassenbauklasse
    codelisten/strassenklassifizierung
