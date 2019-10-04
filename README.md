@@ -56,7 +56,7 @@ Die aktuellen Codelisten werden gehostet bei der Hanse- und Universitätsstadt R
 1.  Codelisten-Webseiten bauen:
 
         cd codelisten
-        rm -r build/* && make html
+        make html
 
 ## Deployment der Codelisten (am Beispiel des [*Apache HTTP Servers*](https://httpd.apache.org))
 
