@@ -30,7 +30,8 @@ INSERT INTO ukos_okstra.strasse (id, id_gemeinde, bezeichnung, schluessel, kennu
     AND gv.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone
     AND gv.id_kreis = k.id
     AND t.kreis_schluessel = k.schluessel
-    AND k.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone;
+    AND k.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone
+     ON CONFLICT DO NOTHING;
 
 -- vorhandene Datensätze aktualisieren
 UPDATE ukos_okstra.strasse s SET

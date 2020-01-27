@@ -19,7 +19,8 @@ INSERT INTO ukos_kataster.kreis (id, bezeichnung, schluessel, wkb_geometry)
   kreis_schluessel,
   wkb_geometry
    FROM ukos_kataster.temp_kreis
-    WHERE uuid NOT IN (SELECT id FROM ukos_kataster.kreis WHERE gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone);
+    WHERE uuid NOT IN (SELECT id FROM ukos_kataster.kreis WHERE gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone)
+     ON CONFLICT DO NOTHING;
 
 -- vorhandene Datensätze aktualisieren
 UPDATE ukos_kataster.kreis k SET
@@ -67,7 +68,8 @@ INSERT INTO ukos_kataster.gemeindeverband (id, id_kreis, bezeichnung, schluessel
    FROM ukos_kataster.temp_gemeindeverband t, ukos_kataster.kreis k
     WHERE t.uuid NOT IN (SELECT id FROM ukos_kataster.gemeindeverband WHERE gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone)
     AND t.kreis_schluessel = k.schluessel
-    AND k.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone;
+    AND k.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone
+     ON CONFLICT DO NOTHING;
 
 -- vorhandene Datensätze aktualisieren
 UPDATE ukos_kataster.gemeindeverband gv SET
@@ -122,7 +124,8 @@ INSERT INTO ukos_kataster.gemeinde (id, id_gemeindeverband, bezeichnung, schlues
     AND gv.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone
     AND gv.id_kreis = k.id
     AND t.kreis_schluessel = k.schluessel
-    AND k.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone;
+    AND k.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone
+     ON CONFLICT DO NOTHING;
 
 -- vorhandene Datensätze aktualisieren
 UPDATE ukos_kataster.gemeinde g SET
@@ -183,7 +186,8 @@ INSERT INTO ukos_kataster.gemeindeteil (id, id_gemeinde, bezeichnung, schluessel
     AND gv.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone
     AND gv.id_kreis = k.id
     AND t.kreis_schluessel = k.schluessel
-    AND k.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone;
+    AND k.gueltig_bis = '2100-01-01 02:00:00+01'::timestamp with time zone
+     ON CONFLICT DO NOTHING;
 
 -- vorhandene Datensätze aktualisieren
 UPDATE ukos_kataster.gemeindeteil gt SET
